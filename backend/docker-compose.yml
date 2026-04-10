@@ -1,0 +1,46 @@
+services:
+  stakeholders-db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=stakeholders_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U django_user -d django_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=123
+    volumes:
+      - ./config/servers.json:/pgadmin4/servers.json
+      - ./config/pgpass:/tmp/pgpass
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    depends_on:
+      - stakeholders-db
+
+  stakeholders:
+    build: ./stakeholders
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./stakeholders:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://postgres:root@stakeholders-db:5432/stakeholders_db
+      - DEBUG=1
+    depends_on:
+      stakeholders-db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  pgadmin_data:

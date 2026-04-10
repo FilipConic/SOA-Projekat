@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
-from stakeholders.views import CustomTokenObtainPairView, UserViewSet
+from stakeholders.views.auth_view import CustomTokenObtainPairView
+from stakeholders.views.user_view import UserViewSet
 
 urlpatterns = [
     path('admin/', admin.site.urls),

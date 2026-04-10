@@ -1,13 +1,15 @@
 from rest_framework import viewsets, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
 from stakeholders.models import user
-from ..serializers import UserSerializer
+from stakeholders.serializers.user_serializer import UserSerializer
 
 User = get_user_model()
-
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
