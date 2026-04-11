@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
+from stakeholders.views.profile_view import ProfileViewSet
 from stakeholders.views.auth_view import CustomTokenObtainPairView
 from stakeholders.views.user_view import UserViewSet
 
@@ -28,4 +29,6 @@ urlpatterns = [
     path('users/', UserViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('users/<int:pk>/', UserViewSet.as_view({'get': 'retrieve'})),
     path('users/<int:pk>/block/', UserViewSet.as_view({'patch': 'block'})),
+
+    path('profiles/me/', ProfileViewSet.as_view({'get': 'me'})),
 ]
