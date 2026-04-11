@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
+from django.conf import settings
+from django.conf.urls.static import static
 from stakeholders.views.profile_view import ProfileViewSet
 from stakeholders.views.auth_view import CustomTokenObtainPairView
 from stakeholders.views.user_view import UserViewSet
@@ -31,4 +33,8 @@ urlpatterns = [
     path('users/<int:pk>/block/', UserViewSet.as_view({'patch': 'block'})),
 
     path('profiles/me/', ProfileViewSet.as_view({'get': 'me'})),
+    path('profiles/me/avatar/', ProfileViewSet.as_view({'post': 'upload_avatar'})),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
