@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 
 from stakeholders.models import user
 from stakeholders.serializers.user_serializer import UserSerializer
+from permissions import IsAdminRole
 
 User = get_user_model()
 
@@ -19,7 +20,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return [permissions.AllowAny()]
         if self.action in ['list', 'update', 'partial_update']:
-            return [permissions.IsAdminUser()]
+            return [IsAdminRole()]
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):

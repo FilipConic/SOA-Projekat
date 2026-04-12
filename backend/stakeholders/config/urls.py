@@ -29,8 +29,8 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view()),
     path('auth/logout/', TokenBlacklistView.as_view()),
     path('users/', UserViewSet.as_view({'get': 'list', 'post': 'create'})),
-    path('users/<int:pk>/', UserViewSet.as_view({'get': 'retrieve'})),
-    path('users/<int:pk>/block/', UserViewSet.as_view({'patch': 'block'})),
+    path('users/<uuid:pk>/', UserViewSet.as_view({'get': 'retrieve'})),
+    path('users/<uuid:pk>/block/', UserViewSet.as_view({'patch': 'block'})),
 
     path('profiles/me/', ProfileViewSet.as_view({'get': 'me'})),
     path('profiles/me/avatar/', ProfileViewSet.as_view({'post': 'upload_avatar'})),
