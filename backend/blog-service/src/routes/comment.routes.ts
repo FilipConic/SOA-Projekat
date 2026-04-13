@@ -17,9 +17,28 @@ export const commentRoutes = new Elysia()
   // Svi komentari bloga
   .get("/blogs/:id/comments", async ({ params }: { params: any }) => {
     const result = await pool.query(
-      `SELECT * FROM comments WHERE blog_id = $1 ORDER BY created_at ASC`,
+      `SELECT * FROM comments WHERE blog_id = $1 ORDER BY created_at DESC`,
       [params.id]
     );
+    return result.rows;
+  })
+
+  // broj komentara za blog
+  .get("/blogs/:id/comments/count", async ({ params }: { params: any }) => {
+    const result = await pool.query(
+      `SELECT COUNT(*) as total FROM comments WHERE blog_id = $1`,
+      [params.id]
+    );
+    return { blog_id: params.id, total: parseInt(result.rows[0].total) };
+  })
+
+  // svi komentari korisnika
+  .get("/users/:user_id/comments", async ({ params }: { params: any }) => {
+    const result = await pool.query(
+      `SELECT * FROM comments WHERE user_id = $1 ORDER BY created_at DESC`,
+      [params.user_id]
+    );
+    if (result.rows.length === 0) return { error: "No comments found for this user" };
     return result.rows;
   })
 
@@ -32,4 +51,17 @@ export const commentRoutes = new Elysia()
     );
     if (result.rows.length === 0) return { error: "Comment not found" };
     return result.rows[0];
-  });
+  })
+  
+  // Brisanje komentara
+  .delete("/comments/:id", async ({ params }: { params: any }) => {
+    const result = await pool.query(
+      "DELETE FROM comments WHERE id = $1 RETURNING *",
+      [params.id]
+    );
+    if (result.rows.length === 0) return { error: "Comment not found" };
+    return { message: "Comment deleted!" };
+  })
+  
+  
+  ;

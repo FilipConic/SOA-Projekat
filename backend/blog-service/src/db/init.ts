@@ -19,7 +19,7 @@ async function initDb() {
       updated_at TIMESTAMP DEFAULT NOW()
     );
   `);
-  console.log("Tabele kreirane!");
+  console.log("Tables created successfully!");
   process.exit(0);
 }
 

@@ -13,6 +13,20 @@ services:
       timeout: 5s
       retries: 5
 
+  blog-db:
+    image: postgres:15
+    volumes:
+      - blog_postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=blogdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d blogdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   pgadmin:
     image: dpage/pgadmin4
     environment:
@@ -26,6 +40,7 @@ services:
       - "5050:80"
     depends_on:
       - stakeholders-db
+      - blog-db
 
   stakeholders:
     build: ./stakeholders
@@ -42,7 +57,22 @@ services:
       stakeholders-db:
         condition: service_healthy
 
+  blog:
+      build: ./blog-service
+      ports:
+        - "3000:3000"
+      environment:
+        - DB_HOST=blog-db
+        - DB_PORT=5432
+        - DB_NAME=blogdb
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+      depends_on:
+        blog-db:
+          condition: service_healthy
+
 volumes:
   postgres_data:
+  blog_postgres_data:
   pgadmin_data:
   media:
