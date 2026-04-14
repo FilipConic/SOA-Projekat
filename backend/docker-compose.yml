@@ -67,6 +67,7 @@ services:
         - DB_NAME=blogdb
         - DB_USER=postgres
         - DB_PASSWORD=postgres
+        - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm$5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
       depends_on:
         blog-db:
           condition: service_healthy
