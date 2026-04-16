@@ -1,4 +1,6 @@
 from rest_framework import viewsets, permissions
+
+from ..serializers.user_info_serializer import UserInfoSerializer
 from ..models.profile import Profile
 from ..serializers.profile_serializer import ProfileSerializer
 from rest_framework.response import Response
@@ -17,6 +19,15 @@ class ProfileViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(profile)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['put', 'patch'])
+    def update_profile(self, request):
+        profile = request.user.profile
+        serializer = self.get_serializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
     @action(detail=False, methods=['post'], parser_classes=[MultiPartParser, FormParser])
     def upload_avatar(self, request):
         profile = request.user.profile
@@ -27,3 +38,21 @@ class ProfileViewSet(viewsets.ModelViewSet):
             return Response({"message": "Avatar updated successfully.", "url": profile.avatar.url}, status=200)
         
         return Response(serializer.errors, status=400)
+    
+    @action(detail=True, methods=['get'])
+    def get_profile(self, request, pk=None):
+        try:
+            profile = Profile.objects.get(user__id=pk)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found."}, status=404)
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def get_user_info(self, request, pk=None):
+        try:
+            profile = Profile.objects.get(user__id=pk)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found."}, status=404)
+        serializer = UserInfoSerializer(profile)
+        return Response(serializer.data)
