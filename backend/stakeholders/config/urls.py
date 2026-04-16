@@ -24,16 +24,20 @@ from stakeholders.views.auth_view import CustomTokenObtainPairView
 from stakeholders.views.user_view import UserViewSet
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('auth/login/', CustomTokenObtainPairView.as_view()),
-    path('auth/refresh/', TokenRefreshView.as_view()),
-    path('auth/logout/', TokenBlacklistView.as_view()),
-    path('users/', UserViewSet.as_view({'get': 'list', 'post': 'create'})),
-    path('users/<uuid:pk>/', UserViewSet.as_view({'get': 'retrieve'})),
-    path('users/<uuid:pk>/block/', UserViewSet.as_view({'patch': 'block'})),
+    path('api/admin/', admin.site.urls),
+    path('api/auth/login/', CustomTokenObtainPairView.as_view()),
+    path('api/auth/refresh/', TokenRefreshView.as_view()),
+    path('api/auth/logout/', TokenBlacklistView.as_view()),
+    path('api/users/', UserViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path('api/users/<uuid:pk>/', UserViewSet.as_view({'get': 'retrieve'})),
+    path('api/users/<uuid:pk>/block/', UserViewSet.as_view({'patch': 'block'})),
 
-    path('profiles/me/', ProfileViewSet.as_view({'get': 'me'})),
-    path('profiles/me/avatar/', ProfileViewSet.as_view({'post': 'upload_avatar'})),
+    path('api/profiles/me/', ProfileViewSet.as_view({'get': 'me'})),
+    path('api/profiles/me/avatar/', ProfileViewSet.as_view({'post': 'upload_avatar'})),
+    path('api/profiles/me/update/', ProfileViewSet.as_view({'put': 'update_profile', 'patch': 'update_profile'})),
+    path('api/profiles/get/<uuid:pk>/', ProfileViewSet.as_view({'get': 'get_profile'})),
+
+    path('api/internal/user-info/<uuid:pk>/', ProfileViewSet.as_view({'get': 'get_user_info'})),
 ]
 
 if settings.DEBUG:
