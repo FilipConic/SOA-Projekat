@@ -72,6 +72,8 @@ services:
         blog-db:
           condition: service_healthy
 
+  
+
   followers-db:
     image: neo4j:5.12
     ports:
@@ -99,3 +101,4 @@ volumes:
   pgadmin_data:
   media:
   neo4j_data:
+
