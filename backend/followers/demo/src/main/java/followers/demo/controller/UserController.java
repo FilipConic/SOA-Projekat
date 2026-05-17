@@ -18,25 +18,30 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @PostMapping("/{followerId}/follow/{followedId}")
-    public ResponseEntity<Void> follow(@PathVariable String followerId, @PathVariable String followedId) {
+    @PostMapping("/follow/{followedId}")
+    public ResponseEntity<Void> follow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
         userService.follow(followerId, followedId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{followerId}/unfollow/{followedId}")
-    public ResponseEntity<Void> unfollow(@PathVariable String followerId, @PathVariable String followedId) {
+    @DeleteMapping("/unfollow/{followedId}")
+    public ResponseEntity<Void> unfollow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
         userService.unfollow(followerId, followedId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{userId}/following-ids")
-    public ResponseEntity<List<String>> getFollowingIds(@PathVariable String userId) {
+    @GetMapping("/followers/{user_id}")
+    public ResponseEntity<List<String>> getFollowers(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getFollowingIds(userId));
     }
 
-    @GetMapping("/{userId}/recommendations")
-    public ResponseEntity<List<UserDTO>> getRecommendations(@PathVariable String userId) {
+    @GetMapping("/my-followers")
+    public ResponseEntity<List<String>> getMyFollowers(@RequestHeader("X-User-ID") String userId) {
+        return ResponseEntity.ok(userService.getFollowingIds(userId));
+    }
+
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<UserDTO>> getRecommendations(@RequestHeader("X-User-ID") String userId) {
         List<UserDTO> dtos = userService.getRecommendations(userId).stream()
                 .map(user -> {
                     UserDTO dto = new UserDTO();

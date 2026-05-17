@@ -14,13 +14,13 @@ func NewHandler(s *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("POST /api/tours", h.createTour)
-	mux.HandleFunc("GET /api/tours/{id}", h.getTour)
+	mux.HandleFunc("POST /api/tours/new", h.createTour)
+	mux.HandleFunc("GET /api/tours/find/{tour_id}", h.getTour)
 
-	mux.HandleFunc("POST /api/tours/{id}/keypoints", h.addKeyPoint)
-	mux.HandleFunc("POST /api/tours/{id}/reviews", h.addReview)
+	mux.HandleFunc("POST /api/tours/keypoints/new/{tour_id}", h.addKeyPoint)
+	mux.HandleFunc("POST /api/tours/reviews/new/{tour_id}", h.addReview)
 
-	mux.HandleFunc("POST /api/tourists/{tourist_id}/position", h.updatePosition)
+	mux.HandleFunc("POST /api/tourists/position/{tourist_id}", h.updatePosition)
 }
 
 func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +37,7 @@ func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) getTour(w http.ResponseWriter, r *http.Request) {
-	tourID := r.PathValue("id")
+	tourID := r.PathValue("tour_id")
 	tour, err := h.service.GetTour(tourID)
 	if err != nil {
 		http.Error(w, "Tura nije pronađena", http.StatusNotFound)
@@ -49,7 +49,7 @@ func (h *Handler) getTour(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) addKeyPoint(w http.ResponseWriter, r *http.Request) {
-	tourID := r.PathValue("id")
+	tourID := r.PathValue("tour_id")
 	var dto CreateKeyPointDTO
 	json.NewDecoder(r.Body).Decode(&dto)
 
@@ -64,7 +64,7 @@ func (h *Handler) addKeyPoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) addReview(w http.ResponseWriter, r *http.Request) {
-	tourID := r.PathValue("id")
+	tourID := r.PathValue("tour_id")
 	var dto CreateReviewDTO
 	json.NewDecoder(r.Body).Decode(&dto)
 

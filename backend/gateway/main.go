@@ -25,11 +25,13 @@ const (
 )
 
 var protectedRoutes = map[auth.Permission]bool{
-	{Path: "/v1/blog/new", Role: auth.RoleTourist}:    true,
-	{Path: "/api/followers/", Role: auth.RoleTourist}: true,
-	{Path: "/api/tours", Role: auth.RoleGuide}:        true,
-	{Path: "/api/tours/", Role: auth.RoleTourist}:     true,
-	{Path: "/api/tourists/", Role: auth.RoleTourist}:  true,
+	{Path: "/v1/blog/new", Role: auth.RoleTourist}:           true,
+	{Path: "/api/followers", Role: auth.RoleTourist}:         true,
+	{Path: "/api/tours/new", Role: auth.RoleGuide}:           true,
+	{Path: "/api/tours/find", Role: auth.RoleTourist}:        true,
+	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}: true,
+	{Path: "/api/tours/reviews/new", Role: auth.RoleTourist}: true,
+	{Path: "/api/tourists", Role: auth.RoleTourist}:          true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -77,13 +79,7 @@ func main() {
 	mainMux.HandleFunc("/api/followers/", func(res http.ResponseWriter, req *http.Request) {
 		followerRestProxy.ServeHTTP(res, req)
 	})
-	mainMux.HandleFunc("/api/tours", func(res http.ResponseWriter, req *http.Request) {
-		toursRestProxy.ServeHTTP(res, req)
-	})
 	mainMux.HandleFunc("/api/tours/", func(res http.ResponseWriter, req *http.Request) {
-		toursRestProxy.ServeHTTP(res, req)
-	})
-	mainMux.HandleFunc("/api/tourists", func(res http.ResponseWriter, req *http.Request) {
 		toursRestProxy.ServeHTTP(res, req)
 	})
 	mainMux.HandleFunc("/api/tourists/", func(res http.ResponseWriter, req *http.Request) {
