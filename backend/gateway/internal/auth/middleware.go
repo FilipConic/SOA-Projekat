@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -14,6 +14,7 @@ type contextKey string
 const UserIDKey contextKey = "user_id"
 
 type UserRole int
+
 const (
 	RoleAdmin UserRole = iota
 	RoleGuide
@@ -36,12 +37,16 @@ func isProtected(path string, protectedRoutes map[Permission]bool) bool {
 }
 
 func authLevel(path, role string, protectedRoutes map[Permission]bool) bool {
-	irole := RoleNone;
+	irole := RoleNone
 	switch strings.ToUpper(role) {
-	case "ADMIN": irole = RoleAdmin
-	case "GUIDE": irole = RoleGuide
-	case "TOURIST": irole = RoleTourist
-	default: return false
+	case "ADMIN":
+		irole = RoleAdmin
+	case "GUIDE":
+		irole = RoleGuide
+	case "TOURIST":
+		irole = RoleTourist
+	default:
+		return false
 	}
 	for route := range protectedRoutes {
 		if route.Role >= irole && strings.HasPrefix(path, route.Path) {
@@ -52,8 +57,18 @@ func authLevel(path, role string, protectedRoutes map[Permission]bool) bool {
 }
 
 func Middleware(secret string, protectedRoutes map[Permission]bool) func(http.Handler) http.Handler {
-	return func (next http.Handler) http.Handler {
-		return http.HandlerFunc(func (res http.ResponseWriter, req *http.Request) {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+			res.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+			res.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-User-Role, X-User-ID, X-User-Email")
+			res.Header().Set("Access-Control-Allow-Credentials", "true")
+
+			if req.Method == "OPTIONS" {
+				res.WriteHeader(http.StatusOK)
+				return
+			}
+
 			if !isProtected(req.URL.Path, protectedRoutes) {
 				next.ServeHTTP(res, req)
 				return
@@ -86,7 +101,7 @@ func Middleware(secret string, protectedRoutes map[Permission]bool) func(http.Ha
 			)
 			ctx := metadata.NewOutgoingContext(req.Context(), md)
 			ctx = context.WithValue(ctx, UserIDKey, claims.UserID)
-			
+
 			req = req.WithContext(ctx)
 			req.Header.Set("X-User-ID", claims.UserID)
 			req.Header.Set("X-User-Email", claims.Email)
@@ -96,4 +111,3 @@ func Middleware(secret string, protectedRoutes map[Permission]bool) func(http.Ha
 		})
 	}
 }
-
