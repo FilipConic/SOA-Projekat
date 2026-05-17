@@ -6,4 +6,6 @@ option go_package = "gateway/gen/common";
 
 message User {
   string user_id = 1;
+  string email = 2;
+  string role = 3;
 }
