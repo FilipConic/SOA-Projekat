@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import 'leaflet'
+import 'leaflet-routing-machine';
 
 @Component({
   selector: 'app-root',

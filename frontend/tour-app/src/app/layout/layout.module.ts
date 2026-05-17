@@ -3,15 +3,17 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { MapComponent } from './map/map.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    MapComponent
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ]
 })
 export class LayoutModule { }
