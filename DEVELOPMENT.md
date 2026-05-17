@@ -37,8 +37,8 @@ Komanda ```./run.sh``` pokrece redom ```./protoc-run.sh```, nakon toga izvrsava 
 
 10. U slucaju ako se radi sa objektima koji "pripadaju" servisu naziv endpoint-a endpoint bi trebao izgledati ovako ```/api/<servis>/<objekat>/...```, nazivi u endpoint-u se redjaju od najbitnijeg ka manje bitnom. Path parametar _id_ u slucaju ```/api/<servis>/<objekat>/.../{id}``` predstavlja ID objekta, ako postoji vise objekata u endpoint-u i dolazi do konfuzije staviti prefix objekta na koji se odnosi _\<objekat\>_id_ parametru
 
-11. Ako endpoint zahteva trenutno ulogovanog user-a potrebno je u ```./backend/gateway/main.go``` u protectedRoutes ```"/[api|v1]/<servis>/...": true,```, zahteva naziv endpoint-a do prvog path parametra i zbog toga nije pozeljno imati path paramater pre dela endpoint-a koji specificira endpoint, odnosno protectedRoutes prihavata skup endpoint-a u slucaju da se endpoint zavrsava sa '/'
+11. Ako endpoint zahteva trenutno ulogovanog user-a potrebno je u ```./backend/gateway/main.go``` u protectedRoutes ```{Path: "/[v1|api]/<servis>/<object>/<verb>", Role: auth.Role[Tourist|Admin|Guide]}: true, ```, zahteva naziv endpoint-a do prvog path parametra i zbog toga nije pozeljno imati path paramater pre dela endpoint-a koji specificira endpoint, odnosno protectedRoutes prihavata skup endpoint-a u slucaju da se endpoint zavrsava sa '/'
 
 12. Kada je endpoint unutar protectedRoutes:
- - REST: unutar request header-a ce se nalaziti ID user-a pod nazivom "X-User-ID"
+ - REST: unutar request header-a ce se nalaziti ID user-a pod nazivom "X-User-ID", takodje se tu nalaze i "X-User-Email" i "X-User-Role"
  - gRPC: potrebno je da _.proto_ objekat koji se nalazi unutar Response objekta sadrzi common.User
