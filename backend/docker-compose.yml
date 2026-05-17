@@ -8,7 +8,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U django_user -d django_db"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d stakeholders_db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -83,20 +83,8 @@ services:
     volumes:
       - neo4j_data:/data
 
-  # followers-service:
-  #   build: ./followers
-  #   ports:
-  #     - "8081:8081"
-  #   environment:
-  #     - SPRING_NEO4J_URI=bolt://followers-db:7687
-  #     - SPRING_NEO4J_AUTHENTICATION_USERNAME=neo4j
-  #     - SPRING_NEO4J_AUTHENTICATION_PASSWORD=password123
-  #   depends_on:
-  #     - followers-db
-
-  gateway:
-    build:
-      context: ./gateway
+  followers-service:
+    build: ./followers/demo
     ports:
       - "8080:8080"
     environment:
