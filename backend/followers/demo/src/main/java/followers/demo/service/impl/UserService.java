@@ -1,12 +1,15 @@
 package followers.demo.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import followers.demo.model.User;
 import followers.demo.repository.UserRepository;
 import followers.demo.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
+@Service
 public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
