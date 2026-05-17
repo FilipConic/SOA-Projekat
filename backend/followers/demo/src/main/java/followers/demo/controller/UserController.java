@@ -18,25 +18,30 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @PostMapping("/{followerId}/follow/{followedId}")
-    public ResponseEntity<Void> follow(@PathVariable Long followerId, @PathVariable Long followedId) {
+    @PostMapping("/follow/{followedId}")
+    public ResponseEntity<Void> follow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
         userService.follow(followerId, followedId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{followerId}/unfollow/{followedId}")
-    public ResponseEntity<Void> unfollow(@PathVariable Long followerId, @PathVariable Long followedId) {
+    @DeleteMapping("/unfollow/{followedId}")
+    public ResponseEntity<Void> unfollow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
         userService.unfollow(followerId, followedId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{userId}/following-ids")
-    public ResponseEntity<List<String>> getFollowingIds(@PathVariable Long userId) {
+    @GetMapping("/followers/{user_id}")
+    public ResponseEntity<List<String>> getFollowers(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getFollowingIds(userId));
     }
 
-    @GetMapping("/{userId}/recommendations")
-    public ResponseEntity<List<UserDTO>> getRecommendations(@PathVariable Long userId) {
+    @GetMapping("/my-followers")
+    public ResponseEntity<List<String>> getMyFollowers(@RequestHeader("X-User-ID") String userId) {
+        return ResponseEntity.ok(userService.getFollowingIds(userId));
+    }
+
+    @GetMapping("/recommendations")
+    public ResponseEntity<List<UserDTO>> getRecommendations(@RequestHeader("X-User-ID") String userId) {
         List<UserDTO> dtos = userService.getRecommendations(userId).stream()
                 .map(user -> {
                     UserDTO dto = new UserDTO();
@@ -56,7 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping("/sync/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

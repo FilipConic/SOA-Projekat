@@ -53,12 +53,13 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:root@stakeholders-db:5432/stakeholders_db
       - DEBUG=1
+      - FOLLOWERS_SYNC_URL=http://followers:8081/api/followers/sync
     depends_on:
       stakeholders-db:
         condition: service_healthy
 
   blog:
-      build: ./blog-service
+      build: ./blog
       ports:
         - "3000:3000"
       environment:
@@ -73,7 +74,6 @@ services:
           condition: service_healthy
 
   
-
   followers-db:
     image: neo4j:5.12
     ports:
@@ -82,9 +82,42 @@ services:
     environment:
       - NEO4J_AUTH=neo4j/password123 
     volumes:
-      - neo4j_data:/data
+      - followers_data:/data
+    healthcheck:
+      test: ["CMD", "neo4j-admin", "server", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
-  followers-service:
+  tours-db:
+    image: postgres:15
+    volumes:
+      - tours_postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=tours_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tours_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  tours:
+    build: ./tours
+    ports:
+      - "8082:8082"
+    environment:
+      - DB_HOST=tours-db
+      - DB_PORT=5432
+      - DB_NAME=tours_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      tours-db:
+        condition: service_healthy
+
+  followers:
     build: ./followers/demo
     ports:
       - "8081:8081"
@@ -93,12 +126,27 @@ services:
       - SPRING_NEO4J_AUTHENTICATION_USERNAME=neo4j
       - SPRING_NEO4J_AUTHENTICATION_PASSWORD=password123
     depends_on:
-      - followers-db
+      followers-db:
+        condition: service_healthy
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm$5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
+    depends_on:
+      - blog
+      - stakeholders
+      - followers
+      - tours
 
 volumes:
   postgres_data:
   blog_postgres_data:
   pgadmin_data:
   media:
-  neo4j_data:
+  followers_data:
+  tours_postgres_data:
 

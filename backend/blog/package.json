@@ -1,0 +1,27 @@
+{
+  "name": "blog-service",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pg": "^8.20.0",
+    "@types/uuid": "^11.0.0",
+    "grpc-tools": "^1.13.1",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "protoc-gen-js": "^3.21.4-4",
+    "typescript-eslint": "^8.59.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.14.3",
+    "@grpc/proto-loader": "^0.8.1",
+    "elysia": "^1.4.28",
+    "google-protobuf": "^4.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0",
+    "uuid": "^14.0.0"
+  }
+}
