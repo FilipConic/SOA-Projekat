@@ -1,11 +1,31 @@
 {
     "Servers": {
         "1": {
-            "Name": "SOA",
+            "Name": "stakeholders",
             "Group": "Servers",
             "Host": "stakeholders-db",
             "Port": 5432,
             "MaintenanceDB": "stakeholders_db",
+            "Username": "postgres",
+            "SSLMode": "prefer",
+            "PassFile": "/tmp/pgpass"
+        },
+        "2": {
+            "Name": "blog",
+            "Group": "Servers",
+            "Host": "blog-db",
+            "Port": 5432,
+            "MaintenanceDB": "blogdb",
+            "Username": "postgres",
+            "SSLMode": "prefer",
+            "PassFile": "/tmp/pgpass"
+        },
+        "3": {
+            "Name": "tours",
+            "Group": "Servers",
+            "Host": "tours-db",
+            "Port": 5432,
+            "MaintenanceDB": "tours_db",
             "Username": "postgres",
             "SSLMode": "prefer",
             "PassFile": "/tmp/pgpass"

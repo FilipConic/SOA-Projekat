@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends Neo4jRepository<User, Long> {
+public interface UserRepository extends Neo4jRepository<User, String> {
     Optional<User> findByUsername(String username);
 
     boolean existsByUsername(String username);
@@ -16,8 +16,8 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
     @Query("MATCH (u:User {id: $userId})-[:FOLLOWS]->(:User)-[:FOLLOWS]->(rec:User) " +
             "WHERE u <> rec AND NOT (u)-[:FOLLOWS]->(rec) " +
             "RETURN DISTINCT rec")
-    List<User> getRecommendedUsers(@Param("userId") Long userId);
+    List<User> getRecommendedUsers(@Param("userId") String userId);
 
     @Query("MATCH (u:User {id: $userId})-[:FOLLOWS]->(followed:User) RETURN followed.id")
-    List<String> findAllFollowingIdsByUserId(@Param("userId") Long userId);
+    List<String> findAllFollowingIdsByUserId(@Param("userId") String userId);
 }

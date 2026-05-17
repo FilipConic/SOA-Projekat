@@ -4,7 +4,7 @@ import "time"
 
 type Tour struct {
 	ID          string  `gorm:"primaryKey"`
-	Title       string  `gorm:"type:varchar(100);not null"`
+	Title       string  `gorm:"type:varchar(100);not null;unique"`
 	Description string  `gorm:"type:text"`
 	Price       float64 `gorm:"type:numeric"`
 	Duration    int

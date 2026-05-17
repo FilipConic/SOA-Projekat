@@ -12,7 +12,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    private Long id;
+    private String id;
 
     @Property("username")
     private String username;
@@ -23,16 +23,16 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String username) {
+    public User(String id, String username) {
         this.id = id;
         this.username = username;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

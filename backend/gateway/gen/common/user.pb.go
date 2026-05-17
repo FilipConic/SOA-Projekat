@@ -24,6 +24,8 @@ const (
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -65,13 +67,29 @@ func (x *User) GetUserId() string {
 	return ""
 }
 
+func (x *User) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *User) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
 var File_common_user_proto protoreflect.FileDescriptor
 
 const file_common_user_proto_rawDesc = "" +
 	"\n" +
-	"\x11common/user.proto\x12\x06common\"\x1f\n" +
+	"\x11common/user.proto\x12\x06common\"I\n" +
 	"\x04User\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userIdB\x14Z\x12gateway/gen/commonb\x06proto3"
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04roleB\x14Z\x12gateway/gen/commonb\x06proto3"
 
 var (
 	file_common_user_proto_rawDescOnce sync.Once

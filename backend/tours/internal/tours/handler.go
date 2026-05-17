@@ -14,13 +14,13 @@ func NewHandler(s *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("POST /tours", h.createTour)
-	mux.HandleFunc("GET /tours/{id}", h.getTour)
+	mux.HandleFunc("POST /api/tours", h.createTour)
+	mux.HandleFunc("GET /api/tours/{id}", h.getTour)
 
-	mux.HandleFunc("POST /tours/{id}/keypoints", h.addKeyPoint)
-	mux.HandleFunc("POST /tours/{id}/reviews", h.addReview)
+	mux.HandleFunc("POST /api/tours/{id}/keypoints", h.addKeyPoint)
+	mux.HandleFunc("POST /api/tours/{id}/reviews", h.addReview)
 
-	mux.HandleFunc("POST /tourists/{tourist_id}/position", h.updatePosition)
+	mux.HandleFunc("POST /api/tourists/{tourist_id}/position", h.updatePosition)
 }
 
 func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -31,7 +31,9 @@ func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	json.NewEncoder(w).Encode(tour)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(tour)
 }
 
 func (h *Handler) getTour(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +43,9 @@ func (h *Handler) getTour(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Tura nije pronađena", http.StatusNotFound)
 		return
 	}
-	json.NewEncoder(w).Encode(tour)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(tour)
 }
 
 func (h *Handler) addKeyPoint(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +58,9 @@ func (h *Handler) addKeyPoint(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	json.NewEncoder(w).Encode(kp)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(kp)
 }
 
 func (h *Handler) addReview(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +73,9 @@ func (h *Handler) addReview(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	json.NewEncoder(w).Encode(review)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(review)
 }
 
 func (h *Handler) updatePosition(w http.ResponseWriter, r *http.Request) {

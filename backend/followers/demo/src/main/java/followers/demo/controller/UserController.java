@@ -19,24 +19,24 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/{followerId}/follow/{followedId}")
-    public ResponseEntity<Void> follow(@PathVariable Long followerId, @PathVariable Long followedId) {
+    public ResponseEntity<Void> follow(@PathVariable String followerId, @PathVariable String followedId) {
         userService.follow(followerId, followedId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{followerId}/unfollow/{followedId}")
-    public ResponseEntity<Void> unfollow(@PathVariable Long followerId, @PathVariable Long followedId) {
+    public ResponseEntity<Void> unfollow(@PathVariable String followerId, @PathVariable String followedId) {
         userService.unfollow(followerId, followedId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{userId}/following-ids")
-    public ResponseEntity<List<String>> getFollowingIds(@PathVariable Long userId) {
+    public ResponseEntity<List<String>> getFollowingIds(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getFollowingIds(userId));
     }
 
     @GetMapping("/{userId}/recommendations")
-    public ResponseEntity<List<UserDTO>> getRecommendations(@PathVariable Long userId) {
+    public ResponseEntity<List<UserDTO>> getRecommendations(@PathVariable String userId) {
         List<UserDTO> dtos = userService.getRecommendations(userId).stream()
                 .map(user -> {
                     UserDTO dto = new UserDTO();
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @DeleteMapping("/sync/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

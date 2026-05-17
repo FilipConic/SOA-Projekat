@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -18,13 +17,19 @@ import (
 )
 
 const (
-	blogGrpcService = "blog:50051"
-	blogRestService = "http://blog:3000"
+	blogGrpcService         = "blog:50051"
+	blogRestService         = "http://blog:3000"
 	stakeholdersRestService = "http://stakeholders:8000"
+	followerRestService     = "http://followers:8081"
+	toursRestService        = "http://tours:8082"
 )
 
-var protectedRoutes = map[auth.Permission]bool {
-	{Path: "/v1/blog/new", Role: auth.RoleTourist}: true,
+var protectedRoutes = map[auth.Permission]bool{
+	{Path: "/v1/blog/new", Role: auth.RoleTourist}:    true,
+	{Path: "/api/followers/", Role: auth.RoleTourist}: true,
+	{Path: "/api/tours", Role: auth.RoleGuide}:        true,
+	{Path: "/api/tours/", Role: auth.RoleTourist}:     true,
+	{Path: "/api/tourists/", Role: auth.RoleTourist}:  true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -33,10 +38,10 @@ func newReverseProxy(target string) *httputil.ReverseProxy {
 }
 
 func getEnv(key, fallback string) string {
-    if value, ok := os.LookupEnv(key); ok {
-        return value
-    }
-    return fallback
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }
 
 func main() {
@@ -52,6 +57,8 @@ func main() {
 
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
+	followerRestProxy := newReverseProxy(followerRestService)
+	toursRestProxy := newReverseProxy(toursRestService)
 
 	mainMux := http.NewServeMux()
 
@@ -66,6 +73,21 @@ func main() {
 	})
 	mainMux.HandleFunc("/api/users/", func(res http.ResponseWriter, req *http.Request) {
 		stakeholderRestProxy.ServeHTTP(res, req)
+	})
+	mainMux.HandleFunc("/api/followers/", func(res http.ResponseWriter, req *http.Request) {
+		followerRestProxy.ServeHTTP(res, req)
+	})
+	mainMux.HandleFunc("/api/tours", func(res http.ResponseWriter, req *http.Request) {
+		toursRestProxy.ServeHTTP(res, req)
+	})
+	mainMux.HandleFunc("/api/tours/", func(res http.ResponseWriter, req *http.Request) {
+		toursRestProxy.ServeHTTP(res, req)
+	})
+	mainMux.HandleFunc("/api/tourists", func(res http.ResponseWriter, req *http.Request) {
+		toursRestProxy.ServeHTTP(res, req)
+	})
+	mainMux.HandleFunc("/api/tourists/", func(res http.ResponseWriter, req *http.Request) {
+		toursRestProxy.ServeHTTP(res, req)
 	})
 
 	authMiddleware := auth.Middleware(jwtSecret, protectedRoutes)

@@ -15,7 +15,7 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
 
     @Override
-    public void follow(Long followerId, Long followedId) {
+    public void follow(String followerId, String followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new RuntimeException("Follower not found"));
         User followed = userRepository.findById(followedId)
@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void unfollow(Long followerId, Long followedId) {
+    public void unfollow(String followerId, String followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new RuntimeException("Follower not found"));
 
@@ -35,17 +35,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> getRecommendations(Long userId) {
+    public List<User> getRecommendations(String userId) {
         return userRepository.getRecommendedUsers(userId);
     }
 
     @Override
-    public List<String> getFollowingIds(Long userId) {
+    public List<String> getFollowingIds(String userId) {
         return userRepository.findAllFollowingIdsByUserId(userId);
     }
 
     @Override
-    public void syncUser(Long id, String username) {
+    public void syncUser(String id, String username) {
         User user = userRepository.findById(id).orElse(new User());
         user.setId(id);
         user.setUsername(username);
@@ -53,7 +53,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
 }

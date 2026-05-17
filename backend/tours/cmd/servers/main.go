@@ -44,8 +44,8 @@ func main() {
 	mux := http.NewServeMux()
 	handler.RegisterRoutes(mux)
 
-	log.Printf("Tours servis uspešno pokrenut na portu :8080 (Baza povezana na %s:%s)\n", dbHost, dbPort)
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	log.Printf("Tours servis uspešno pokrenut na portu :8082 (Baza povezana na %s:%s)\n", dbHost, dbPort)
+	if err := http.ListenAndServe(":8082", mux); err != nil {
 		log.Fatalf("Server pao: %v", err)
 	}
 }
