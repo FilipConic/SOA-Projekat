@@ -35,7 +35,7 @@ func isProtected(path string, protectedRoutes map[Permission]bool) bool {
 	return false
 }
 
-func authLevel(role string, protectedRoutes map[Permission]bool) bool {
+func authLevel(path, role string, protectedRoutes map[Permission]bool) bool {
 	irole := RoleNone;
 	switch strings.ToUpper(role) {
 	case "ADMIN": irole = RoleAdmin
@@ -44,7 +44,7 @@ func authLevel(role string, protectedRoutes map[Permission]bool) bool {
 	default: return false
 	}
 	for route := range protectedRoutes {
-		if route.Role >= irole {
+		if route.Role >= irole && strings.HasPrefix(path, route.Path) {
 			return true
 		}
 	}
@@ -74,7 +74,7 @@ func Middleware(secret string, protectedRoutes map[Permission]bool) func(http.Ha
 				http.Error(res, "Accepts only access!", http.StatusUnauthorized)
 				return
 			}
-			if !authLevel(claims.Role, protectedRoutes) {
+			if !authLevel(req.URL.Path, claims.Role, protectedRoutes) {
 				http.Error(res, "Not of a high enough authorization!", http.StatusUnauthorized)
 				return
 			}
