@@ -4,6 +4,7 @@ import "time"
 
 type Tour struct {
 	ID          string  `gorm:"primaryKey"`
+	CreatorID   string  `gorm:"index;not null"`
 	Title       string  `gorm:"type:varchar(100);not null;unique"`
 	Description string  `gorm:"type:text"`
 	Price       float64 `gorm:"type:numeric"`
@@ -15,7 +16,7 @@ type Tour struct {
 
 type KeyPoint struct {
 	ID          string `gorm:"primaryKey"`
-	TourID      string `gorm:"index;not null"`
+	TourID      string `gorm:"foreignKey;index;not null"`
 	Name        string `gorm:"not null"`
 	Description string
 	Image       string
@@ -25,7 +26,7 @@ type KeyPoint struct {
 
 type Review struct {
 	ID          string `gorm:"primaryKey"`
-	TourID      string `gorm:"index;not null"`
+	TourID      string `gorm:"foreignKey;index;not null"`
 	TouristID   string `gorm:"index;not null"`
 	Rating      int    `gorm:"not null"`
 	Comment     string `gorm:"type:text"`

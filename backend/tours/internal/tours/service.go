@@ -15,12 +15,13 @@ func NewService(repo Repository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s *Service) CreateTour(dto CreateTourDTO) (*Tour, error) {
+func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error) {
 	if dto.Title == "" {
 		return nil, errors.New("naslov ture ne može biti prazan")
 	}
 	tour := &Tour{
 		ID:          uuid.New().String(),
+		CreatorID:   creatorID,
 		Title:       dto.Title,
 		Description: dto.Description,
 		Price:       dto.Price,
@@ -33,6 +34,10 @@ func (s *Service) CreateTour(dto CreateTourDTO) (*Tour, error) {
 
 func (s *Service) GetTour(id string) (*Tour, error) {
 	return s.repo.GetTourByID(id)
+}
+
+func (s *Service) GetAllTours() ([]Tour, error) {
+	return s.repo.GetAllTours()
 }
 
 func (s *Service) AddKeyPoint(tourID string, dto CreateKeyPointDTO) (*KeyPoint, error) {
@@ -68,6 +73,14 @@ func (s *Service) AddReview(tourID string, dto CreateReviewDTO) (*Review, error)
 	return review, err
 }
 
+func (s *Service) GetReviewsByTourID(tourID string) ([]Review, error) {
+	return s.repo.GetReviewsByTourID(tourID)
+}
+
+func (s *Service) GetReviewsByTouristID(touristID string) ([]Review, error) {
+	return s.repo.GetReviewsByTouristID(touristID)
+}
+
 func (s *Service) UpdateTouristPosition(touristID string, dto UpdatePositionDTO) error {
 	pos := &TouristPosition{
 		TouristID: touristID,
@@ -76,4 +89,8 @@ func (s *Service) UpdateTouristPosition(touristID string, dto UpdatePositionDTO)
 		UpdatedAt: time.Now(),
 	}
 	return s.repo.SavePosition(pos)
+}
+
+func (s *Service) GetTouristPosition(touristID string) (*TouristPosition, error) {
+	return s.repo.GetPositionByTouristID(touristID)
 }
