@@ -1,17 +1,29 @@
 import * as grpc from '@grpc/grpc-js';
-import { v4 as uuidv4 } from 'uuid';
 import { BlogServiceService } from '../gen/blog/blog_grpc_pb';
 import {
     CreateBlogRequest,
     CreateBlogResponse,
-    GetBlogRequest,
-    GetBlogResponse,
+    GetBlogsRequest,
+    GetBlogsResponse,
     GetBlogsByUserRequest,
     GetBlogsByUserResponse,
     Blog
 } from '../gen/blog/blog_pb';
+import { pool } from './db/client';
 
-const createBlog = (
+function mapRows(rows: [any]): Blog {
+	return rows.map(row => {
+		const blog = new Blog();
+		blog.setId(row.id.toString());
+		blog.setUserId(row.user_id);
+		blog.setTitle(row.title);
+		blog.setDescription(row.description);
+		blog.setImagesList(row.images || []);
+		return blog;
+	});
+}
+
+const createBlog = async (
 	call: grpc.ServerUnaryCall<CreateBlogRequest, CreateBlogResponse>,
 	callback: grpc.sendUnaryData<CreateBlogResponse>
 ) => {
@@ -20,14 +32,20 @@ const createBlog = (
 	const description = call.request.getDescription();
 	const images = call.request.getImages();
 
-	console.log("createBlog called by user:", user?.getUserId());
+	// console.log("createBlog called by user:", user?.getUserId());
+
+	const result = await pool.query(
+		`INSERT INTO blogs (user_id, title, description, images)
+		VALUES ($1, $2, $3, $4) RETURNING *`,
+		[user.id, title, description, images || []]
+	);
 
 	const blog = new Blog();
-	blog.setId(uuidv4());
+	blog.setId(result.rows[0].id);
 	blog.setUserId(user?.getUserId() || "");
 	blog.setTitle(title);
 	blog.setDescription(description);
-	blog.setImages(images);
+	blog.setImagesList(images);
 
 	const response = new CreateBlogResponse();
 	response.setBlog(Blog);
@@ -35,22 +53,33 @@ const createBlog = (
 	callback(null, blog);
 }
 
-const getBlogs = (
-    call: grpc.ServerUnaryCall<GetBlogRequest, GetBlogResponse>,
-    callback: grpc.sendUnaryData<GetBlogResponse>
+const getBlogs = async (
+    call: grpc.ServerUnaryCall<GetBlogsRequest, GetBlogsResponse>,
+    callback: grpc.sendUnaryData<GetBlogsResponse>
 ) => {
-    const response = new GetBlogResponse();
+	const result = await pool.query(`SELECT * FROM blogs ORDER BY created_at DESC`);
+
+    const response = new GetBlogsResponse();
+	response.setBlogsList(mapRows(result.rows));
+
     callback(null, response);
 };
 
-const getBlogsByUser = (
+const getBlogsByUser = async (
     call: grpc.ServerUnaryCall<GetBlogsByUserRequest, GetBlogsByUserResponse>,
     callback: grpc.sendUnaryData<GetBlogsByUserResponse>
 ) => {
-    const userId = call.request.getUserId();
-    console.log("getBlogsByUser called for user:", userId);
+    const user = call.request.getUser();
+    // console.log("getBlogsByUser called for user:", userId);
+	const result = await pool.query('SELECT * FROM blogs WHERE user_id = $1', [user.id]);
 
     const response = new GetBlogsByUserResponse();
+	if (result.rows.length !== 0) {
+		response.setBlogsList(result.rows);
+	} else {
+		response.setBlogsList([]);
+	}
+
     callback(null, response);
 };
 

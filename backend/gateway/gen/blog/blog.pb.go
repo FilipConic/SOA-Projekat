@@ -211,26 +211,26 @@ func (x *CreateBlogResponse) GetBlog() *Blog {
 	return nil
 }
 
-type GetBlogRequest struct {
+type GetBlogsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetBlogRequest) Reset() {
-	*x = GetBlogRequest{}
+func (x *GetBlogsRequest) Reset() {
+	*x = GetBlogsRequest{}
 	mi := &file_blog_blog_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetBlogRequest) String() string {
+func (x *GetBlogsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetBlogRequest) ProtoMessage() {}
+func (*GetBlogsRequest) ProtoMessage() {}
 
-func (x *GetBlogRequest) ProtoReflect() protoreflect.Message {
+func (x *GetBlogsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_blog_blog_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -242,32 +242,32 @@ func (x *GetBlogRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetBlogRequest.ProtoReflect.Descriptor instead.
-func (*GetBlogRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetBlogsRequest.ProtoReflect.Descriptor instead.
+func (*GetBlogsRequest) Descriptor() ([]byte, []int) {
 	return file_blog_blog_proto_rawDescGZIP(), []int{3}
 }
 
-type GetBlogResponse struct {
+type GetBlogsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Blogs         []*Blog                `protobuf:"bytes,1,rep,name=blogs,proto3" json:"blogs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetBlogResponse) Reset() {
-	*x = GetBlogResponse{}
+func (x *GetBlogsResponse) Reset() {
+	*x = GetBlogsResponse{}
 	mi := &file_blog_blog_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetBlogResponse) String() string {
+func (x *GetBlogsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetBlogResponse) ProtoMessage() {}
+func (*GetBlogsResponse) ProtoMessage() {}
 
-func (x *GetBlogResponse) ProtoReflect() protoreflect.Message {
+func (x *GetBlogsResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_blog_blog_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -279,12 +279,12 @@ func (x *GetBlogResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetBlogResponse.ProtoReflect.Descriptor instead.
-func (*GetBlogResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetBlogsResponse.ProtoReflect.Descriptor instead.
+func (*GetBlogsResponse) Descriptor() ([]byte, []int) {
 	return file_blog_blog_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GetBlogResponse) GetBlogs() []*Blog {
+func (x *GetBlogsResponse) GetBlogs() []*Blog {
 	if x != nil {
 		return x.Blogs
 	}
@@ -397,20 +397,20 @@ const file_blog_blog_proto_rawDesc = "" +
 	"\x06images\x18\x04 \x03(\tR\x06images\"4\n" +
 	"\x12CreateBlogResponse\x12\x1e\n" +
 	"\x04blog\x18\x01 \x01(\v2\n" +
-	".blog.BlogR\x04blog\"\x10\n" +
-	"\x0eGetBlogRequest\"3\n" +
-	"\x0fGetBlogResponse\x12 \n" +
+	".blog.BlogR\x04blog\"\x11\n" +
+	"\x0fGetBlogsRequest\"4\n" +
+	"\x10GetBlogsResponse\x12 \n" +
 	"\x05blogs\x18\x01 \x03(\v2\n" +
 	".blog.BlogR\x05blogs\"0\n" +
 	"\x15GetBlogsByUserRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\":\n" +
 	"\x16GetBlogsByUserResponse\x12 \n" +
 	"\x05blogs\x18\x01 \x03(\v2\n" +
-	".blog.BlogR\x05blogs2\xa3\x02\n" +
+	".blog.BlogR\x05blogs2\xa6\x02\n" +
 	"\vBlogService\x12X\n" +
 	"\n" +
-	"CreateBlog\x12\x17.blog.CreateBlogRequest\x1a\x18.blog.CreateBlogResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/blog/new\x12L\n" +
-	"\aGetBlog\x12\x14.blog.GetBlogRequest\x1a\x15.blog.GetBlogResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/v1/blog/all\x12l\n" +
+	"CreateBlog\x12\x17.blog.CreateBlogRequest\x1a\x18.blog.CreateBlogResponse\"\x17\x82\xd3\xe4\x93\x02\x11:\x01*\"\f/v1/blog/new\x12O\n" +
+	"\bGetBlogs\x12\x15.blog.GetBlogsRequest\x1a\x16.blog.GetBlogsResponse\"\x14\x82\xd3\xe4\x93\x02\x0e\x12\f/v1/blog/all\x12l\n" +
 	"\x0eGetBlogsByUser\x12\x1b.blog.GetBlogsByUserRequest\x1a\x1c.blog.GetBlogsByUserResponse\"\x1f\x82\xd3\xe4\x93\x02\x19\x12\x17/v1/blog/user/{user_id}B\x12Z\x10gateway/gen/blogb\x06proto3"
 
 var (
@@ -430,8 +430,8 @@ var file_blog_blog_proto_goTypes = []any{
 	(*Blog)(nil),                   // 0: blog.Blog
 	(*CreateBlogRequest)(nil),      // 1: blog.CreateBlogRequest
 	(*CreateBlogResponse)(nil),     // 2: blog.CreateBlogResponse
-	(*GetBlogRequest)(nil),         // 3: blog.GetBlogRequest
-	(*GetBlogResponse)(nil),        // 4: blog.GetBlogResponse
+	(*GetBlogsRequest)(nil),        // 3: blog.GetBlogsRequest
+	(*GetBlogsResponse)(nil),       // 4: blog.GetBlogsResponse
 	(*GetBlogsByUserRequest)(nil),  // 5: blog.GetBlogsByUserRequest
 	(*GetBlogsByUserResponse)(nil), // 6: blog.GetBlogsByUserResponse
 	(*common.User)(nil),            // 7: common.User
@@ -439,13 +439,13 @@ var file_blog_blog_proto_goTypes = []any{
 var file_blog_blog_proto_depIdxs = []int32{
 	7, // 0: blog.CreateBlogRequest.user:type_name -> common.User
 	0, // 1: blog.CreateBlogResponse.blog:type_name -> blog.Blog
-	0, // 2: blog.GetBlogResponse.blogs:type_name -> blog.Blog
+	0, // 2: blog.GetBlogsResponse.blogs:type_name -> blog.Blog
 	0, // 3: blog.GetBlogsByUserResponse.blogs:type_name -> blog.Blog
 	1, // 4: blog.BlogService.CreateBlog:input_type -> blog.CreateBlogRequest
-	3, // 5: blog.BlogService.GetBlog:input_type -> blog.GetBlogRequest
+	3, // 5: blog.BlogService.GetBlogs:input_type -> blog.GetBlogsRequest
 	5, // 6: blog.BlogService.GetBlogsByUser:input_type -> blog.GetBlogsByUserRequest
 	2, // 7: blog.BlogService.CreateBlog:output_type -> blog.CreateBlogResponse
-	4, // 8: blog.BlogService.GetBlog:output_type -> blog.GetBlogResponse
+	4, // 8: blog.BlogService.GetBlogs:output_type -> blog.GetBlogsResponse
 	6, // 9: blog.BlogService.GetBlogsByUser:output_type -> blog.GetBlogsByUserResponse
 	7, // [7:10] is the sub-list for method output_type
 	4, // [4:7] is the sub-list for method input_type

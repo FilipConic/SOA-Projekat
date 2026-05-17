@@ -1,45 +1,11 @@
 import { Elysia } from "elysia";
 import { pool } from "../db/client";
-import { authPlugin } from "../plugins/authPlugin";
 
 export const blogRoutes = new Elysia()
-	.use(authPlugin)
-	// kreiranje bloga 
-	// POST
-	.post("/blog/new", async ({ body, user }) => {
-		console.log("im here: ", JSON.stringify(user))
-		const { title, description, images } = body;
-		const result = await pool.query(
-			`INSERT INTO blogs (user_id, title, description, images)
-			VALUES ($1, $2, $3, $4) RETURNING *`,
-			[user.user_id, title, description, images || []]
-		);
-		return result.rows[0];
-	})
-
-	// svi blogovi
-	// GET
-	.get("/blog/all", async () => {
-		const result = await pool.query(`SELECT * FROM blogs ORDER BY created_at DESC`);
-		return result.rows;
-	})
-
-	// svi blogovi od jednog user-a
-	// GET
-	.get("/blog/user/:user_id", async ({ params }: { body: any }) => {
-		const result = await pool.query('SELECT * FROM blogs WHERE user_id = $1', [params.user_id]);
-		if (result.rows.length === 0) return { error: "User has no blogs" };
-		return result.rows;
-	})
-
 	// dodaj like na blog za odredjenog usera
 	// POST
-	.post("/blog/like/:blog_id", async ({ params, user }) => {
-		if (!user) {
-			return { error: "User has to be logged in for this action" }
-		}
-
-		const user_id = user.user_id;
+	.post("/api/blog/like/:blog_id", async ({ headers, params }) => {
+		const user_id = headers['X-User-ID'];
 		const blog_id = params.blog_id;
 
 		const a = await pool.query('SELECT * FROM likes WHERE user_id = $1 AND blog_id = $2', [user_id, blog_id]);
@@ -57,13 +23,8 @@ export const blogRoutes = new Elysia()
 
 	// obrisi like sa bloga
 	// DELETE
-	.delete("/blog/rm_like/:blog_id", async ({ params, user }) => {
-		console.log(params);
-		if (!user) {
-			return { error: "User has to be logged in for this action" }
-		}
-
-		const user_id = user.user_id;
+	.delete("/api/blog/rm_like/:blog_id", async ({ headers, params }) => {
+		const user_id = headers['X-User-ID'];
 		const blog_id = params.blog_id;
 
 		const result = await pool.query(`DELETE FROM likes WHERE blog_id = $1 AND user_id = $2 RETURNING *`, [blog_id, user_id]);
@@ -72,14 +33,14 @@ export const blogRoutes = new Elysia()
 
 	// prebroj lajkove bloga
 	// GET
-	.get("/blog/likes/:blog_id", async ({ params }) => {
+	.get("/api/blog/likes/:blog_id", async ({ params }) => {
 		const result = await pool.query(`SELECT COUNT(*) as total FROM likes WHERE blog_id = $1`, [params.blog_id]);
 		return { blog_id: params.blog_id, total: parseInt(result.rows[0].total) };
 	})
 
 	// pretraga po id
 	// GET
-	.get("/blog/find/:id", async ({ params }: { params: any }) => {
+	.get("/api/blog/find/:id", async ({ params }) => {
 		const result = await pool.query(`SELECT * FROM blogs WHERE id = $1`, [params.id]);
 		if (result.rows.length === 0) return { error: "Blog not found" };
 		return result.rows[0];
@@ -87,7 +48,7 @@ export const blogRoutes = new Elysia()
 
 	// brisanje bloga
 	// DELETE
-	.delete("/blog/delete/:id", async ({ params }: { params: any }) => {
+	.delete("/api/blog/delete/:id", async ({ params }) => {
 		// prvo brise komentare vezane za blog
 		await pool.query(`DELETE FROM comments WHERE blog_id = $1`, [params.id]);
 
@@ -101,12 +62,15 @@ export const blogRoutes = new Elysia()
 
 	// uredjivanje bloga
 	// PUT
-	.put("/blog/:id", async ({ params, body }: { params: any; body: any }) => {
+	.put("/api/blog/edit/:id", async ({ headers, params, body }) => {
+		const user_id = headers['X-User-ID'];
+		const search = await pool.query(`SELECT * FROM blogs WHERE id = $1 AND user_id = $2`, [params.id, user_id]);
+		if (search.rows.length === 0) return { error: "Blog not found!" };
+
 		const { title, description, images } = body;
 		const result = await pool.query(
 			`UPDATE blogs SET title = $1, description = $2, images = $3 WHERE id = $4 RETURNING *`,
 				[title, description, images || [], params.id]
 		);
-		if (result.rows.length === 0) return { error: "Blog not found" };
 		return result.rows[0];
 	});

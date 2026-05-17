@@ -15,7 +15,7 @@ service BlogService {
     };
   }
 
-  rpc GetBlog(GetBlogRequest) returns (GetBlogResponse) {
+  rpc GetBlogs(GetBlogsRequest) returns (GetBlogsResponse) {
     option (google.api.http) = {
       get: "/v1/blog/all"
     };
@@ -47,9 +47,9 @@ message CreateBlogResponse {
   Blog blog = 1;
 }
 
-message GetBlogRequest { }
+message GetBlogsRequest { }
 
-message GetBlogResponse {
+message GetBlogsResponse {
   repeated Blog blogs = 1;
 }
 

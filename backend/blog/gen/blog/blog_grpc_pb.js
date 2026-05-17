@@ -1,4 +1,4 @@
-﻿// GENERATED CODE -- DO NOT EDIT!
+// GENERATED CODE -- DO NOT EDIT!
 
 'use strict';
 var grpc = require('@grpc/grpc-js');
@@ -28,28 +28,6 @@ function deserialize_blog_CreateBlogResponse(buffer_arg) {
   return blog_blog_pb.CreateBlogResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-function serialize_blog_GetBlogRequest(arg) {
-  if (!(arg instanceof blog_blog_pb.GetBlogRequest)) {
-    throw new Error('Expected argument of type blog.GetBlogRequest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_blog_GetBlogRequest(buffer_arg) {
-  return blog_blog_pb.GetBlogRequest.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_blog_GetBlogResponse(arg) {
-  if (!(arg instanceof blog_blog_pb.GetBlogResponse)) {
-    throw new Error('Expected argument of type blog.GetBlogResponse');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_blog_GetBlogResponse(buffer_arg) {
-  return blog_blog_pb.GetBlogResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
 function serialize_blog_GetBlogsByUserRequest(arg) {
   if (!(arg instanceof blog_blog_pb.GetBlogsByUserRequest)) {
     throw new Error('Expected argument of type blog.GetBlogsByUserRequest');
@@ -72,6 +50,28 @@ function deserialize_blog_GetBlogsByUserResponse(buffer_arg) {
   return blog_blog_pb.GetBlogsByUserResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_blog_GetBlogsRequest(arg) {
+  if (!(arg instanceof blog_blog_pb.GetBlogsRequest)) {
+    throw new Error('Expected argument of type blog.GetBlogsRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_blog_GetBlogsRequest(buffer_arg) {
+  return blog_blog_pb.GetBlogsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_blog_GetBlogsResponse(arg) {
+  if (!(arg instanceof blog_blog_pb.GetBlogsResponse)) {
+    throw new Error('Expected argument of type blog.GetBlogsResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_blog_GetBlogsResponse(buffer_arg) {
+  return blog_blog_pb.GetBlogsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 var BlogServiceService = exports.BlogServiceService = {
   createBlog: {
@@ -85,16 +85,16 @@ var BlogServiceService = exports.BlogServiceService = {
     responseSerialize: serialize_blog_CreateBlogResponse,
     responseDeserialize: deserialize_blog_CreateBlogResponse,
   },
-  getBlog: {
-    path: '/blog.BlogService/GetBlog',
+  getBlogs: {
+    path: '/blog.BlogService/GetBlogs',
     requestStream: false,
     responseStream: false,
-    requestType: blog_blog_pb.GetBlogRequest,
-    responseType: blog_blog_pb.GetBlogResponse,
-    requestSerialize: serialize_blog_GetBlogRequest,
-    requestDeserialize: deserialize_blog_GetBlogRequest,
-    responseSerialize: serialize_blog_GetBlogResponse,
-    responseDeserialize: deserialize_blog_GetBlogResponse,
+    requestType: blog_blog_pb.GetBlogsRequest,
+    responseType: blog_blog_pb.GetBlogsResponse,
+    requestSerialize: serialize_blog_GetBlogsRequest,
+    requestDeserialize: deserialize_blog_GetBlogsRequest,
+    responseSerialize: serialize_blog_GetBlogsResponse,
+    responseDeserialize: deserialize_blog_GetBlogsResponse,
   },
   getBlogsByUser: {
     path: '/blog.BlogService/GetBlogsByUser',
@@ -110,4 +110,3 @@ var BlogServiceService = exports.BlogServiceService = {
 };
 
 exports.BlogServiceClient = grpc.makeGenericClientConstructor(BlogServiceService, 'BlogService');
-

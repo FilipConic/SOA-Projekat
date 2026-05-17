@@ -26,6 +26,11 @@ const (
 
 var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/v1/blog/new", Role: auth.RoleTourist}:           true,
+	{Path: "/api/blog/like", Role: auth.RoleTourist}:         true,
+	{Path: "/api/blog/rm_like", Role: auth.RoleTourist}:      true,
+	{Path: "/api/blog/edit", Role: auth.RoleTourist}:         true,
+	{Path: "/api/blog/comments/new", Role: auth.RoleTourist}: true,
+
 	{Path: "/api/followers", Role: auth.RoleTourist}:         true,
 	{Path: "/api/tours/new", Role: auth.RoleGuide}:           true,
 	{Path: "/api/tours/find", Role: auth.RoleTourist}:        true,

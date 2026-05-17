@@ -98,40 +98,40 @@ export namespace CreateBlogResponse {
     }
 }
 
-export class GetBlogRequest extends jspb.Message { 
+export class GetBlogsRequest extends jspb.Message { 
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): GetBlogRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: GetBlogRequest): GetBlogRequest.AsObject;
+    toObject(includeInstance?: boolean): GetBlogsRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetBlogsRequest): GetBlogsRequest.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: GetBlogRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): GetBlogRequest;
-    static deserializeBinaryFromReader(message: GetBlogRequest, reader: jspb.BinaryReader): GetBlogRequest;
+    static serializeBinaryToWriter(message: GetBlogsRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetBlogsRequest;
+    static deserializeBinaryFromReader(message: GetBlogsRequest, reader: jspb.BinaryReader): GetBlogsRequest;
 }
 
-export namespace GetBlogRequest {
+export namespace GetBlogsRequest {
     export type AsObject = {
     }
 }
 
-export class GetBlogResponse extends jspb.Message { 
+export class GetBlogsResponse extends jspb.Message { 
     clearBlogsList(): void;
     getBlogsList(): Array<Blog>;
-    setBlogsList(value: Array<Blog>): GetBlogResponse;
+    setBlogsList(value: Array<Blog>): GetBlogsResponse;
     addBlogs(value?: Blog, index?: number): Blog;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): GetBlogResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: GetBlogResponse): GetBlogResponse.AsObject;
+    toObject(includeInstance?: boolean): GetBlogsResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: GetBlogsResponse): GetBlogsResponse.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: GetBlogResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): GetBlogResponse;
-    static deserializeBinaryFromReader(message: GetBlogResponse, reader: jspb.BinaryReader): GetBlogResponse;
+    static serializeBinaryToWriter(message: GetBlogsResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetBlogsResponse;
+    static deserializeBinaryFromReader(message: GetBlogsResponse, reader: jspb.BinaryReader): GetBlogsResponse;
 }
 
-export namespace GetBlogResponse {
+export namespace GetBlogsResponse {
     export type AsObject = {
         blogsList: Array<Blog.AsObject>,
     }
