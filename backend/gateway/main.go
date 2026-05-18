@@ -81,6 +81,9 @@ func main() {
 	mainMux.HandleFunc("/api/users/", func(res http.ResponseWriter, req *http.Request) {
 		stakeholderRestProxy.ServeHTTP(res, req)
 	})
+	mainMux.HandleFunc("/api/profiles/", func(res http.ResponseWriter, req *http.Request) {
+		stakeholderRestProxy.ServeHTTP(res, req)
+	})
 	mainMux.HandleFunc("/api/followers/", func(res http.ResponseWriter, req *http.Request) {
 		followerRestProxy.ServeHTTP(res, req)
 	})
