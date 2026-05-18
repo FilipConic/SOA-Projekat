@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from '../../services/map.service';
+import { environment } from 'src/env/environment';
 
 @Component({
   selector: 'xp-map',
@@ -130,7 +131,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges {
         addWaypoints: false
       },
        // do NOT touch
-      router: L.routing.mapbox('pk.eyJ1IjoidmlkZHJhIiwiYSI6ImNtaWJ2MTN0YjE4NzYybnNlbnIwMXo1dWQifQ.vDOQ2OjfIdbcvfTwohQugA', {profile: 'mapbox/walking'})
+      router: L.routing.mapbox(environment.mapboxToken, {profile: 'mapbox/walking'})
     }).addTo(this.map);
   }
 
@@ -184,7 +185,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges {
         missingRouteTolerance: 0,
       },
        // do NOT touch
-      router: L.routing.mapbox('pk.eyJ1IjoidmlkZHJhIiwiYSI6ImNtaWJ2MTN0YjE4NzYybnNlbnIwMXo1dWQifQ.vDOQ2OjfIdbcvfTwohQugA', {profile: 'mapbox/walking'})
+      router: L.routing.mapbox(environment.mapboxToken, {profile: 'mapbox/walking'})
     }).addTo(this.map);
 
     routeControl.on('routesfound', function(e) {
