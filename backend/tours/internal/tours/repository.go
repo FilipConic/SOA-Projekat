@@ -15,6 +15,10 @@ type Repository interface {
 	GetReviewsByTouristID(touristID string) ([]Review, error)
 	GetAllTours() ([]Tour, error)
 	GetPositionByTouristID(touristID string) (*TouristPosition, error)
+	GetToursByCreatorID(creatorID string) ([]Tour, error)
+	GetKeyPointByID(id string) (*KeyPoint, error)
+	UpdateKeyPoint(kp *KeyPoint) error
+	DeleteKeyPoint(id string) error
 }
 
 type PostgresRepo struct {
@@ -71,4 +75,24 @@ func (r *PostgresRepo) GetPositionByTouristID(touristID string) (*TouristPositio
 	var pos TouristPosition
 	err := r.db.First(&pos, "tourist_id = ?", touristID).Error
 	return &pos, err
+}
+
+func (r *PostgresRepo) GetToursByCreatorID(creatorID string) ([]Tour, error) {
+	var tours []Tour
+	err := r.db.Preload("KeyPoints").Where("creator_id = ?", creatorID).Find(&tours).Error
+	return tours, err
+}
+
+func (r *PostgresRepo) GetKeyPointByID(id string) (*KeyPoint, error) {
+	var kp KeyPoint
+	err := r.db.First(&kp, "id = ?", id).Error
+	return &kp, err
+}
+
+func (r *PostgresRepo) UpdateKeyPoint(kp *KeyPoint) error {
+	return r.db.Save(kp).Error
+}
+
+func (r *PostgresRepo) DeleteKeyPoint(id string) error {
+	return r.db.Delete(&KeyPoint{}, "id = ?", id).Error
 }
