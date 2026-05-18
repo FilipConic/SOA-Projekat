@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    Tour App
+  </div>
+
+  <div class="navbar-actions">
+    <ng-container *ngIf="isLoggedIn">
+      <button class="nav-btn" (click)="onProfileClick()">My Profile</button>
+      <button class="nav-btn logout-btn" (click)="onLogoutClick()">Logout</button>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoggedIn">
+      <button class="nav-btn login-btn" (click)="onLoginClick()">Login</button>
+    </ng-container>
+  </div>
+</nav>

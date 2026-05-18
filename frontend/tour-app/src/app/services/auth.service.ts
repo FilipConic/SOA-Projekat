@@ -14,7 +14,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
   providedIn: 'root'
 })
 export class AuthService {
-    user$ = new BehaviorSubject<User>({id: '', email: '', username: ''});
+    user$ = new BehaviorSubject<User>({id: '', email: ''});
 
     get currentUser(): User {
         return this.user$.value;
@@ -44,8 +44,16 @@ export class AuthService {
 
     logout(): void {
         this.router.navigate(['/home']).then(_ => {
-                this.tokenStorage.clear();
-                this.user$.next({email: "", id: '', username: ""});
+                this.http.post(environment.apiHost + 'auth/logout/', { refresh: this.tokenStorage.getRefreshToken() }).subscribe({
+                    next: () => {
+                        console.log('Logged out successfully');
+                        this.tokenStorage.clear();
+                        this.user$.next({email: "", id: ''});
+                    },
+                    error: (err) => {
+                        console.error('Error occurred while logging out:', err);
+                    }
+                });
             }
         );
     }
@@ -55,17 +63,16 @@ export class AuthService {
         const accessToken = this.tokenStorage.getToken() || "";
         const decodedToken = jwtHelperService.decodeToken(accessToken);
         const user: User = {
-            id: decodedToken.key,
-            email: decodedToken.sub,
-            username: decodedToken.username
+            id: decodedToken.user_id,
+            email: decodedToken.email,
         };
 
         this.user$.next(user);
     }
 
     checkIfUserExists(): void {
-        const accessToken = this.tokenStorage.getToken();
-        if (accessToken == null) {
+        const refreshToken = this.tokenStorage.getRefreshToken();
+        if (refreshToken == null) {
             return;
         }
         this.setUser();

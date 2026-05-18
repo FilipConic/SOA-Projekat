@@ -83,3 +83,24 @@ button[type="submit"]:disabled {
   color: #a0a0a0;
   cursor: not-allowed;
 }
+
+/* Signup link container */
+.signup-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Link specific styling */
+.signup-link a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.signup-link a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
