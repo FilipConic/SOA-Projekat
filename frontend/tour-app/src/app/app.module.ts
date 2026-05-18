@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { LayoutModule } from './layout/layout.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptor } from './infrastructure/auth/jwt/jwt.interceptor';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { JwtInterceptor } from './infrastructure/auth/jwt/jwt.interceptor';
     BrowserModule,
     AppRoutingModule,
     LayoutModule,
-    HttpClientModule
+    HttpClientModule,
+    CommonModule
   ],
   providers: [
     {

@@ -1,1 +1,5 @@
-<p>home works!</p>
+<div class="tour-container">
+  <div class="tour-card" *ngFor="let t of tours" (click)="tourDetails(t.ID)">
+    {{ t.Title }}
+  </div>
+</div>

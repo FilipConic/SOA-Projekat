@@ -45,7 +45,7 @@ func main() {
 	handler.RegisterRoutes(mux)
 
 	log.Printf("Tours servis uspešno pokrenut na portu :8082 (Baza povezana na %s:%s)\n", dbHost, dbPort)
-	if err := http.ListenAndServe(":8082", mux); err != nil {
+	if err := http.ListenAndServe(":8082", enableCORS(mux)); err != nil {
 		log.Fatalf("Server pao: %v", err)
 	}
 }
@@ -55,4 +55,20 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-User-ID, Authorization")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }

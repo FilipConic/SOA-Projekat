@@ -7,6 +7,7 @@ import { MapComponent } from './map/map.component';
 import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router';
+import { TourDetailsComponent } from './tourDetails/tour-details.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { RouterModule } from '@angular/router';
     RegisterComponent,
     MapComponent,
     HomeComponent,
-    NavbarComponent
+    NavbarComponent,
+    TourDetailsComponent
   ],
   imports: [
     CommonModule,

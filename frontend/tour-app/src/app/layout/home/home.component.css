@@ -1,0 +1,14 @@
+.tour-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+
+.tour-card {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
