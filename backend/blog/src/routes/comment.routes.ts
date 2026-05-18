@@ -1,70 +1,118 @@
 import { Elysia } from "elysia";
-import { pool } from "../db/client";
+import {db} from "../db/client";
+import {ObjectId} from "mongodb";
+
+
+/*
+SQL      MONGO
+----------------------
+SELECT   find/findOne
+INSERT   insertOne
+UPDATE   updateOne
+DELETE   deleteOne/deleteMany
+COUNT    countDocuments
+
+*/
 
 export const commentRoutes = new Elysia()
 	// dodaj komentar
 	// POST
 	.post("/api/blog/comments/new/:blog_id", async ({ headers, params, body }) => {
-		const user_id = headers['X-User-ID'];
-		const { text } = body;
-		const result = await pool.query(
-			`INSERT INTO comments (blog_id, user_id, text)
-			VALUES ($1, $2, $3) RETURNING *`,
-			[params.blog_id, user_id, text]
-		);
-		return result.rows[0];
+		const user_id = headers['x-user-id'];
+		const { text} = body as { text: string };
+
+		const comments = db.collection("comments");
+		
+		const resule = await comments.insertOne({
+
+			blog_id: params.blog_id,
+			user_id,
+			text,
+			createdAt: new Date()
+
+		}); // SQL: INSERT INTO comments (user_id, blog_id, text, created_at) VALUES ($1, $2, $3, $4)
 	})
 
 	// svi komentari bloga
 	// GET
 	.get("/api/blog/comments/find_all/:blog_id", async ({ params }) => {
-		const result = await pool.query(
-			`SELECT * FROM comments WHERE blog_id = $1 ORDER BY created_at DESC`,
-				[params.blog_id]
-		);
-		return result.rows;
-	})
+		
+		const comments = db.collection("comments");
+		const result = await comments
+			.find({blog_id: params.blog_id })
+			.sort({ createdAt: -1 }) // najnoviji komentari prvi
+			.toArray();
+		
+		return result;
+
+
+	}) // SQL: SELECT * FROM comments WHERE blog_id = $1 ORDER BY created_at DESC
 
 	// broj komentara za blog
 	// GET
 	.get("/api/blog/comments/count/:blog_id", async ({ params }) => {
-		const result = await pool.query(
-			`SELECT COUNT(*) as total FROM comments WHERE blog_id = $1`,
-				[params.blog_id]
-		);
-		return { blog_id: params.blog_id, total: parseInt(result.rows[0].total) };
-	})
+
+		const comments = db.collection("comments");
+		const total = await comments.countDocuments({ blog_id: params.blog_id }); 
+		
+		return { blog_id: params.blog_id, total };
+
+	}) // SQL: SELECT COUNT(*) FROM comments WHERE blog_id = $1
 
 	// svi komentari korisnika
 	// GET
 	.get("/api/blog/comments/user/find_all/:user_id", async ({ params }) => {
-		const result = await pool.query(
-			`SELECT * FROM comments WHERE user_id = $1 ORDER BY created_at DESC`,
-				[params.user_id]
-		);
-		if (result.rows.length === 0) return { error: "No comments found for this user" };
-		return result.rows;
+		
+		const comments = db.collection("comments");
+		const result = await comments
+			.find({user_id: params.user_id })
+			.sort({ createdAt: -1 }) // najnoviji komentari prvi
+			.toArray();
+
+		if (result.length === 0)  
+		{ 
+			return { message: "No comments found for user" };
+		};
+
+		return result;
+
 	})
 
 	// izmena komentara
 	// PUT
 	.put("/api/blog/comments/edit/:comment_id", async ({ params, body }) => {
-		const { text } = body;
-		const result = await pool.query(
-			`UPDATE comments SET text = $1, updated_at = NOW() WHERE id = $2 RETURNING *`,
-				[text, params.comment_id]
-		);
-		if (result.rows.length === 0) return { error: "Comment not found" };
-		return result.rows[0];
+
+		const comments = db.collection("comments");
+		const { text } = body as { text: string };
+
+		const result = await comments.updateOne(
+			{ _id: new ObjectId(params.comment_id) }, // filter za pronalazak komentara koji se menja
+			{
+				$set: {
+					text,
+					editedAt: new Date()
+				}
+			}
+		); // SQL: UPDATE comments SET text = $1, edited_at = $2 WHERE id = $3
+
+		if (result.matchedCount === 0) {
+			return { message: "Comment not found" };
+		}
+
+		return { message: "Comment updated successfully" };
 	})
 
 	// brisanje komentara
 	// DELETE
 	.delete("/api/blog/comments/delete/:comment_id", async ({ params }) => {
-		const result = await pool.query(
-			"DELETE FROM comments WHERE id = $1 RETURNING *",
-			[params.comment_id]
-		);
-		if (result.rows.length === 0) return { error: "Comment not found" };
-		return { message: "Comment deleted!" };
-	});
+
+		const comments = db.collection("comments");
+		const result = await comments.deleteOne({ _id: new ObjectId(params.comment_id) }); 
+
+		if (result.deletedCount === 0) {
+			return { message: "Comment not found" };
+		}
+
+		return { message: "Comment deleted successfully" };
+
+		}); // SQL: DELETE FROM comments WHERE id = $1

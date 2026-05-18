@@ -62,6 +62,8 @@ services:
       build: ./blog
       ports:
         - "3000:3000"
+        - "50051:50051"
+
       environment:
         - DB_HOST=blog-db
         - DB_PORT=5432
