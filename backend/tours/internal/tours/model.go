@@ -2,12 +2,31 @@ package tours
 
 import "time"
 
+type TourStatus string
+
+const (
+	StatusDraft     TourStatus = "draft"
+	StatusPublished TourStatus = "published"
+	StatusArchived  TourStatus = "archived"
+)
+
+type TourDifficulty string
+
+const (
+	DifficultyEasy   TourDifficulty = "easy"
+	DifficultyMedium TourDifficulty = "medium"
+	DifficultyHard   TourDifficulty = "hard"
+)
+
 type Tour struct {
-	ID          string  `gorm:"primaryKey"`
-	CreatorID   string  `gorm:"index;not null"`
-	Title       string  `gorm:"type:varchar(100);not null;unique"`
-	Description string  `gorm:"type:text"`
-	Price       float64 `gorm:"type:numeric"`
+	ID          string         `gorm:"primaryKey"`
+	CreatorID   string         `gorm:"index;not null"`
+	Title       string         `gorm:"type:varchar(100);not null;unique"`
+	Status      TourStatus     `gorm:"type:varchar(20);not null;default:'draft'"`
+	Description string         `gorm:"type:text"`
+	Price       float64        `gorm:"type:numeric"`
+	Difficulty  TourDifficulty `gorm:"type:varchar(20);not null;default:'medium'"`
+	Tags        []string       `gorm:"type:jsonb;serializer:json"`
 	Duration    int
 	CreatedAt   time.Time
 	KeyPoints   []KeyPoint `gorm:"foreignKey:TourID"`

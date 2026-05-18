@@ -3,4 +3,6 @@ __pycache__/
 media/
 .**/
 backend/gateway/gateway
+# Ignoriši lokalno sačuvane slike za ključne tačke i recenzije
+uploads/
 

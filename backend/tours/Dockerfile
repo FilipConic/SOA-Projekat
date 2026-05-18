@@ -11,6 +11,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /tours ./cmd/servers
 FROM alpine:3.19
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
+
+RUN mkdir -p /app/uploads
 COPY --from=builder /tours /app/tours
 
 EXPOSE 8080

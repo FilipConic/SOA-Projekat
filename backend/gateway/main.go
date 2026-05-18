@@ -31,12 +31,22 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/blog/edit", Role: auth.RoleTourist}:         true,
 	{Path: "/api/blog/comments/new", Role: auth.RoleTourist}: true,
 
-	{Path: "/api/followers", Role: auth.RoleTourist}:         true,
-	{Path: "/api/tours/new", Role: auth.RoleGuide}:           true,
-	{Path: "/api/tours/find", Role: auth.RoleTourist}:        true,
-	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}: true,
-	{Path: "/api/tours/reviews/", Role: auth.RoleTourist}:    true,
-	{Path: "/api/tours/tourists/", Role: auth.RoleTourist}:   true,
+	{Path: "/api/followers", Role: auth.RoleTourist}:                 true,
+	{Path: "/api/tours/new", Role: auth.RoleGuide}:                   true,
+	{Path: "/api/tours/find", Role: auth.RoleTourist}:                true,
+	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}:         true,
+	{Path: "/api/tours/reviews/", Role: auth.RoleTourist}:            true,
+	{Path: "/api/tours/tourists/", Role: auth.RoleTourist}:           true,
+	{Path: "/api/tours/update", Role: auth.RoleGuide}:                true,
+	{Path: "/api/tours/find-my", Role: auth.RoleGuide}:               true,
+	{Path: "/api/tours/keypoints/delete", Role: auth.RoleGuide}:      true,
+	{Path: "/api/followers/follow/", Role: auth.RoleTourist}:         true,
+	{Path: "/api/followers/unfollow/", Role: auth.RoleTourist}:       true,
+	{Path: "/api/followers/followers/", Role: auth.RoleTourist}:      true,
+	{Path: "/api/followers/following/", Role: auth.RoleTourist}:      true,
+	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
+	{Path: "/api/followers/my-following", Role: auth.RoleTourist}:    true,
+	{Path: "/api/followers/recommendations", Role: auth.RoleTourist}: true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
