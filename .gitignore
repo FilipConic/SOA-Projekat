@@ -3,4 +3,5 @@ __pycache__/
 media/
 .**/
 backend/gateway/gateway
+*.pyc
 

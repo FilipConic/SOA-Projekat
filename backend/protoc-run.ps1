@@ -37,14 +37,14 @@ try {
         Write-Host "  go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@latest"
     }
 
-    $grpcTools = Join-Path $scriptDir 'blog\node_modules\.bin\grpc_tools_node_protoc'
+    $grpcTools = Join-Path $scriptDir 'blog\node_modules\.bin\grpc_tools_node_protoc.exe'
     if (Test-Path "$grpcTools.cmd") { $grpcTools = "$grpcTools.cmd" }
     elseif (Test-Path "$grpcTools.exe") { $grpcTools = "$grpcTools.exe" }
     elseif (-not (Test-Path $grpcTools)) {
         throw "grpc_tools_node_protoc not found. Run npm install in blog first."
     }
 
-    $protocGenTs = Join-Path $scriptDir 'blog\node_modules\.bin\protoc-gen-ts'
+    $protocGenTs = Join-Path $scriptDir 'blog\node_modules\.bin\protoc-gen-ts.exe'
     if (Test-Path "$protocGenTs.cmd") { $protocGenTs = "$protocGenTs.cmd" }
     elseif (Test-Path "$protocGenTs.exe") { $protocGenTs = "$protocGenTs.exe" }
     elseif (-not (Test-Path $protocGenTs)) {
