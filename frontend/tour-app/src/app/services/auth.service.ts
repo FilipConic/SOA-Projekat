@@ -26,11 +26,11 @@ export class AuthService {
 
     login(login: Login): Observable<AuthResponse> {
         return this.http
-            .post<AuthResponse>(environment.apiHost + 'auth/login', login)
+            .post<AuthResponse>(environment.apiHost + 'auth/login/', login)
             .pipe(
                 tap(response => {
-                    this.tokenStorage.saveToken(response.accessToken);
-                    this.tokenStorage.saveRefreshToken(response.refreshToken);
+                    this.tokenStorage.saveToken(response.access);
+                    this.tokenStorage.saveRefreshToken(response.refresh);
                     this.setUser();
         }));
     }
