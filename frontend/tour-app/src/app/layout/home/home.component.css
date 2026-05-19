@@ -12,3 +12,25 @@
   text-align: center;
   font-weight: 500;
 }
+
+.snackbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #333;
+  color: white;
+
+  padding: 14px 24px;
+  border-radius: 8px;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  z-index: 9999;
+}
+
+.snackbar.visible {
+  opacity: 1;
+}

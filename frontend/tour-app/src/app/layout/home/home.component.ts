@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit{
 
   tours: Tour[] = [];
+  showSnackbar = false;
+  snackbarTimer: any;
 
   constructor (
     private tourService: TourService,
@@ -20,14 +22,26 @@ export class HomeComponent implements OnInit{
 
   ngOnInit() {
     this.tourService.getAllTours().subscribe(data => {
-      console.log(this.tours);
-      console.log("DATA FROM BE:", data);
       this.tours = data;
     });
   }
 
   tourDetails(id: string) {
+    if( !this.isLoggedIn()){
+      this.showSnackbar = true;
+      clearTimeout(this.snackbarTimer);
+
+      this.snackbarTimer =  setTimeout(() => {
+        this.showSnackbar = false;
+      }, 2000);
+      return;
+    }
+
     this.router.navigate(['/tour', id]);
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('access-token');
   }
 
 }
