@@ -3,4 +3,10 @@
   <p>{{ tour.Description }}</p>
   <p>Price: {{ tour.Price }}</p>
   <p>Duration: {{ tour.Duration }}</p>
+
+  <app-tour-review *ngIf="tour"
+    [tourID]="tour.ID">
+  </app-tour-review>
+
+
 </div>

@@ -16,7 +16,7 @@ func NewHandler(s *Service) *Handler {
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/tours/new", h.createTour)
 	mux.HandleFunc("GET /api/tours/find/{tour_id}", h.getTour)
-	mux.HandleFunc("GET /api/tours/find-all", h.getAllTours)
+	mux.HandleFunc("GET /api/tours/all", h.getAllTours)
 
 	mux.HandleFunc("POST /api/tours/keypoints/new/{tour_id}", h.addKeyPoint)
 	mux.HandleFunc("POST /api/tours/reviews/new/{tour_id}", h.addReview)
@@ -25,6 +25,7 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /api/tours/tourists/position/find", h.getTouristPosition)
 	mux.HandleFunc("POST /api/tours/tourists/position/new", h.updatePosition)
+	mux.HandleFunc("DELETE /api/tours/reviews/delete/{review_id}", h.deleteReview)
 }
 
 func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -141,4 +142,22 @@ func (h *Handler) getTouristPosition(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	enc.Encode(pos)
+}
+
+func (h *Handler) deleteReview(w http.ResponseWriter, r *http.Request) {
+    reviewID := r.PathValue("review_id")
+    touristID := r.Header.Get("X-User-ID")
+
+    if touristID == "" {
+        http.Error(w, "Nedostaje X-User-ID", http.StatusUnauthorized)
+        return
+    }
+
+    err := h.service.DeleteReview(reviewID, touristID)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusForbidden)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
 }

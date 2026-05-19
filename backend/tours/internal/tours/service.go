@@ -94,3 +94,7 @@ func (s *Service) UpdateTouristPosition(touristID string, dto UpdatePositionDTO)
 func (s *Service) GetTouristPosition(touristID string) (*TouristPosition, error) {
 	return s.repo.GetPositionByTouristID(touristID)
 }
+
+func (s *Service) DeleteReview(reviewID string, touristID string) error {
+    return s.repo.DeleteReview(reviewID, touristID)
+}

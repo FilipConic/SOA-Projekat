@@ -1,0 +1,69 @@
+<div class="review-container">
+
+  <h3>Add Review</h3>
+
+  <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="review-form">
+
+    <div class="form-group">
+      <label>Rating</label>
+      <select formControlName="rating">
+        <option [ngValue]="1">1</option>
+        <option [ngValue]="2">2</option>
+        <option [ngValue]="3">3</option>
+        <option [ngValue]="4">4</option>
+        <option [ngValue]="5">5</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Comment</label>
+      <textarea formControlName="comment" rows="4" placeholder="Write your review..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Visit date</label>
+      <input type="date" formControlName="visitDate">
+    </div>
+
+    <div class="form-group">
+      <label>Images</label>
+      <input type="file" multiple (change)="onImagesSelected($event)">
+    </div>
+
+    <button type="submit" class="btn-submit">Submit review</button>
+
+  </form>
+
+  <hr>
+
+  <h3>Reviews</h3>
+
+  <p *ngIf="reviews.length === 0" class="no-reviews">No reviews yet.</p>
+
+  <div *ngFor="let review of reviews" class="review-card">
+
+    <div class="review-header">
+      <span *ngFor="let star of getStars(review.rating)">⭐</span>
+    </div>
+
+    <p class="review-comment">{{ review.comment }}</p>
+
+    <div class="review-meta">
+      <small>Visit date: {{ review.visit_date | date:'dd.MM.yyyy' }}</small>
+      <small>Posted: {{ review.comment_date | date:'dd.MM.yyyy HH:mm' }}</small>
+    </div>
+
+    <div class="review-images">
+      <img *ngFor="let image of review.images" [src]="image" width="120">
+    </div>
+
+    <button
+      *ngIf="review.tourist_id === currentUserID"
+      (click)="deleteReview(review.id)"
+      class="btn-delete">
+      Delete
+    </button>
+
+  </div>
+
+</div>

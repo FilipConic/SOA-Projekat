@@ -25,14 +25,14 @@ type KeyPoint struct {
 }
 
 type Review struct {
-	ID          string `gorm:"primaryKey"`
-	TourID      string `gorm:"foreignKey;index;not null"`
-	TouristID   string `gorm:"index;not null"`
-	Rating      int    `gorm:"not null"`
-	Comment     string `gorm:"type:text"`
-	VisitDate   time.Time
-	CommentDate time.Time
-	Images      []string `gorm:"type:jsonb;serializer:json"`
+	ID          string `gorm:"primaryKey" json:"id"`
+	TourID      string `gorm:"foreignKey;index;not null" json:"tour_id"`
+	TouristID   string `gorm:"index;not null" json:"tourist_id"`
+	Rating      int    `gorm:"not null" json:"rating"`
+	Comment     string `gorm:"type:text" json:"comment"`
+	VisitDate   time.Time `json:"visit_date"`
+	CommentDate time.Time `json:"comment_date"`
+	Images      []string `gorm:"type:jsonb;serializer:json" json:"images"`
 }
 
 type TouristPosition struct {

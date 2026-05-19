@@ -8,6 +8,8 @@ import { HomeComponent } from './home/home.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { TourDetailsComponent } from './tourDetails/tour-details.component';
+import { ReviewTourComponent } from './tour-review/tour-review.component';
+
 
 @NgModule({
   declarations: [
@@ -16,7 +18,8 @@ import { TourDetailsComponent } from './tourDetails/tour-details.component';
     MapComponent,
     HomeComponent,
     NavbarComponent,
-    TourDetailsComponent
+    TourDetailsComponent,
+    ReviewTourComponent
   ],
   imports: [
     CommonModule,

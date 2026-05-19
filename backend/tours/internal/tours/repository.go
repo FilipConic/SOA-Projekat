@@ -3,6 +3,7 @@ package tours
 import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"errors"
 )
 
 type Repository interface {
@@ -15,6 +16,7 @@ type Repository interface {
 	GetReviewsByTouristID(touristID string) ([]Review, error)
 	GetAllTours() ([]Tour, error)
 	GetPositionByTouristID(touristID string) (*TouristPosition, error)
+	DeleteReview(reviewID string, touristID string) error
 }
 
 type PostgresRepo struct {
@@ -71,4 +73,15 @@ func (r *PostgresRepo) GetPositionByTouristID(touristID string) (*TouristPositio
 	var pos TouristPosition
 	err := r.db.First(&pos, "tourist_id = ?", touristID).Error
 	return &pos, err
+}
+
+func (r *PostgresRepo) DeleteReview(reviewID string, touristID string) error {
+    result := r.db.Where("id = ? AND tourist_id = ?", reviewID, touristID).Delete(&Review{})
+    if result.Error != nil {
+        return result.Error
+    }
+    if result.RowsAffected == 0 {
+        return errors.New("review nije pronađen ili nemate pravo da ga obrišete")
+    }
+    return nil
 }

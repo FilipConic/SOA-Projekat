@@ -33,10 +33,12 @@ var protectedRoutes = map[auth.Permission]bool{
 
 	{Path: "/api/followers", Role: auth.RoleTourist}:         true,
 	{Path: "/api/tours/new", Role: auth.RoleGuide}:           true,
-	{Path: "/api/tours/find", Role: auth.RoleTourist}:        true,
+	{Path: "/api/tours/find/", Role: auth.RoleTourist}:        true,
 	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}: true,
 	{Path: "/api/tours/reviews/", Role: auth.RoleTourist}:    true,
 	{Path: "/api/tours/tourists/", Role: auth.RoleTourist}:   true,
+
+	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {

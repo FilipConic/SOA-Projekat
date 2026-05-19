@@ -50,8 +50,10 @@ func authLevel(path, role string, protectedRoutes map[Permission]bool) bool {
 	}
 	for route := range protectedRoutes {
 		if route.Role >= irole && strings.HasPrefix(path, route.Path) {
+			log.Printf("MATCH: path=%s route=%s roleRequired=%d userRole=%d", path, route.Path, route.Role, irole)
 			return true
 		}
+		log.Printf("NO MATCH: path=%s route=%s roleRequired=%d userRole=%d", path, route.Path, route.Role, irole)
 	}
 	return false
 }
