@@ -16,6 +16,7 @@ export class ReviewTourComponent implements OnInit {
   reviews: ReviewTour[] = [];
   selectedImages: string[] = [];
   currentUserID = this.getUserIDFromToken();
+  showForm = false;
 
   constructor(
     private fb: FormBuilder,
@@ -78,6 +79,7 @@ export class ReviewTourComponent implements OnInit {
           visitDate: ''
         });
         this.selectedImages = [];
+        this.showForm = false;
         this.loadReviews();
       },
       error: (err) => {

@@ -1,68 +1,88 @@
 <div class="review-container">
 
-  <h3>Add Review</h3>
+  <div class="section-header">
+    <h3>Reviews</h3>
+    <button class="btn-toggle" (click)="showForm = !showForm">
+      <span>{{ showForm ? '✕ Cancel' : '+ Write a review' }}</span>
+    </button>
+  </div>
 
-  <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="review-form">
+  <div *ngIf="showForm" class="review-form-wrapper">
+    <form [formGroup]="reviewForm" (ngSubmit)="submitReview()" class="review-form">
 
-    <div class="form-group">
-      <label>Rating</label>
-      <select formControlName="rating">
-        <option [ngValue]="1">1</option>
-        <option [ngValue]="2">2</option>
-        <option [ngValue]="3">3</option>
-        <option [ngValue]="4">4</option>
-        <option [ngValue]="5">5</option>
-      </select>
-    </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rating</label>
+          <select formControlName="rating">
+            <option [ngValue]="1">⭐ Poor</option>
+            <option [ngValue]="2">⭐⭐ Fair</option>
+            <option [ngValue]="3">⭐⭐⭐ Good</option>
+            <option [ngValue]="4">⭐⭐⭐⭐ Great</option>
+            <option [ngValue]="5">⭐⭐⭐⭐⭐ Excellent</option>
+          </select>
+        </div>
 
-    <div class="form-group">
-      <label>Comment</label>
-      <textarea formControlName="comment" rows="4" placeholder="Write your review..."></textarea>
-    </div>
+        <div class="form-group">
+          <label>Visit date</label>
+          <input type="date" formControlName="visitDate"
+            [class.invalid]="reviewForm.get('visitDate')?.invalid && reviewForm.get('visitDate')?.touched">
+          <small class="error-msg"
+            *ngIf="reviewForm.get('visitDate')?.invalid && reviewForm.get('visitDate')?.touched">
+            Visit date is required.
+          </small>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label>Visit date</label>
-      <input type="date" formControlName="visitDate">
-    </div>
+      <div class="form-group">
+        <label>Comment</label>
+        <textarea formControlName="comment" rows="4" placeholder="Share your experience..."
+          [class.invalid]="reviewForm.get('comment')?.invalid && reviewForm.get('comment')?.touched">
+        </textarea>
+        <small class="error-msg"
+          *ngIf="reviewForm.get('comment')?.invalid && reviewForm.get('comment')?.touched">
+          Comment is required.
+        </small>
+      </div>
 
-    <div class="form-group">
-      <label>Images</label>
-      <input type="file" multiple (change)="onImagesSelected($event)">
-    </div>
+      <div class="form-group">
+        <label>Images <span class="label-optional">(optional)</span></label>
+        <input type="file" multiple (change)="onImagesSelected($event)">
+      </div>
 
-    <button type="submit" class="btn-submit">Submit review</button>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="showForm = false">Cancel</button>
+        <button type="submit" class="btn-submit">Submit review</button>
+      </div>
 
-  </form>
+    </form>
+  </div>
 
-  <hr>
-
-  <h3>Reviews</h3>
-
-  <p *ngIf="reviews.length === 0" class="no-reviews">No reviews yet.</p>
+  <p *ngIf="reviews.length === 0 && !showForm" class="no-reviews">
+    No reviews yet. Be the first to share your experience!
+  </p>
 
   <div *ngFor="let review of reviews" class="review-card">
 
-    <div class="review-header">
-      <span *ngFor="let star of getStars(review.rating)">⭐</span>
+    <div class="review-top">
+      <div class="stars">
+        <span *ngFor="let star of getStars(review.rating)">⭐</span>
+      </div>
+      <div class="review-dates">
+        <span>Visited {{ review.visit_date | date:'dd.MM.yyyy' }}</span>
+        <span class="dot">·</span>
+        <span>Posted {{ review.comment_date | date:'dd.MM.yyyy' }}</span>
+      </div>
     </div>
 
     <p class="review-comment">{{ review.comment }}</p>
 
-    <div class="review-meta">
-      <small>Visit date: {{ review.visit_date | date:'dd.MM.yyyy' }}</small>
-      <small>Posted: {{ review.comment_date | date:'dd.MM.yyyy HH:mm' }}</small>
+    <div class="review-images" *ngIf="review.images?.length">
+      <img *ngFor="let image of review.images" [src]="image">
     </div>
 
-    <div class="review-images">
-      <img *ngFor="let image of review.images" [src]="image" width="120">
+    <div class="review-footer" *ngIf="review.tourist_id === currentUserID">
+      <button (click)="deleteReview(review.id)" class="btn-delete">Delete review</button>
     </div>
-
-    <button
-      *ngIf="review.tourist_id === currentUserID"
-      (click)="deleteReview(review.id)"
-      class="btn-delete">
-      Delete
-    </button>
 
   </div>
 
