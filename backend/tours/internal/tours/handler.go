@@ -15,17 +15,16 @@ func NewHandler(s *Service) *Handler {
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/tours/new", h.createTour)
-	mux.HandleFunc("PUT /api/tours/update/{tour_id}", h.updateTour)
 	mux.HandleFunc("GET /api/tours/find/{tour_id}", h.getTour)
 	mux.HandleFunc("GET /api/tours/all", h.getAllTours)
 
 	mux.HandleFunc("POST /api/tours/keypoints/new/{tour_id}", h.addKeyPoint)
 	mux.HandleFunc("PUT /api/tours/keypoints/update/{tour_id}/{kp_id}", h.updateKeyPoint)
-	mux.HandleFunc("DELETE /api/tours/keypoints/delete/{tour_id}/{kp_id}", h.deleteKeyPoint)
 	mux.HandleFunc("GET /api/tours/keypoints/find/{tour_id}", h.getKeyPoints)
 	mux.HandleFunc("POST /api/tours/reviews/new/{tour_id}", h.addReview)
 	mux.HandleFunc("GET /api/tours/reviews/{tour_id}", h.getReviewsByTourID)
 	mux.HandleFunc("GET /api/tours/tourists/reviews/{tourist_id}", h.getReviewsByTouristID)
+	mux.HandleFunc("DELETE /api/tours/reviews/delete/{review_id}", h.deleteReview)
 
 	mux.HandleFunc("GET /api/tours/tourists/position/find", h.getTouristPosition)
 	mux.HandleFunc("POST /api/tours/tourists/position/new", h.updatePosition)
