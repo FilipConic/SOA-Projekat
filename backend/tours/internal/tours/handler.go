@@ -15,10 +15,12 @@ func NewHandler(s *Service) *Handler {
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/tours/new", h.createTour)
+	mux.HandleFunc("PUT /api/tours/update/{tour_id}", h.updateTour)
 	mux.HandleFunc("GET /api/tours/find/{tour_id}", h.getTour)
 	mux.HandleFunc("GET /api/tours/all", h.getAllTours)
 
 	mux.HandleFunc("POST /api/tours/keypoints/new/{tour_id}", h.addKeyPoint)
+	mux.HandleFunc("PUT /api/tours/keypoints/update/{tour_id}/{kp_id}", h.updateKeyPoint)
 	mux.HandleFunc("POST /api/tours/reviews/new/{tour_id}", h.addReview)
 	mux.HandleFunc("GET /api/tours/reviews/{tour_id}", h.getReviewsByTourID)
 	mux.HandleFunc("GET /api/tours/tourists/reviews/{tourist_id}", h.getReviewsByTouristID)
@@ -33,6 +35,21 @@ func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&dto)
 	creatorID := r.Header.Get("X-User-ID")
 	tour, err := h.service.CreateTour(dto, creatorID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(tour)
+}
+
+func (h *Handler) updateTour(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	var dto CreateTourDTO
+	json.NewDecoder(r.Body).Decode(&dto)
+	creatorID := r.Header.Get("X-User-ID")
+	tour, err := h.service.UpdateTour(tourID, dto, creatorID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -71,6 +88,21 @@ func (h *Handler) addKeyPoint(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&dto)
 
 	kp, err := h.service.AddKeyPoint(tourID, dto)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(kp)
+}
+
+func (h *Handler) updateKeyPoint(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	kpID := r.PathValue("kp_id")
+	var dto CreateKeyPointDTO
+	json.NewDecoder(r.Body).Decode(&dto)
+	kp, err := h.service.UpdateKeyPoint(kpID, tourID, dto)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -145,19 +177,19 @@ func (h *Handler) getTouristPosition(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) deleteReview(w http.ResponseWriter, r *http.Request) {
-    reviewID := r.PathValue("review_id")
-    touristID := r.Header.Get("X-User-ID")
+	reviewID := r.PathValue("review_id")
+	touristID := r.Header.Get("X-User-ID")
 
-    if touristID == "" {
-        http.Error(w, "Nedostaje X-User-ID", http.StatusUnauthorized)
-        return
-    }
+	if touristID == "" {
+		http.Error(w, "Nedostaje X-User-ID", http.StatusUnauthorized)
+		return
+	}
 
-    err := h.service.DeleteReview(reviewID, touristID)
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusForbidden)
-        return
-    }
+	err := h.service.DeleteReview(reviewID, touristID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
 
-    w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }

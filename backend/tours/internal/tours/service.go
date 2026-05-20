@@ -32,6 +32,30 @@ func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error)
 	return tour, err
 }
 
+func (s *Service) UpdateTour(tourID string, dto CreateTourDTO, creatorID string) (*Tour, error) {
+	tour, err := s.repo.GetTourByID(tourID)
+	if err != nil {
+		return nil, errors.New("tura nije pronađena")
+	}
+	if tour.CreatorID != creatorID {
+		return nil, errors.New("niste ovlašteni za uređivanje ove ture")
+	}
+	if dto.Title != "" {
+		tour.Title = dto.Title
+	}
+	if dto.Description != "" {
+		tour.Description = dto.Description
+	}
+	if dto.Price != 0 {
+		tour.Price = dto.Price
+	}
+	if dto.Duration != 0 {
+		tour.Duration = dto.Duration
+	}
+	err = s.repo.UpdateTour(tour)
+	return tour, err
+}
+
 func (s *Service) GetTour(id string) (*Tour, error) {
 	return s.repo.GetTourByID(id)
 }
@@ -51,6 +75,40 @@ func (s *Service) AddKeyPoint(tourID string, dto CreateKeyPointDTO) (*KeyPoint, 
 		Longitude:   dto.Longitude,
 	}
 	err := s.repo.SaveKeyPoint(kp)
+	return kp, err
+}
+
+func (s *Service) UpdateKeyPoint(kpID string, tourID string, dto CreateKeyPointDTO) (*KeyPoint, error) {
+	tour, err := s.repo.GetTourByID(tourID)
+	if err != nil {
+		return nil, errors.New("tura nije pronađena")
+	}
+	var kp *KeyPoint
+	for i := range tour.KeyPoints {
+		if tour.KeyPoints[i].ID == kpID {
+			kp = &tour.KeyPoints[i]
+			break
+		}
+	}
+	if kp == nil {
+		return nil, errors.New("ključna tačka nije pronađena")
+	}
+	if dto.Name != "" {
+		kp.Name = dto.Name
+	}
+	if dto.Description != "" {
+		kp.Description = dto.Description
+	}
+	if dto.Image != "" {
+		kp.Image = dto.Image
+	}
+	if dto.Latitude != 0 {
+		kp.Latitude = dto.Latitude
+	}
+	if dto.Longitude != 0 {
+		kp.Longitude = dto.Longitude
+	}
+	err = s.repo.UpdateKeyPoint(kp)
 	return kp, err
 }
 
@@ -96,5 +154,5 @@ func (s *Service) GetTouristPosition(touristID string) (*TouristPosition, error)
 }
 
 func (s *Service) DeleteReview(reviewID string, touristID string) error {
-    return s.repo.DeleteReview(reviewID, touristID)
+	return s.repo.DeleteReview(reviewID, touristID)
 }

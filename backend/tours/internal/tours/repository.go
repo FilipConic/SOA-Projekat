@@ -1,15 +1,18 @@
 package tours
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"errors"
 )
 
 type Repository interface {
 	SaveTour(tour *Tour) error
+	UpdateTour(tour *Tour) error
 	GetTourByID(id string) (*Tour, error)
 	SaveKeyPoint(kp *KeyPoint) error
+	UpdateKeyPoint(kp *KeyPoint) error
 	SaveReview(review *Review) error
 	SavePosition(position *TouristPosition) error
 	GetReviewsByTourID(tourID string) ([]Review, error)
@@ -31,6 +34,10 @@ func (r *PostgresRepo) SaveTour(tour *Tour) error {
 	return r.db.Create(tour).Error
 }
 
+func (r *PostgresRepo) UpdateTour(tour *Tour) error {
+	return r.db.Save(tour).Error
+}
+
 func (r *PostgresRepo) GetTourByID(id string) (*Tour, error) {
 	var tour Tour
 	err := r.db.Preload("KeyPoints").Preload("Reviews").First(&tour, "id = ?", id).Error
@@ -45,6 +52,10 @@ func (r *PostgresRepo) GetAllTours() ([]Tour, error) {
 
 func (r *PostgresRepo) SaveKeyPoint(kp *KeyPoint) error {
 	return r.db.Create(kp).Error
+}
+
+func (r *PostgresRepo) UpdateKeyPoint(kp *KeyPoint) error {
+	return r.db.Save(kp).Error
 }
 
 func (r *PostgresRepo) SaveReview(review *Review) error {
@@ -76,12 +87,12 @@ func (r *PostgresRepo) GetPositionByTouristID(touristID string) (*TouristPositio
 }
 
 func (r *PostgresRepo) DeleteReview(reviewID string, touristID string) error {
-    result := r.db.Where("id = ? AND tourist_id = ?", reviewID, touristID).Delete(&Review{})
-    if result.Error != nil {
-        return result.Error
-    }
-    if result.RowsAffected == 0 {
-        return errors.New("review nije pronađen ili nemate pravo da ga obrišete")
-    }
-    return nil
+	result := r.db.Where("id = ? AND tourist_id = ?", reviewID, touristID).Delete(&Review{})
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("review nije pronađen ili nemate pravo da ga obrišete")
+	}
+	return nil
 }
