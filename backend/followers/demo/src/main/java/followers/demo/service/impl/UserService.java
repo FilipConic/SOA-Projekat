@@ -45,6 +45,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<String> getFollowerIds(String userId) {
+        return userRepository.findAllFollowerIdsByUserId(userId);
+    }
+
+    @Override
     public void syncUser(String id, String username) {
         User user = userRepository.findById(id).orElse(new User());
         user.setId(id);

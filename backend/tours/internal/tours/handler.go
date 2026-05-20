@@ -29,7 +29,10 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /api/tours/tourists/position/find", h.getTouristPosition)
 	mux.HandleFunc("POST /api/tours/tourists/position/new", h.updatePosition)
-	mux.HandleFunc("DELETE /api/tours/reviews/delete/{review_id}", h.deleteReview)
+
+	mux.HandleFunc("PUT /api/tours/update/{tour_id}", h.updateTour)
+	mux.HandleFunc("GET /api/tours/find-my", h.getMyTours)
+	mux.HandleFunc("DELETE /api/tours/keypoints/delete/{id}", h.deleteKeyPoint)
 }
 
 func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +51,7 @@ func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) updateTour(w http.ResponseWriter, r *http.Request) {
 	tourID := r.PathValue("tour_id")
-	var dto CreateTourDTO
+	var dto UpdateTourDTO
 	json.NewDecoder(r.Body).Decode(&dto)
 	creatorID := r.Header.Get("X-User-ID")
 	tour, err := h.service.UpdateTour(tourID, dto, creatorID)
@@ -112,17 +115,6 @@ func (h *Handler) updateKeyPoint(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	enc.Encode(kp)
-}
-
-func (h *Handler) deleteKeyPoint(w http.ResponseWriter, r *http.Request) {
-	tourID := r.PathValue("tour_id")
-	kpID := r.PathValue("kp_id")
-	err := h.service.DeleteKeyPoint(kpID, tourID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h *Handler) getKeyPoints(w http.ResponseWriter, r *http.Request) {
@@ -217,4 +209,30 @@ func (h *Handler) deleteReview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) getMyTours(w http.ResponseWriter, r *http.Request) {
+	creatorID := r.Header.Get("X-User-ID")
+	tours, err := h.service.GetMyTours(creatorID)
+	if err != nil {
+		http.Error(w, "Greška prilikom dohvatanja tura autora", http.StatusInternalServerError)
+		return
+	}
+
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(tours)
+}
+
+func (h *Handler) deleteKeyPoint(w http.ResponseWriter, r *http.Request) {
+	kpID := r.PathValue("id")
+	err := h.service.DeleteKeyPoint(kpID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message": "Ključna tačka je uspešno obrisana"}`))
 }

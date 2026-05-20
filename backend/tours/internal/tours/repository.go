@@ -22,6 +22,10 @@ type Repository interface {
 	GetAllTours() ([]Tour, error)
 	GetPositionByTouristID(touristID string) (*TouristPosition, error)
 	DeleteReview(reviewID string, touristID string) error
+	GetToursByCreatorID(creatorID string) ([]Tour, error)
+	GetKeyPointByID(id string) (*KeyPoint, error)
+	UpdateKeyPoint(kp *KeyPoint) error
+	DeleteKeyPoint(id string) error
 }
 
 type PostgresRepo struct {
@@ -56,18 +60,10 @@ func (r *PostgresRepo) SaveKeyPoint(kp *KeyPoint) error {
 	return r.db.Create(kp).Error
 }
 
-func (r *PostgresRepo) UpdateKeyPoint(kp *KeyPoint) error {
-	return r.db.Save(kp).Error
-}
-
 func (r *PostgresRepo) GetKeyPointsByTourID(tourID string) ([]KeyPoint, error) {
 	var keyPoints []KeyPoint
 	err := r.db.Where("tour_id = ?", tourID).Find(&keyPoints).Error
 	return keyPoints, err
-}
-
-func (r *PostgresRepo) DeleteKeyPoint(kpID string) error {
-	return r.db.Delete(&KeyPoint{}, "id = ?", kpID).Error
 }
 
 func (r *PostgresRepo) SaveReview(review *Review) error {
@@ -107,4 +103,24 @@ func (r *PostgresRepo) DeleteReview(reviewID string, touristID string) error {
 		return errors.New("review nije pronađen ili nemate pravo da ga obrišete")
 	}
 	return nil
+}
+
+func (r *PostgresRepo) GetToursByCreatorID(creatorID string) ([]Tour, error) {
+	var tours []Tour
+	err := r.db.Preload("KeyPoints").Where("creator_id = ?", creatorID).Find(&tours).Error
+	return tours, err
+}
+
+func (r *PostgresRepo) GetKeyPointByID(id string) (*KeyPoint, error) {
+	var kp KeyPoint
+	err := r.db.First(&kp, "id = ?", id).Error
+	return &kp, err
+}
+
+func (r *PostgresRepo) UpdateKeyPoint(kp *KeyPoint) error {
+	return r.db.Save(kp).Error
+}
+
+func (r *PostgresRepo) DeleteKeyPoint(id string) error {
+	return r.db.Delete(&KeyPoint{}, "id = ?", id).Error
 }
