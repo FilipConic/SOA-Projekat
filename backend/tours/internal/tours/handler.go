@@ -21,6 +21,8 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("POST /api/tours/keypoints/new/{tour_id}", h.addKeyPoint)
 	mux.HandleFunc("PUT /api/tours/keypoints/update/{tour_id}/{kp_id}", h.updateKeyPoint)
+	mux.HandleFunc("DELETE /api/tours/keypoints/delete/{tour_id}/{kp_id}", h.deleteKeyPoint)
+	mux.HandleFunc("GET /api/tours/keypoints/find/{tour_id}", h.getKeyPoints)
 	mux.HandleFunc("POST /api/tours/reviews/new/{tour_id}", h.addReview)
 	mux.HandleFunc("GET /api/tours/reviews/{tour_id}", h.getReviewsByTourID)
 	mux.HandleFunc("GET /api/tours/tourists/reviews/{tourist_id}", h.getReviewsByTouristID)
@@ -110,6 +112,29 @@ func (h *Handler) updateKeyPoint(w http.ResponseWriter, r *http.Request) {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	enc.Encode(kp)
+}
+
+func (h *Handler) deleteKeyPoint(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	kpID := r.PathValue("kp_id")
+	err := h.service.DeleteKeyPoint(kpID, tourID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) getKeyPoints(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	keyPoints, err := h.service.GetKeyPointsByTourID(tourID)
+	if err != nil {
+		http.Error(w, "Tura nije pronađena", http.StatusNotFound)
+		return
+	}
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(keyPoints)
 }
 
 func (h *Handler) addReview(w http.ResponseWriter, r *http.Request) {

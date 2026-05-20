@@ -112,6 +112,28 @@ func (s *Service) UpdateKeyPoint(kpID string, tourID string, dto CreateKeyPointD
 	return kp, err
 }
 
+func (s *Service) DeleteKeyPoint(kpID string, tourID string) error {
+	tour, err := s.repo.GetTourByID(tourID)
+	if err != nil {
+		return errors.New("tura nije pronađena")
+	}
+	var kp *KeyPoint
+	for i := range tour.KeyPoints {
+		if tour.KeyPoints[i].ID == kpID {
+			kp = &tour.KeyPoints[i]
+			break
+		}
+	}
+	if kp == nil {
+		return errors.New("ključna tačka nije pronađena")
+	}
+	return s.repo.DeleteKeyPoint(kpID)
+}
+
+func (s *Service) GetKeyPointsByTourID(tourID string) ([]KeyPoint, error) {
+	return s.repo.GetKeyPointsByTourID(tourID)
+}
+
 func (s *Service) AddReview(tourID string, dto CreateReviewDTO) (*Review, error) {
 	if dto.Rating < 1 || dto.Rating > 5 {
 		return nil, errors.New("ocena mora biti između 1 i 5")

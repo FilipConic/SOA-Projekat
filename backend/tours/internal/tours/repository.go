@@ -13,6 +13,8 @@ type Repository interface {
 	GetTourByID(id string) (*Tour, error)
 	SaveKeyPoint(kp *KeyPoint) error
 	UpdateKeyPoint(kp *KeyPoint) error
+	GetKeyPointsByTourID(tourID string) ([]KeyPoint, error)
+	DeleteKeyPoint(kpID string) error
 	SaveReview(review *Review) error
 	SavePosition(position *TouristPosition) error
 	GetReviewsByTourID(tourID string) ([]Review, error)
@@ -56,6 +58,16 @@ func (r *PostgresRepo) SaveKeyPoint(kp *KeyPoint) error {
 
 func (r *PostgresRepo) UpdateKeyPoint(kp *KeyPoint) error {
 	return r.db.Save(kp).Error
+}
+
+func (r *PostgresRepo) GetKeyPointsByTourID(tourID string) ([]KeyPoint, error) {
+	var keyPoints []KeyPoint
+	err := r.db.Where("tour_id = ?", tourID).Find(&keyPoints).Error
+	return keyPoints, err
+}
+
+func (r *PostgresRepo) DeleteKeyPoint(kpID string) error {
+	return r.db.Delete(&KeyPoint{}, "id = ?", kpID).Error
 }
 
 func (r *PostgresRepo) SaveReview(review *Review) error {
