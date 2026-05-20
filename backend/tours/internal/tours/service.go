@@ -40,10 +40,13 @@ func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error)
 	return tour, err
 }
 
-func (s *Service) UpdateTour(id string, dto UpdateTourDTO) (*Tour, error) {
+func (s *Service) UpdateTour(id string, dto UpdateTourDTO, creatorID string) (*Tour, error) {
 	tour, err := s.repo.GetTourByID(id)
 	if err != nil {
 		return nil, errors.New("tura nije pronađena")
+	}
+	if tour.CreatorID != creatorID {
+		return nil, errors.New("nemate pravo da ažurirate ovu turu")
 	}
 
 	tour.Title = dto.Title

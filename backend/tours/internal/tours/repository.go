@@ -12,9 +12,7 @@ type Repository interface {
 	UpdateTour(tour *Tour) error
 	GetTourByID(id string) (*Tour, error)
 	SaveKeyPoint(kp *KeyPoint) error
-	UpdateKeyPoint(kp *KeyPoint) error
 	GetKeyPointsByTourID(tourID string) ([]KeyPoint, error)
-	DeleteKeyPoint(kpID string) error
 	SaveReview(review *Review) error
 	SavePosition(position *TouristPosition) error
 	GetReviewsByTourID(tourID string) ([]Review, error)
