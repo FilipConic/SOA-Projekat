@@ -6,7 +6,7 @@
   <div class="navbar-actions">
     <ng-container *ngIf="isLoggedIn">
       <button class="nav-btn" (click)="onProfileClick()">My Profile</button>
-      <button class="nav-btn" (click)="onMyToursClick()">My Tours</button>
+      <button *ngIf="isGuide" class="nav-btn" (click)="onMyToursClick()">My Tours</button>
       <button class="nav-btn logout-btn" (click)="onLogoutClick()">Logout</button>
     </ng-container>
 

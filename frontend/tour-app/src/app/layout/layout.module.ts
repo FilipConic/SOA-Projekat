@@ -12,6 +12,8 @@ import { ReviewTourComponent } from './tour-review/tour-review.component';
 import { TourCreateComponent } from './tour-create/tour-create.component';
 import { KeypointModalComponent } from './keypoint-modal/keypoint-modal.component';
 import { TourEditComponent } from './tour-edit/tour-edit.component';
+import { MyToursComponent } from './my-tours/my-tours.component';
+import { FollowRecommendationsComponent } from './follow-recommendations/follow-recommendations.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { TourEditComponent } from './tour-edit/tour-edit.component';
     ReviewTourComponent,
     TourCreateComponent,
     KeypointModalComponent,
-    TourEditComponent
+    TourEditComponent,
+    MyToursComponent,
+    FollowRecommendationsComponent
   ],
   imports: [
     CommonModule,

@@ -6,6 +6,7 @@ import { HomeComponent } from 'src/app/layout/home/home.component';
 import { TourDetailsComponent } from 'src/app/layout/tourDetails/tour-details.component';
 import { TourCreateComponent } from 'src/app/layout/tour-create/tour-create.component';
 import { TourEditComponent } from 'src/app/layout/tour-edit/tour-edit.component';
+import { MyToursComponent } from 'src/app/layout/my-tours/my-tours.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -13,7 +14,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
   { path: 'tour/:id', component: TourDetailsComponent },
-  { path: 'my-tours', component: TourCreateComponent},
+  { path: 'my-tours', component: MyToursComponent},
   { path: 'tour/edit/:id', component: TourEditComponent}
 ];
 

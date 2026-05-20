@@ -14,7 +14,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
   providedIn: 'root'
 })
 export class AuthService {
-    user$ = new BehaviorSubject<User>({id: '', email: ''});
+    user$ = new BehaviorSubject<User>({id: '', email: '', role: ''});
 
     get currentUser(): User {
         return this.user$.value;
@@ -48,7 +48,7 @@ export class AuthService {
                     next: () => {
                         console.log('Logged out successfully');
                         this.tokenStorage.clear();
-                        this.user$.next({email: "", id: ''});
+                        this.user$.next({email: "", id: '', role: ''});
                     },
                     error: (err) => {
                         console.error('Error occurred while logging out:', err);
@@ -64,6 +64,7 @@ export class AuthService {
         const decodedToken = jwtHelperService.decodeToken(accessToken);
         const user: User = {
             id: decodedToken.user_id,
+            role: decodedToken.role,
             email: decodedToken.email,
         };
 
