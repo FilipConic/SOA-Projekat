@@ -19,7 +19,6 @@ export class KeypointModalComponent implements OnInit {
   base64ImageStr: string = ''; 
   imagePreview: string | null = null; 
 
-  // --- Svojstva prilagođena tipovima iz tvoje xp-map komponente ---
   modalMapType: 'default' | 'createWaypoint' | 'updateWaypoint' | 'showRoute' | 'showWaypoints' = 'createWaypoint';
   modalWaypoints: L.LatLng[] = [];
   modalWaypointToUpdate?: L.LatLng;
@@ -33,11 +32,9 @@ export class KeypointModalComponent implements OnInit {
       this.imagePreview = this.keypointData.Image;
     }
 
-    // Ako menjamo postojeću tačku, pretvaramo koordinate u L.LatLng objekte
     if (this.keypointData) {
       this.modalMapType = 'updateWaypoint';
       
-      // Kreiramo Leaflet LatLng instancu
       const existingLocation = L.latLng(this.keypointData.Latitude, this.keypointData.Longitude);
       
       this.modalWaypoints = [existingLocation];
@@ -54,11 +51,9 @@ export class KeypointModalComponent implements OnInit {
     });
   }
 
-  // Tvoja xp-map komponenta kroz newWaypoint emituje L.LatLng objekat
   onMapClick(coord: L.LatLng) {
     if (!coord) return;
 
-    // Iz L.LatLng objekta bezbedno uzimamo .lat i .lng svojstva
     this.keypointForm.patchValue({
       latitude: coord.lat,
       longitude: coord.lng
@@ -88,10 +83,8 @@ export class KeypointModalComponent implements OnInit {
   }
 
   onSave() {
-      // Označavamo sva polja kao taknuta (touched) da bi se prikazale crvene poruke ako ih ima
     this.keypointForm.markAllAsTouched();
 
-    // Ako je forma nevalidna, ispisujemo u konzoli tačan razlog umesto da ćutimo
     if (this.keypointForm.invalid) {
       console.warn('Forma je nevalidna! Proveri unose:', this.keypointForm.value);
       alert('Please fill in all required fields and select a location on the map.');

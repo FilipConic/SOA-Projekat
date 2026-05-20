@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TourService } from '../../services/tour.service';
+import { CreateTourDTO } from 'src/app/models/tour.model';
 
 @Component({
   selector: 'app-tour-create',
@@ -25,8 +26,14 @@ export class TourCreateComponent {
 
   onSubmit() {
     if (this.tourForm.valid) {
-      this.tourService.createTour(this.tourForm.value).subscribe((newTour) => {
-        // Redirect to the edit page with the new tour ID
+      const tags = this.tourForm.value.tags.split(',').map((tag: string) => tag.trim());
+      const payload: CreateTourDTO = {
+        Title: this.tourForm.value.title,
+        Description: this.tourForm.value.description,
+        Difficulty: this.tourForm.value.difficulty,
+        Tags: tags
+      }
+      this.tourService.createTour(payload).subscribe((newTour) => {
         this.router.navigate(['/tour/edit', newTour.ID]);
       });
     }

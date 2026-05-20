@@ -11,7 +11,7 @@ import { Tour, KeyPoint, UpdateTourDTO } from '../../models/tour.model';
   styleUrls: ['./tour-edit.component.css']
 })
 export class TourEditComponent implements OnInit {
-  tourId!: string; // PROMENJENO u string
+  tourId!: string;
   tourForm!: FormGroup;
   originalTour!: Tour; // Čuvamo originalnu turu kako bismo zadržali Price, Duration i ostalo
   
@@ -32,7 +32,6 @@ export class TourEditComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Uzimamo ID iz rute kao string
     this.tourId = this.route.snapshot.paramMap.get('id') || '';
     this.initForm();
     this.loadTourData();
@@ -43,26 +42,22 @@ export class TourEditComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', Validators.required],
       difficulty: ['Easy', Validators.required],
-      tags: [''] // Ovo je tekstualno polje koje pretvaramo u niz pri čuvanju
+      tags: ['']
     });
   }
 
   loadTourData() {
-    // 1. Učitavanje detalja ture
     this.tourService.getTour(this.tourId).subscribe(tour => {
       this.originalTour = tour;
       
-      // Ručno mapiramo PascalCase iz modela u camelCase u formi
       this.tourForm.patchValue({
         title: tour.Title,
         description: tour.Description,
         difficulty: tour.Difficulty,
-        // Pretvaramo niz tagova u string odvojen zarezima (npr. "priroda, planinarenje")
         tags: tour.Tags && tour.Tags.length > 0 ? tour.Tags.join(', ') : ''
       });
     });
 
-    // 2. Učitavanje ključnih tačaka
     this.fetchKeypoints();
   }
 
@@ -75,7 +70,6 @@ export class TourEditComponent implements OnInit {
   }
 
   updateMapData() {
-    // Koristimo veliko početno slovo za Latitude i Longitude (PascalCase)
     this.mapWaypoints = this.keypoints.map(kp => L.latLng(kp.Latitude, kp.Longitude));
     this.mapWaypointNames = this.keypoints.map(kp => kp.Name);
   }
@@ -84,22 +78,18 @@ export class TourEditComponent implements OnInit {
     if (this.tourForm.valid) {
       const formValues = this.tourForm.value;
       
-      // Kreiramo UpdateTourDTO koji zadržava i nepromenjena polja (Price, Duration, Status)
       const updatePayload: UpdateTourDTO = {
         Title: formValues.title,
         Description: formValues.description,
         Difficulty: formValues.difficulty,
-        // Razbijamo string nazad u niz, eliminišemo prazna mesta
         Tags: formValues.tags 
           ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
           : [],
         Price: this.originalTour?.Price || 0,
         Duration: this.originalTour?.Duration || 0,
-        // Kastujemo string da zadovolji union tip 'draft' | 'published' | 'archived'
         Status: (this.originalTour?.Status as any) || 'draft'
       };
 
-      // Pretpostavljam da servis očekuje ID (string) i DTO
       this.tourService.updateTour(this.tourId, updatePayload)
         .subscribe(() => alert('Detalji ture uspešno sačuvani!'));
     }
