@@ -1,0 +1,23 @@
+<div class="create-container">
+  <h2>Create a New Tour</h2>
+  <form [formGroup]="tourForm" (ngSubmit)="onSubmit()">
+    
+    <label>Title</label>
+    <input type="text" formControlName="title" placeholder="Tour Title">
+
+    <label>Description</label>
+    <textarea formControlName="description" placeholder="Describe the tour..."></textarea>
+
+    <label>Difficulty</label>
+    <select formControlName="difficulty">
+      <option value="Easy">Easy</option>
+      <option value="Medium">Medium</option>
+      <option value="Hard">Hard</option>
+    </select>
+
+    <label>Tags (comma separated)</label>
+    <input type="text" formControlName="tags" placeholder="nature, hiking, view">
+
+    <button type="submit" [disabled]="tourForm.invalid">Save Tour</button>
+  </form>
+</div>

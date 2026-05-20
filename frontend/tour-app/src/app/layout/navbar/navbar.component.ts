@@ -31,6 +31,10 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  onMyToursClick(): void {
+    this.router.navigate(['/my-tours']);
+  }
+
   onLogoutClick(): void {
     this.authService.logout();
   }

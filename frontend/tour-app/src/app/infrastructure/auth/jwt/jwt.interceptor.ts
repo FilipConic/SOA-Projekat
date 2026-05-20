@@ -23,7 +23,8 @@ export class JwtInterceptor implements HttpInterceptor {
         if (token && !isRefreshRequest) {
             request = this.addTokenHeader(request, token);
         }
-
+        console.log("Intercepted request:", request);
+        
         return next.handle(request).pipe(
             catchError((error) => {
                 // If the error status code is 401, attempt to refresh tokens

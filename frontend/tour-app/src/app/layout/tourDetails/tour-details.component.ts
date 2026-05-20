@@ -20,7 +20,7 @@ export class TourDetailsComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
 
-    this.tourService.getTourById(id).subscribe(data => {
+    this.tourService.getTour(id).subscribe(data => {
       console.log("DATA:", data);
       this.tour = data;
       console.log("ASSIGNED TOUR:", this.tour);

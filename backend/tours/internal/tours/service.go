@@ -57,7 +57,7 @@ func (s *Service) UpdateTour(id string, dto UpdateTourDTO, creatorID string) (*T
 	tour.Tags = dto.Tags
 	tour.Duration = dto.Duration
 
-	err = s.repo.SaveTour(tour)
+	err = s.repo.UpdateTour(tour)
 	return tour, err
 }
 
@@ -112,6 +112,7 @@ func (s *Service) DeleteKeyPoint(id string) error {
 }
 
 func (s *Service) UpdateKeyPoint(kpID string, tourID string, dto CreateKeyPointDTO) (*KeyPoint, error) {
+	var imagePath string
 	tour, err := s.repo.GetTourByID(tourID)
 	if err != nil {
 		return nil, errors.New("tura nije pronađena")
@@ -123,17 +124,25 @@ func (s *Service) UpdateKeyPoint(kpID string, tourID string, dto CreateKeyPointD
 			break
 		}
 	}
+
 	if kp == nil {
 		return nil, errors.New("ključna tačka nije pronađena")
+	}
+	if dto.Image != "" {
+		imagePath, err = saveBase64Image(dto.Image)
+		if err != nil {
+			return nil, fmt.Errorf("greška pri čuvanju slike: %v", err)
+		}
+		if kp.Image != "" {
+			_ = os.Remove(kp.Image)
+		}
+		kp.Image = imagePath
 	}
 	if dto.Name != "" {
 		kp.Name = dto.Name
 	}
 	if dto.Description != "" {
 		kp.Description = dto.Description
-	}
-	if dto.Image != "" {
-		kp.Image = dto.Image
 	}
 	if dto.Latitude != 0 {
 		kp.Latitude = dto.Latitude
@@ -146,7 +155,20 @@ func (s *Service) UpdateKeyPoint(kpID string, tourID string, dto CreateKeyPointD
 }
 
 func (s *Service) GetKeyPointsByTourID(tourID string) ([]KeyPoint, error) {
-	return s.repo.GetKeyPointsByTourID(tourID)
+	kps, err := s.repo.GetKeyPointsByTourID(tourID)
+	if err != nil {
+		return nil, err
+	}
+	for i := range kps {
+		if kps[i].Image != "" {
+			dataURI, err := loadImageAsBase64(kps[i].Image)
+			if err != nil {
+				return nil, fmt.Errorf("greška pri učitavanju slike: %v", err)
+			}
+			kps[i].Image = dataURI
+		}
+	}
+	return kps, nil
 }
 
 func (s *Service) AddReview(tourID string, dto CreateReviewDTO) (*Review, error) {
@@ -223,4 +245,36 @@ func saveBase64Image(base64Str string) (string, error) {
 	}
 
 	return filePath, nil
+}
+
+func loadImageAsBase64(filePath string) (string, error) {
+	// 1. Read the entire file from disk into a byte slice
+	fileBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	// 2. Encode the binary bytes into a standard base64 string
+	base64Str := base64.StdEncoding.EncodeToString(fileBytes)
+
+	// 3. Determine the correct MIME type based on the file extension
+	// Your save function hardcodes ".png", but this keeps it flexible just in case.
+	mimeType := "image/png" // Fallback default
+	ext := strings.ToLower(filepath.Ext(filePath))
+
+	switch ext {
+	case ".jpg", ".jpeg":
+		mimeType = "image/jpeg"
+	case ".png":
+		mimeType = "image/png"
+	case ".gif":
+		mimeType = "image/gif"
+	case ".webp":
+		mimeType = "image/webp"
+	}
+
+	// 4. Construct the Data URI format that your Angular template expects
+	dataURI := fmt.Sprintf("data:%s;base64,%s", mimeType, base64Str)
+
+	return dataURI, nil
 }

@@ -4,8 +4,54 @@ export interface Tour {
   CreatorID: string;
   Description: string;
   Price: number;
+  Difficulty: string;
+  Tags: string[];
+  Status: 'draft' | 'published' | 'archived';
   Duration: number;
   CreatedAt: string;
+}
+
+export interface CreateTourDTO {
+  Title: string;
+  Description: string;
+  Difficulty: string;
+  Tags: string[];
+}
+
+export interface UpdateTourDTO {
+  Title: string;
+  Description: string;
+  Difficulty: string;
+  Tags: string[];
+  Price: number;
+  Duration: number;
+  Status: 'draft' | 'published' | 'archived';
+}
+
+export interface CreateKeyPointDTO {
+  Name: string;
+  Description: string;
+  Image: string;
+  Latitude: number;
+  Longitude: number;
+}
+
+export interface UpdateKeyPointDTO {
+  Name?: string;
+  Description?: string;
+  Image?: string;
+  Latitude?: number;
+  Longitude?: number;
+}
+
+export interface KeyPoint {
+  ID: string;
+  TourID: string;
+  Name: string;
+  Description: string;
+  Image: string;
+  Latitude: number;
+  Longitude: number;
 }
 
 export interface ReviewTour {

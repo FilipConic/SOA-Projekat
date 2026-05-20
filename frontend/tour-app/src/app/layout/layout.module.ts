@@ -9,6 +9,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { TourDetailsComponent } from './tourDetails/tour-details.component';
 import { ReviewTourComponent } from './tour-review/tour-review.component';
+import { TourCreateComponent } from './tour-create/tour-create.component';
+import { KeypointModalComponent } from './keypoint-modal/keypoint-modal.component';
+import { TourEditComponent } from './tour-edit/tour-edit.component';
 
 
 @NgModule({
@@ -19,7 +22,10 @@ import { ReviewTourComponent } from './tour-review/tour-review.component';
     HomeComponent,
     NavbarComponent,
     TourDetailsComponent,
-    ReviewTourComponent
+    ReviewTourComponent,
+    TourCreateComponent,
+    KeypointModalComponent,
+    TourEditComponent
   ],
   imports: [
     CommonModule,
@@ -28,6 +34,7 @@ import { ReviewTourComponent } from './tour-review/tour-review.component';
   ],
   exports: [
     NavbarComponent,
+    MapComponent
   ]
 })
 export class LayoutModule { }

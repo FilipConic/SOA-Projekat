@@ -22,8 +22,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() markerClicked = new EventEmitter<number>();
 
   // =============== LEAF ICON SECTION ===============
-  private defaultMarkerUrl: string = "https://localhost:44333/images/defaultMarker.png";
-  private shadowUrl: string = "https://localhost:44333/images/shadow.png";
+  private defaultMarkerUrl: string = "https://unpkg.com/leaflet@1.6.0/dist/images/marker-icon.png";
+  private shadowUrl: string = "https://unpkg.com/leaflet@1.6.0/dist/images/marker-shadow.png";
   private markerWidth: number = 60;
   private markerHeight: number = 60;
   private shadowWidth: number = 60;
