@@ -42,7 +42,8 @@ export class TourEditComponent implements OnInit {
       title: ['', Validators.required],
       description: ['', Validators.required],
       difficulty: ['Easy', Validators.required],
-      tags: ['']
+      tags: [''],
+      price: [0, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -54,7 +55,8 @@ export class TourEditComponent implements OnInit {
         title: tour.Title,
         description: tour.Description,
         difficulty: tour.Difficulty,
-        tags: tour.Tags && tour.Tags.length > 0 ? tour.Tags.join(', ') : ''
+        tags: tour.Tags && tour.Tags.length > 0 ? tour.Tags.join(', ') : '',
+        price: tour.Price
       });
     });
 
@@ -85,10 +87,11 @@ export class TourEditComponent implements OnInit {
         Tags: formValues.tags 
           ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
           : [],
-        Price: this.originalTour?.Price || 0,
+        Price: formValues.price,
         Duration: this.originalTour?.Duration || 0,
         Status: (this.originalTour?.Status as any) || 'draft'
       };
+      console.log("Payload za ažuriranje ture:", updatePayload);
 
       this.tourService.updateTour(this.tourId, updatePayload)
         .subscribe(() => alert('Detalji ture uspešno sačuvani!'));

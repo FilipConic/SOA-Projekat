@@ -25,6 +25,7 @@
             <option value="Hard">Hard</option>
           </select>
           <input type="text" formControlName="tags" placeholder="Tags (comma separated)">
+          <input type="number" formControlName="price" placeholder="Price" step="0.1" min="0">
         </div>
         
         <button type="submit" class="btn-primary" [disabled]="tourForm.invalid">Save Changes</button>
