@@ -20,6 +20,6 @@ export class FollowersService {
     }
 
     unfollowUser(userId: string): Observable<void> {
-        return this.http.post<void>(`${this.baseUrl}/unfollow/${userId}`, {});
+        return this.http.delete<void>(`${this.baseUrl}/unfollow/${userId}`, {});
     }
 }

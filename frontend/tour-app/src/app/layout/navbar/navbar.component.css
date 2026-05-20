@@ -14,6 +14,10 @@
   color: #1a1a1a;
 }
 
+.navbar-brand:hover {
+  cursor: pointer;
+}
+
 .navbar-actions {
   display: flex;
   gap: 1rem;

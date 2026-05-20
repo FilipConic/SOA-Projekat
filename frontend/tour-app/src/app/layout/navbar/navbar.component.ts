@@ -26,7 +26,7 @@ export class NavbarComponent implements OnInit {
   }
 
   onProfileClick(): void {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/follow-recommendations']);
   }
 
   onLoginClick(): void {
@@ -39,5 +39,9 @@ export class NavbarComponent implements OnInit {
 
   onLogoutClick(): void {
     this.authService.logout();
+  }
+
+  onBrandClick(): void {
+    this.router.navigate(['/']);
   }
 }

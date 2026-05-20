@@ -1,0 +1,95 @@
+.recommendations-box {
+  background: #ffffff;
+  border: 1px solid #e1e8ed;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 360px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.recommendations-box h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.15rem;
+  color: #15181c;
+  font-weight: 800;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-placeholder {
+  width: 38px;
+  height: 38px;
+  background-color: #eff3f4;
+  color: #536471;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.username {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f1419;
+}
+
+button {
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Follow Button State */
+.btn-follow {
+  background-color: #0f1419;
+  color: #ffffff;
+}
+
+.btn-follow:hover {
+  background-color: #272c30;
+}
+
+/* Unfollow Button State */
+.btn-unfollow {
+  background-color: transparent;
+  color: #0f1419;
+  border-color: #cfd9de;
+}
+
+.btn-unfollow:hover {
+  background-color: #ffeef0;
+  color: #f4212e;
+  border-color: #fdc7cc;
+}
+
+.state-message {
+  text-align: center;
+  color: #536471;
+  font-size: 0.95rem;
+  padding: 10px 0;
+}

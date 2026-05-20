@@ -7,6 +7,7 @@ import { TourDetailsComponent } from 'src/app/layout/tourDetails/tour-details.co
 import { TourCreateComponent } from 'src/app/layout/tour-create/tour-create.component';
 import { TourEditComponent } from 'src/app/layout/tour-edit/tour-edit.component';
 import { MyToursComponent } from 'src/app/layout/my-tours/my-tours.component';
+import { FollowRecommendationsComponent } from 'src/app/layout/follow-recommendations/follow-recommendations.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -15,7 +16,8 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'tour/:id', component: TourDetailsComponent },
   { path: 'my-tours', component: MyToursComponent},
-  { path: 'tour/edit/:id', component: TourEditComponent}
+  { path: 'tour/edit/:id', component: TourEditComponent},
+  { path: 'follow-recommendations', component: FollowRecommendationsComponent }
 ];
 
 @NgModule({

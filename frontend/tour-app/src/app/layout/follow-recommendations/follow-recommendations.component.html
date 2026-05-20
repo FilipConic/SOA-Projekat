@@ -1,1 +1,32 @@
-<p>follow-recommendations works!</p>
+<div class="recommendations-box">
+  <h3>Who to follow</h3>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="state-message">
+    <p>Finding suggestions...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && users.length === 0" class="state-message">
+    <p>No new recommendations found.</p>
+  </div>
+
+  <!-- Recommendations List -->
+  <ul *ngIf="!isLoading && users.length > 0" class="user-list">
+    <li *ngFor="let user of users" class="user-item">
+      <div class="user-profile">
+        <div class="avatar-placeholder">
+          {{ user.username.charAt(0).toUpperCase() }}
+        </div>
+        <span class="username">@{{ user.username }}</span>
+      </div>
+
+      <button 
+        [class.btn-follow]="!isUserFollowed(user.id)" 
+        [class.btn-unfollow]="isUserFollowed(user.id)"
+        (click)="toggleFollow(user)">
+        {{ isUserFollowed(user.id) ? 'Unfollow' : 'Follow' }}
+      </button>
+    </li>
+  </ul>
+</div>
