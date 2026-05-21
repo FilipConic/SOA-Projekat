@@ -1,0 +1,142 @@
+* {
+  font-family: 'Arial', sans-serif;
+}
+
+.my-tours-container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.tour-count {
+  background: #e1f5fe;
+  color: #0288d1;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.tours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.tour-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.tour-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.tour-title {
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.tour-description {
+  color: #666;
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.tour-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.badge-price {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.card-actions {
+  padding: 15px 20px;
+  background: #fcfcfc;
+  border-top: 1px solid #eee;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-view {
+  display: inline-block;
+  background: #2196f3;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-view:hover {
+  background: #1976d2;
+}
+
+.loading-state, .empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  font-size: 1.1rem;
+}
+
+.create-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+}
+
+.create-btn:hover {
+  background: #f5f5f5;
+}

@@ -39,7 +39,7 @@ type TourDTO struct {
 type CreateKeyPointDTO struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Image       string  `json:"image_base64"`
+	Image       string  `json:"image"`
 	Latitude    float64 `json:"latitude"`
 	Longitude   float64 `json:"longitude"`
 }
@@ -47,7 +47,7 @@ type CreateKeyPointDTO struct {
 type UpdateKeyPointDTO struct {
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	ImageBase64 string  `json:"image_base64"`
+	Image       string  `json:"image"`
 	Latitude    float64 `json:"latitude"`
 	Longitude   float64 `json:"longitude"`
 }
@@ -57,7 +57,7 @@ type KeyPointDTO struct {
 	TourID      string  `json:"tour_id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
-	Image       string  `json:"image_url"`
+	Image       string  `json:"image"`
 	Latitude    float64 `json:"latitude"`
 	Longitude   float64 `json:"longitude"`
 }

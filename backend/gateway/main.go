@@ -33,11 +33,11 @@ var protectedRoutes = map[auth.Permission]bool{
 
 	{Path: "/api/followers", Role: auth.RoleTourist}:                 true,
 	{Path: "/api/tours/new", Role: auth.RoleGuide}:                   true,
-	{Path: "/api/tours/find", Role: auth.RoleTourist}:                true,
+	{Path: "/api/tours/find/", Role: auth.RoleTourist}:               true,
 	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}:         true,
 	{Path: "/api/tours/reviews/", Role: auth.RoleTourist}:            true,
 	{Path: "/api/tours/tourists/", Role: auth.RoleTourist}:           true,
-	{Path: "/api/tours/update", Role: auth.RoleGuide}:                true,
+	{Path: "/api/tours/update/", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/find-my", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/keypoints/delete", Role: auth.RoleGuide}:      true,
 	{Path: "/api/followers/follow/", Role: auth.RoleTourist}:         true,
@@ -47,6 +47,8 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/my-following", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/recommendations", Role: auth.RoleTourist}: true,
+
+	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -89,6 +91,9 @@ func main() {
 		stakeholderRestProxy.ServeHTTP(res, req)
 	})
 	mainMux.HandleFunc("/api/users/", func(res http.ResponseWriter, req *http.Request) {
+		stakeholderRestProxy.ServeHTTP(res, req)
+	})
+	mainMux.HandleFunc("/api/profiles/", func(res http.ResponseWriter, req *http.Request) {
 		stakeholderRestProxy.ServeHTTP(res, req)
 	})
 	mainMux.HandleFunc("/api/followers/", func(res http.ResponseWriter, req *http.Request) {

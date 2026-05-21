@@ -1,0 +1,42 @@
+* {
+  font-family: 'Arial', sans-serif;
+}
+
+.simulator-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: gray;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.position-info {
+  margin-bottom: 12px;
+  font-size: 14px;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.position-info.muted {
+  color: gray;
+}
+
+.label {
+  margin-right: 6px;
+  color: gray;
+}
+
+.coords {
+  font-weight: 600;
+  font-family: monospace;
+}

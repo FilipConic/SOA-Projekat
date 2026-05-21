@@ -1,9 +1,13 @@
-import { Pool } from "pg";
+import { MongoClient } from "mongodb";
 
-export const pool = new Pool({
-  host: process.env.DB_HOST || "localhost",
-  port: Number(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || "blogdb",
-  user: process.env.DB_USER || "postgres",
-  password: process.env.DB_PASSWORD || "postgres",
-});
+const uri = process.env.MONGO_URI!;
+
+if (!uri) {
+	throw new Error("MONGO_URI is missing");
+}
+
+export const client = new MongoClient(uri);
+export const db = client.db("blogdb");
+
+// bun add mongodb
+// npm install mongodb

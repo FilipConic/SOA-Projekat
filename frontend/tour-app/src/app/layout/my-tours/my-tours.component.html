@@ -1,0 +1,43 @@
+<div class="my-tours-container">
+  <div class="header-row">
+    <h2>My Created Tours</h2>
+    <span class="tour-count" *ngIf="tours.length">{{ tours.length }} tours found</span>
+    <button class="create-btn" (click)="onCreateClick()">+</button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading your tours...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && tours.length === 0" class="empty-state">
+    <p>You haven't created any tours yet.</p>
+  </div>
+
+  <!-- Tours Grid -->
+  <div *ngIf="!isLoading && tours.length > 0" class="tours-grid">
+    <div *ngFor="let tour of tours" class="tour-card">
+      <div class="card-content">
+        <h3 class="tour-title">{{ tour.Title }}</h3>
+        <p class="tour-description">{{ tour.Description }}</p>
+
+        <div class="tour-badges">
+          <span class="badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            {{ tour.Duration }} min
+          </span>
+          <span class="badge badge-price">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            {{ tour.Price }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <!-- Links directly to your TourDetailsComponent using the tour ID -->
+        <a [routerLink]="['/tour/edit', tour.ID]" class="btn-view">Edit Tour</a>
+      </div>
+    </div>
+  </div>
+</div>

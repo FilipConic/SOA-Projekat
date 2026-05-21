@@ -1,0 +1,21 @@
+<div class="blog-list-container">
+  <div class="blog-list-header">
+    <button class="create-btn" (click)="onCreateClick()">+</button>
+  </div>
+  <div class="loading" *ngIf="loading">
+    <p>Loading blogs...</p>
+  </div>
+
+  <div class="empty" *ngIf="!loading && blogs.length === 0">
+    <p>No blogs yet.</p>
+  </div>
+
+  <ng-container *ngIf="likedBlogIds !== null">
+    <app-blog-card
+      *ngFor="let blog of blogs"
+      [blog]="blog"
+      [likedBlogIds]="likedBlogIds"
+      [currentUserId]="currentUserId">
+    </app-blog-card>
+  </ng-container>
+</div>

@@ -1,0 +1,9 @@
+<div class="snackbar" [class.visible]="showSnackbar">
+  You must be logged in to view tour details.
+</div>
+
+<div class="tour-container">
+  <div class="tour-card" *ngFor="let t of tours" (click)="tourDetails(t.ID)">
+    {{ t.Title }}
+  </div>
+</div>

@@ -40,10 +40,13 @@ func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error)
 	return tour, err
 }
 
-func (s *Service) UpdateTour(id string, dto UpdateTourDTO) (*Tour, error) {
+func (s *Service) UpdateTour(id string, dto UpdateTourDTO, creatorID string) (*Tour, error) {
 	tour, err := s.repo.GetTourByID(id)
 	if err != nil {
 		return nil, errors.New("tura nije pronađena")
+	}
+	if tour.CreatorID != creatorID {
+		return nil, errors.New("nemate pravo da ažurirate ovu turu")
 	}
 
 	tour.Title = dto.Title
@@ -54,7 +57,7 @@ func (s *Service) UpdateTour(id string, dto UpdateTourDTO) (*Tour, error) {
 	tour.Tags = dto.Tags
 	tour.Duration = dto.Duration
 
-	err = s.repo.SaveTour(tour)
+	err = s.repo.UpdateTour(tour)
 	return tour, err
 }
 
@@ -108,6 +111,66 @@ func (s *Service) DeleteKeyPoint(id string) error {
 	return s.repo.DeleteKeyPoint(id)
 }
 
+func (s *Service) UpdateKeyPoint(kpID string, tourID string, dto CreateKeyPointDTO) (*KeyPoint, error) {
+	var imagePath string
+	tour, err := s.repo.GetTourByID(tourID)
+	if err != nil {
+		return nil, errors.New("tura nije pronađena")
+	}
+	var kp *KeyPoint
+	for i := range tour.KeyPoints {
+		if tour.KeyPoints[i].ID == kpID {
+			kp = &tour.KeyPoints[i]
+			break
+		}
+	}
+
+	if kp == nil {
+		return nil, errors.New("ključna tačka nije pronađena")
+	}
+	if dto.Image != "" {
+		imagePath, err = saveBase64Image(dto.Image)
+		if err != nil {
+			return nil, fmt.Errorf("greška pri čuvanju slike: %v", err)
+		}
+		if kp.Image != "" {
+			_ = os.Remove(kp.Image)
+		}
+		kp.Image = imagePath
+	}
+	if dto.Name != "" {
+		kp.Name = dto.Name
+	}
+	if dto.Description != "" {
+		kp.Description = dto.Description
+	}
+	if dto.Latitude != 0 {
+		kp.Latitude = dto.Latitude
+	}
+	if dto.Longitude != 0 {
+		kp.Longitude = dto.Longitude
+	}
+	err = s.repo.UpdateKeyPoint(kp)
+	return kp, err
+}
+
+func (s *Service) GetKeyPointsByTourID(tourID string) ([]KeyPoint, error) {
+	kps, err := s.repo.GetKeyPointsByTourID(tourID)
+	if err != nil {
+		return nil, err
+	}
+	for i := range kps {
+		if kps[i].Image != "" {
+			dataURI, err := loadImageAsBase64(kps[i].Image)
+			if err != nil {
+				return nil, fmt.Errorf("greška pri učitavanju slike: %v", err)
+			}
+			kps[i].Image = dataURI
+		}
+	}
+	return kps, nil
+}
+
 func (s *Service) AddReview(tourID string, dto CreateReviewDTO) (*Review, error) {
 	if dto.Rating < 1 || dto.Rating > 5 {
 		return nil, errors.New("ocena mora biti između 1 i 5")
@@ -149,6 +212,10 @@ func (s *Service) GetTouristPosition(touristID string) (*TouristPosition, error)
 	return s.repo.GetPositionByTouristID(touristID)
 }
 
+func (s *Service) DeleteReview(reviewID string, touristID string) error {
+	return s.repo.DeleteReview(reviewID, touristID)
+}
+
 func saveBase64Image(base64Str string) (string, error) {
 	if idx := strings.Index(base64Str, ","); idx != -1 {
 		base64Str = base64Str[idx+1:]
@@ -178,4 +245,36 @@ func saveBase64Image(base64Str string) (string, error) {
 	}
 
 	return filePath, nil
+}
+
+func loadImageAsBase64(filePath string) (string, error) {
+	// 1. Read the entire file from disk into a byte slice
+	fileBytes, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	// 2. Encode the binary bytes into a standard base64 string
+	base64Str := base64.StdEncoding.EncodeToString(fileBytes)
+
+	// 3. Determine the correct MIME type based on the file extension
+	// Your save function hardcodes ".png", but this keeps it flexible just in case.
+	mimeType := "image/png" // Fallback default
+	ext := strings.ToLower(filepath.Ext(filePath))
+
+	switch ext {
+	case ".jpg", ".jpeg":
+		mimeType = "image/jpeg"
+	case ".png":
+		mimeType = "image/png"
+	case ".gif":
+		mimeType = "image/gif"
+	case ".webp":
+		mimeType = "image/webp"
+	}
+
+	// 4. Construct the Data URI format that your Angular template expects
+	dataURI := fmt.Sprintf("data:%s;base64,%s", mimeType, base64Str)
+
+	return dataURI, nil
 }

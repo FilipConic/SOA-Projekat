@@ -1,0 +1,17 @@
+<div class="map-frame" [style.width]="width" [style.height]="height">
+  <div [id]="mapId" style="border: 2px solid black;" [style.width]="width" [style.height]="height"></div>
+</div>
+
+<!-- MAP COMPONENT USAGE EXAMPLE:
+<xp-map *ngIf="showMap && mapType === 'showWaypoints'" 
+            [mapType]="'showWaypoints'" 
+            [waypoints]="waypoints" 
+            [waypointNames]="encounterNames" 
+            [width]="'100%'" 
+            [height]="'600px'"
+            (markerClicked)="onMarkerClick($event)"></xp-map>
+    <xp-map *ngIf="showMap && mapType === 'default'" 
+            [mapType]="'default'" 
+            [width]="'100%'" 
+            [height]="'600px'"></xp-map> 
+-->

@@ -14,15 +14,14 @@ services:
       retries: 5
 
   blog-db:
-    image: postgres:15
+    image: mongo:7
+    command: mongod --quiet --logpath /dev/null
     volumes:
-      - blog_postgres_data:/var/lib/postgresql/data/
+      - blog_mongo_data:/data/db
     environment:
-      - POSTGRES_DB=blogdb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - MONGO_INITDB_DATABASE=blogdb
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d blogdb"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -40,7 +39,6 @@ services:
       - "5050:80"
     depends_on:
       - stakeholders-db
-      - blog-db
 
   stakeholders:
     build: ./stakeholders
@@ -57,22 +55,17 @@ services:
     depends_on:
       stakeholders-db:
         condition: service_healthy
-
   blog:
-      build: ./blog
-      ports:
-        - "3000:3000"
-      environment:
-        - DB_HOST=blog-db
-        - DB_PORT=5432
-        - DB_NAME=blogdb
-        - DB_USER=postgres
-        - DB_PASSWORD=postgres
-        - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm$5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
-      depends_on:
-        blog-db:
-          condition: service_healthy
-
+    build: ./blog
+    ports:
+      - "3000:3000"
+      - "50051:50051"
+    environment:
+      - MONGO_URI=mongodb://blog-db:27017/blogdb
+      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm$5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
+    depends_on:
+      blog-db:
+        condition: service_healthy
   
   followers-db:
     image: neo4j:5.12
@@ -146,7 +139,7 @@ services:
 
 volumes:
   postgres_data:
-  blog_postgres_data:
+  blog_mongo_data:
   pgadmin_data:
   media:
   followers_data:

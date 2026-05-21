@@ -27,11 +27,14 @@ public class UserService implements IUserService {
 
     @Override
     public void unfollow(String followerId, String followedId) {
-        User follower = userRepository.findById(followerId)
-                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        if (!userRepository.existsById(followerId)) {
+            throw new RuntimeException("Follower not found");
+        }
+        if (!userRepository.existsById(followedId)) {
+            throw new RuntimeException("User to unfollow not found");
+        }
 
-        follower.getFollowing().removeIf(u -> u.getId().equals(followedId));
-        userRepository.save(follower);
+        userRepository.unfollow(followerId, followedId);
     }
 
     @Override
