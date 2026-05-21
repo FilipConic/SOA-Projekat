@@ -1,0 +1,26 @@
+<div class="simulator-container">
+  <h2>Position Simulator</h2>
+  <p class="subtitle">Click anywhere on the map to set your current location.</p>
+
+  <div class="position-info" *ngIf="currentPosition; else noPosition">
+    <span class="label">Current position:</span>
+    <span class="coords">
+      {{ currentPosition.lat | number:'1.5-5' }},
+      {{ currentPosition.lng | number:'1.5-5' }}
+    </span>
+  </div>
+
+  <ng-template #noPosition>
+    <div class="position-info muted">No position set yet.</div>
+  </ng-template>
+
+  <xp-map
+    mapId="simulator-map"
+    mapType="createWaypoint"
+    [waypoints]="currentPosition ? [currentPosition] : []"
+    [mapCenter]="currentPosition || undefined"
+    width="100%"
+    height="600px"
+    (newWaypoint)="onMapClick($event)">
+  </xp-map>
+</div>

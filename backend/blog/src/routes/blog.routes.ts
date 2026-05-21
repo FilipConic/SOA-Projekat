@@ -64,6 +64,12 @@ export const blogRoutes = new Elysia()
 
 		return { blog_id: params.blog_id, total };
 	})
+	
+	.get("/api/blog/likes/find_all/:user_id", async ({ params }) => {
+		const likes = db.collection("likes");
+		const userLikes = await likes.find({ user_id: params.user_id }).toArray();
+		return userLikes.map(like => like.blog_id)
+	})
 
 	// pretraga po id
 	// GET

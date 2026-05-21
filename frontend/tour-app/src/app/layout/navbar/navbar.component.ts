@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   isGuide: boolean = false;
+  isTourist: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -22,11 +23,21 @@ export class NavbarComponent implements OnInit {
       // If the user has an ID or username, they are logged in
       this.isLoggedIn = !!user.id;
       this.isGuide = user.role === 'GUIDE';
+      this.isTourist = user.role === 'TOURIST';
+      console.log("user: ", user);
     });
   }
 
   onProfileClick(): void {
     this.router.navigate(['/follow-recommendations']);
+  }
+
+  onBlogsClick(): void {
+    this.router.navigate(['/blogs']);
+  }
+
+  onTourSimClick(): void {
+    this.router.navigate(['/position-simulator']);
   }
 
   onLoginClick(): void {

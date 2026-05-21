@@ -5,8 +5,10 @@
 
   <div class="navbar-actions">
     <ng-container *ngIf="isLoggedIn">
+      <button class="nav-btn" (click)="onBlogsClick()">Blogs</button>
       <button class="nav-btn" (click)="onProfileClick()">Follow Recommendations</button>
       <button *ngIf="isGuide" class="nav-btn" (click)="onMyToursClick()">My Tours</button>
+      <button *ngIf="isTourist" class="nav-btn" (click)="onTourSimClick()">Tour Simulator</button>
       <button class="nav-btn logout-btn" (click)="onLogoutClick()">Logout</button>
     </ng-container>
 

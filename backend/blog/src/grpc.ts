@@ -1,8 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import { BlogServiceService } from '../gen/blog/blog_grpc_pb';
 import {db} from "./db/client";
-
-
 import {
     CreateBlogRequest,
     CreateBlogResponse,
@@ -29,53 +27,43 @@ const createBlog = async (
 	call: grpc.ServerUnaryCall<CreateBlogRequest, CreateBlogResponse>,
 	callback: grpc.sendUnaryData<CreateBlogResponse>
 ) => {
-
-	try{
+	try {
 		const user = call.request.getUser();
-		const userId = user?.getUserId();
 
-		if (!userId) {
-			callback({
-				code: grpc.status.UNAUTHENTICATED,
-				message: "User missing"
-			} as any, null);
-
-			return;
-		}
+		console.log('request', call.request.toObject());
 
 		const title = call.request.getTitle();
 		const description = call.request.getDescription();
 		const images = call.request.getImagesList();
-
 		const blogs = db.collection("blogs");
-		// console.log("createBlog called by user:", user?.getUserId());
 
 		const result = await blogs.insertOne({
-
 			user_id: user?.getUserId(),
 			title,
 			description,
 			images,
 			createdAt: new Date()
-
 		});
 
 		const blog = new Blog();
 		blog.setId(result.insertedId.toString());
-		blog.setUserId(user?.getUserId() || "");
+		if (user?.getUserId()) {
+			blog.setUserId(user?.getUserId());
+		} else {
+			console.log("User id set error in blog create!")
+		}
 		blog.setTitle(title);
 		blog.setDescription(description);
 		blog.setImagesList(images);
 
 		const response = new CreateBlogResponse();
 		response.setBlog(blog);
-
 		callback(null, response);
-	} catch (err){
+	} catch (err) {
 		callback({
 			code: grpc.status.INTERNAL,
 			message: "Database error"
-		} as any, null);		
+		} as any, null);
 	}
 }
 
@@ -107,19 +95,9 @@ const getBlogsByUser = async (
     call: grpc.ServerUnaryCall<GetBlogsByUserRequest, GetBlogsByUserResponse>,
     callback: grpc.sendUnaryData<GetBlogsByUserResponse>
 ) => {
-	try 
-	{
-
+	try {
 		const blogs = db.collection("blogs");
     	const userId = call.request.getUserId();
-		if(!userId) {
-			callback({
-				code: grpc.status.INVALID_ARGUMENT,
-				message: "userId is required"
-			}as any, null);
-			return;
-		}
-
 
     	// console.log("getBlogsByUser called for user:", userId);
 

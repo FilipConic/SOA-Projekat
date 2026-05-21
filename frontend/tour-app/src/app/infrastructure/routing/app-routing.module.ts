@@ -4,10 +4,13 @@ import { RegisterComponent } from '../../layout/register/register.component';
 import { LoginComponent } from 'src/app/layout/login/login.component';
 import { HomeComponent } from 'src/app/layout/home/home.component';
 import { TourDetailsComponent } from 'src/app/layout/tourDetails/tour-details.component';
-import { TourCreateComponent } from 'src/app/layout/tour-create/tour-create.component';
+// import { TourCreateComponent } from 'src/app/layout/tour-create/tour-create.component';
 import { TourEditComponent } from 'src/app/layout/tour-edit/tour-edit.component';
 import { MyToursComponent } from 'src/app/layout/my-tours/my-tours.component';
 import { FollowRecommendationsComponent } from 'src/app/layout/follow-recommendations/follow-recommendations.component';
+import { BlogListComponent } from 'src/app/layout/blog-list/blog-list.component';
+import { BlogCreateComponent } from 'src/app/layout/blog-create/blog-create.component';
+import { PositionSimulatorComponent } from 'src/app/layout/position-simulator/position-simulator.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -17,7 +20,10 @@ const routes: Routes = [
   { path: 'tour/:id', component: TourDetailsComponent },
   { path: 'my-tours', component: MyToursComponent},
   { path: 'tour/edit/:id', component: TourEditComponent},
-  { path: 'follow-recommendations', component: FollowRecommendationsComponent }
+  { path: 'follow-recommendations', component: FollowRecommendationsComponent },
+  { path: 'blogs/create', component: BlogCreateComponent },
+  { path: 'blogs', component: BlogListComponent },
+  { path: 'position-simulator', component: PositionSimulatorComponent },
 ];
 
 @NgModule({

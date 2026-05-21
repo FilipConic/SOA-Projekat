@@ -1,0 +1,128 @@
+<div class="blog-card">
+
+  <div class="blog-header">
+    <ng-container *ngIf="!editingBlog; else editBlogForm">
+      <h2 class="blog-title">{{ blog.title }}</h2>
+    </ng-container>
+    <ng-template #editBlogForm>
+      <input class="edit-input" [(ngModel)]="editTitle" placeholder="Title" />
+    </ng-template>
+
+    <div class="blog-meta">
+      <span class="blog-author">{{ blogAuthor?.username ?? blog.userId }}</span>
+      <span class="role-tag tourist" *ngIf="blogAuthor?.role === 'TOURIST'">Tourist</span>
+      <span class="role-tag guide" *ngIf="blogAuthor?.role === 'GUIDE'">Guide</span>
+      <button
+        *ngIf="expanded && !isOwner"
+        class="follow-btn"
+        [class.following]="isFollowing"
+        (click)="toggleFollow()">
+        {{ isFollowing ? 'Unfollow' : 'Follow' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="blog-body">
+    <ng-container *ngIf="!editingBlog; else editDescForm">
+      <p class="blog-description" [class.expanded]="expanded">{{ blog.description }}</p>
+    </ng-container>
+    <ng-template #editDescForm>
+      <textarea class="edit-textarea" [(ngModel)]="editDescription" placeholder="Description"></textarea>
+      <div class="edit-actions">
+        <button class="action-btn" (click)="saveEditBlog()">Save</button>
+        <button class="action-btn" (click)="cancelEditBlog()">Cancel</button>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="blog-actions">
+    <button class="action-btn" [class.liked]="liked" (click)="toggleLike()">
+      <i class="ti ti-heart"></i> {{ likeCount }}
+    </button>
+    <button class="action-btn" (click)="toggleExpand()">
+      <i class="ti ti-message"></i> {{ commentCount }}
+    </button>
+    <div class="owner-actions" *ngIf="expanded && isOwner">
+      <button class="action-btn" (click)="startEditBlog()">
+        <i class="ti ti-edit"></i> Edit
+      </button>
+      <button class="action-btn danger" (click)="showDeleteBlogModal = true">
+        <i class="ti ti-trash"></i> Delete
+      </button>
+    </div>
+    <button class="expand-btn" (click)="toggleExpand()">
+      {{ expanded ? 'Show less' : 'Show more' }}
+      <i class="ti" [class.ti-chevron-up]="expanded" [class.ti-chevron-down]="!expanded"></i>
+    </button>
+  </div>
+
+  <div class="comments-section" *ngIf="expanded">
+    <div class="comment" *ngFor="let comment of comments">
+      <div class="comment-header">
+        <span class="comment-author">{{ commentAuthors[comment.user_id]?.username ?? comment.user_id }}</span>
+        <span class="role-tag tourist" *ngIf="commentAuthors[comment.user_id]?.role === 'TOURIST'">Tourist</span>
+        <span class="role-tag guide" *ngIf="commentAuthors[comment.user_id]?.role === 'GUIDE'">Guide</span>
+        <span class="comment-date">{{ comment.created_at | date:'MMM d' }}</span>
+      </div>
+
+      <ng-container *ngIf="editingCommentId !== comment._id; else editCommentForm">
+        <p class="comment-text">{{ comment.text }}</p>
+      </ng-container>
+      <ng-template #editCommentForm>
+        <textarea class="edit-textarea small" [(ngModel)]="editingCommentText"></textarea>
+        <div class="edit-actions">
+          <button class="action-btn" (click)="saveEditComment(comment)">Save</button>
+          <button class="action-btn" (click)="cancelEditComment()">Cancel</button>
+        </div>
+      </ng-template>
+
+      <div class="comment-actions" *ngIf="comment.user_id === currentUserId">
+        <button class="comment-action" (click)="startEditComment(comment)">
+          <i class="ti ti-edit"></i> Edit
+        </button>
+        <button class="comment-action danger" (click)="confirmDeleteComment(comment._id)">
+          <i class="ti ti-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+
+    <div class="new-comment" *ngIf="isFollowing || isOwner">
+      <textarea [(ngModel)]="newCommentText" placeholder="Add a comment…"></textarea>
+      <button class="action-btn" (click)="submitComment()">Post</button>
+    </div>
+    <p class="no-comment-msg" *ngIf="!isFollowing && !isOwner">
+      Follow this user to leave a comment.
+    </p>
+  </div>
+
+</div>
+
+<div class="modal-overlay" *ngIf="showDeleteBlogModal">
+  <div class="modal">
+    <p>Are you sure you want to delete this blog post?</p>
+    <div class="modal-actions">
+      <button (click)="showDeleteBlogModal = false">Cancel</button>
+      <button class="danger" (click)="deleteBlog()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showDeleteCommentModal">
+  <div class="modal">
+    <p>Are you sure you want to delete this comment?</p>
+    <div class="modal-actions">
+      <button (click)="showDeleteCommentModal = false">Cancel</button>
+      <button class="danger" (click)="deleteComment()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showUnfollowModal">
+  <div class="modal">
+    <p>Are you sure you want to unfollow this user?</p>
+    <div class="modal-actions">
+      <button (click)="showUnfollowModal = false">Cancel</button>
+      <button class="danger" (click)="confirmUnfollow()">Unfollow</button>
+    </div>
+  </div>
+</div>

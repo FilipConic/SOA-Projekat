@@ -2,6 +2,7 @@
   <div class="header-row">
     <h2>My Created Tours</h2>
     <span class="tour-count" *ngIf="tours.length">{{ tours.length }} tours found</span>
+    <button class="create-btn" (click)="onCreateClick()">+</button>
   </div>
 
   <!-- Loading State -->
@@ -20,7 +21,7 @@
       <div class="card-content">
         <h3 class="tour-title">{{ tour.Title }}</h3>
         <p class="tour-description">{{ tour.Description }}</p>
-        
+
         <div class="tour-badges">
           <span class="badge">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -32,7 +33,7 @@
           </span>
         </div>
       </div>
-      
+
       <div class="card-actions">
         <!-- Links directly to your TourDetailsComponent using the tour ID -->
         <a [routerLink]="['/tour/edit', tour.ID]" class="btn-view">Edit Tour</a>

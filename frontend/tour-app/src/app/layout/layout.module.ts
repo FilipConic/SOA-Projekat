@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -14,6 +15,10 @@ import { KeypointModalComponent } from './keypoint-modal/keypoint-modal.componen
 import { TourEditComponent } from './tour-edit/tour-edit.component';
 import { MyToursComponent } from './my-tours/my-tours.component';
 import { FollowRecommendationsComponent } from './follow-recommendations/follow-recommendations.component';
+import { BlogListComponent } from './blog-list/blog-list.component';
+import { BlogCardComponent } from './blog-card/blog-card.component';
+import { BlogCreateComponent } from './blog-create/blog-create.component';
+import { PositionSimulatorComponent } from './position-simulator/position-simulator.component';
 
 
 @NgModule({
@@ -29,12 +34,17 @@ import { FollowRecommendationsComponent } from './follow-recommendations/follow-
     KeypointModalComponent,
     TourEditComponent,
     MyToursComponent,
-    FollowRecommendationsComponent
+    FollowRecommendationsComponent,
+    BlogListComponent,
+    BlogCardComponent,
+    BlogCreateComponent,
+    PositionSimulatorComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
   ],
   exports: [
     NavbarComponent,

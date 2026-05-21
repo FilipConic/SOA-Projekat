@@ -37,7 +37,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/followers/{user_id}")
+    @GetMapping("/followers/{userId}")
     public ResponseEntity<List<String>> getFollowers(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getFollowerIds(userId));
     }
@@ -47,7 +47,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getFollowerIds(userId));
     }
 
-    @GetMapping("/following/{user_id}")
+    @GetMapping("/following/{userId}")
     public ResponseEntity<List<String>> getFollowing(@PathVariable String userId) {
         return ResponseEntity.ok(userService.getFollowingIds(userId));
     }

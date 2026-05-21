@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { TourService } from 'src/app/services/tour.service';
 import { Tour } from 'src/app/models/tour.model';
 
@@ -8,11 +9,14 @@ import { Tour } from 'src/app/models/tour.model';
   styleUrls: ['./my-tours.component.css']
 })
 export class MyToursComponent implements OnInit {
-  
+
   tours: Tour[] = [];
   isLoading = true;
 
-  constructor(private tourService: TourService) {}
+  constructor(
+    private tourService: TourService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.tourService.getMyTours().subscribe({
@@ -26,5 +30,8 @@ export class MyToursComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+  onCreateClick() {
+    // this.router.navigate(['/blogs/create']);
   }
 }
