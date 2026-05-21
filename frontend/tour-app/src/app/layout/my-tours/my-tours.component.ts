@@ -32,6 +32,6 @@ export class MyToursComponent implements OnInit {
     });
   }
   onCreateClick() {
-    // this.router.navigate(['/blogs/create']);
+    this.router.navigate(['/tours/create']);
   }
 }
