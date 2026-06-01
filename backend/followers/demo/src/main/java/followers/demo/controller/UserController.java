@@ -25,17 +25,17 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @PostMapping("/follow/{followedId}")
-    public ResponseEntity<Void> follow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
-        userService.follow(followerId, followedId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @DeleteMapping("/unfollow/{followedId}")
-    public ResponseEntity<Void> unfollow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
-        userService.unfollow(followerId, followedId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+//    @PostMapping("/follow/{followedId}")
+//    public ResponseEntity<Void> follow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
+//        userService.follow(followerId, followedId);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/unfollow/{followedId}")
+//    public ResponseEntity<Void> unfollow(@RequestHeader("X-User-ID") String followerId, @PathVariable String followedId) {
+//        userService.unfollow(followerId, followedId);
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 
     @GetMapping("/followers/{userId}")
     public ResponseEntity<List<String>> getFollowers(@PathVariable String userId) {

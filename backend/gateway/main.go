@@ -14,6 +14,7 @@ import (
 
 	genblog "gateway/gen/blog"
 	"gateway/internal/auth"
+	genfollowers "gateway/gen/followers"
 )
 
 const (
@@ -21,6 +22,7 @@ const (
 	blogRestService         = "http://blog:3000"
 	stakeholdersRestService = "http://stakeholders:8000"
 	followerRestService     = "http://followers:8081"
+	folowersGrpcService     = "followers:50053"
 	toursRestService        = "http://tours:8082"
 )
 
@@ -40,8 +42,8 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/tours/update/", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/find-my", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/keypoints/delete", Role: auth.RoleGuide}:      true,
-	{Path: "/api/followers/follow/", Role: auth.RoleTourist}:         true,
-	{Path: "/api/followers/unfollow/", Role: auth.RoleTourist}:       true,
+	{Path: "/v1/followers/follow/", Role: auth.RoleTourist}:         true,
+	{Path: "/v1/followers/unfollow/", Role: auth.RoleTourist}:       true,
 	{Path: "/api/followers/followers/", Role: auth.RoleTourist}:      true,
 	{Path: "/api/followers/following/", Role: auth.RoleTourist}:      true,
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
@@ -74,6 +76,11 @@ func main() {
 		log.Fatalf("Failed to register blog service: %v", err)
 	}
 
+	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register followers service: %v", err)
+	}
+
+
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
 	followerRestProxy := newReverseProxy(followerRestService)
@@ -84,6 +91,8 @@ func main() {
 	mainMux.Handle("/v1/blog/new", grpcMux)
 	mainMux.Handle("/v1/blog/all", grpcMux)
 	mainMux.Handle("/v1/blog/user/", grpcMux)
+	mainMux.Handle("/v1/followers/follow/", grpcMux)
+	mainMux.Handle("/v1/followers/unfollow/", grpcMux)
 	mainMux.HandleFunc("/api/blog/", func(res http.ResponseWriter, req *http.Request) {
 		blogRestProxy.ServeHTTP(res, req)
 	})

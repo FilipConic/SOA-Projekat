@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package followers;
+
+import "common/user.proto";
+import "google/api/annotations.proto";
+
+option go_package = "followers/demo/src/main/gen/followers";
+
+service FollowersService {
+  rpc FollowUser(FollowUserRequest) returns (FollowUserResponse) {
+    option (google.api.http) = {post: "/v1/followers/follow/{user_id}"};
+  }
+
+  rpc UnfollowUser(UnfollowUserRequest) returns (UnfollowUserResponse) {
+    option (google.api.http) = {delete: "/v1/followers/unfollow/{user_id}"};
+  }
+}
+
+// follow
+message FollowUserRequest {
+  common.User user = 1;
+  string user_id = 2; // ID of the user to follow
+}
+
+message FollowUserResponse {}
+
+// unfollow
+message UnfollowUserRequest {
+  common.User user = 1;
+  string user_id = 2; // ID of the user to unfollow
+}
+
+message UnfollowUserResponse {}
