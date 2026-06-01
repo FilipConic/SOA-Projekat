@@ -1,13 +1,9 @@
 __pycache__/
 **/__pycache__/
 media/
-<<<<<<< HEAD
 .**/
 backend/gateway/gateway
-# Ignoriši lokalno sačuvane slike za ključne tačke i recenzije
 uploads/
-
-=======
 __pycache__/
 *.pyc
->>>>>>> 668e429 (fixed pycache errors)
+TODO.md
