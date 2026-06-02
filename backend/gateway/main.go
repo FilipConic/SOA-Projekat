@@ -7,7 +7,6 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -88,7 +87,6 @@ func main() {
 	if err := gentours.RegisterToursServiceHandlerFromEndpoint(ctx, grpcMux, toursGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register tours service: %v", err)
 	}
-
 	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register followers service: %v", err)
 	}

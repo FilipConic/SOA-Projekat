@@ -6,6 +6,7 @@ protoc -I proto \
   --grpc-gateway_out=$(pwd)/gateway/gen --grpc-gateway_opt=paths=source_relative \
   proto/common/user.proto \
   proto/blog/blog.proto \
+  proto/followers/followers.proto \
   proto/tours/tours.proto
 
 $(pwd)/blog/node_modules/.bin/grpc_tools_node_protoc \
@@ -32,7 +33,8 @@ protoc -I proto \
   proto/tours/tours.proto
 
 protoc -I proto \
-  --java_out=followers/demo/src/gen \
-  --grpc-java_out=followers/demo/src/gen \
-  proto/common/user.proto /
+  --java_out=followers/demo/src/main/gen \
+  --plugin=protoc-gen-grpc-java=./protoc-gen-grpc-java-linux-x86_64 \
+  --grpc-java_out=followers/demo/src/main/gen \
+  proto/common/user.proto \
   proto/followers/followers.proto

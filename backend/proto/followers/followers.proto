@@ -28,7 +28,7 @@ message FollowUserResponse {}
 // unfollow
 message UnfollowUserRequest {
   common.User user = 1;
-  string user_id = 2; // ID of the user to unfollow
+  string user_id = 2; // ID of the user to follow
 }
 
 message UnfollowUserResponse {}
