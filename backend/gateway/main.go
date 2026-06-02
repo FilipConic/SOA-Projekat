@@ -10,9 +10,11 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/credentials/insecure"
 
 	genblog "gateway/gen/blog"
+	gentours "gateway/gen/tours"
 	"gateway/internal/auth"
 	genfollowers "gateway/gen/followers"
 )
@@ -23,6 +25,7 @@ const (
 	stakeholdersRestService = "http://stakeholders:8000"
 	followerRestService     = "http://followers:8081"
 	folowersGrpcService     = "followers:50053"
+	toursGrpcService  		= "tours:50052"
 	toursRestService        = "http://tours:8082"
 )
 
@@ -34,7 +37,7 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/blog/comments/new", Role: auth.RoleTourist}: true,
 
 	{Path: "/api/followers", Role: auth.RoleTourist}:                 true,
-	{Path: "/api/tours/new", Role: auth.RoleGuide}:                   true,
+	{Path: "/v1/tours/new", Role: auth.RoleGuide}:                    true,
 	{Path: "/api/tours/find/", Role: auth.RoleTourist}:               true,
 	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}:         true,
 	{Path: "/api/tours/reviews/", Role: auth.RoleTourist}:            true,
@@ -69,11 +72,21 @@ func main() {
 	jwtSecret := getEnv("JWT_SECRET", "secret")
 	ctx := context.Background()
 
-	grpcMux := runtime.NewServeMux()
+	grpcMux := runtime.NewServeMux(
+		runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
+			if md, ok := metadata.FromOutgoingContext(req.Context()); ok {
+				return md
+			}
+			return nil
+		}),
+	)
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	if err := genblog.RegisterBlogServiceHandlerFromEndpoint(ctx, grpcMux, blogGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register blog service: %v", err)
+	}
+	if err := gentours.RegisterToursServiceHandlerFromEndpoint(ctx, grpcMux, toursGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register tours service: %v", err)
 	}
 
 	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
@@ -93,6 +106,8 @@ func main() {
 	mainMux.Handle("/v1/blog/user/", grpcMux)
 	mainMux.Handle("/v1/followers/follow/", grpcMux)
 	mainMux.Handle("/v1/followers/unfollow/", grpcMux)
+	mainMux.Handle("/v1/tours/new", grpcMux)
+	mainMux.Handle("/v1/tours/all", grpcMux)
 	mainMux.HandleFunc("/api/blog/", func(res http.ResponseWriter, req *http.Request) {
 		blogRestProxy.ServeHTTP(res, req)
 	})

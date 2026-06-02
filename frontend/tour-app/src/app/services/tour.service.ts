@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { 
-  Tour, 
-  ReviewTour, 
-  CreateReviewDTO, 
-  CreateTourDTO, 
+import { Observable, catchError, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {
+  Tour,
+  ReviewTour,
+  CreateReviewDTO,
+  CreateTourDTO,
   UpdateTourDTO, // Uvezen DTO za izmenu ture
-  KeyPoint, 
-  CreateKeyPointDTO, 
-  UpdateKeyPointDTO 
+  KeyPoint,
+  CreateKeyPointDTO,
+  UpdateKeyPointDTO
 } from '../models/tour.model';
-import { catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,11 +19,14 @@ import { catchError, throwError } from 'rxjs';
 export class TourService {
 
   private baseUrl = 'http://localhost:8080/api/tours';
+  private baseGrpcUrl = 'http://localhost:8080/v1/tours';
 
   constructor(private http: HttpClient) {}
 
   getAllTours(): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.baseUrl}/all`);
+      return this.http.get<any>(`${this.baseGrpcUrl}/all`).pipe(
+          map(res => res.tours)
+      );
   }
 
   // NOVO: Dobavljanje svih tura koje je kreirao trenutno ulogovani autor
@@ -33,7 +36,7 @@ export class TourService {
   }
 
   createTour(newTour: CreateTourDTO): Observable<Tour> {
-    return this.http.post<Tour>(`${this.baseUrl}/new`, newTour);
+    return this.http.post<Tour>(`${this.baseGrpcUrl}/new`, newTour);
   }
 
   // NOVO: Izmena glavnih detalja ture (izmena naziva, opisa, tezine, tagova...)
