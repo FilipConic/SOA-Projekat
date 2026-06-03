@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+option go_package = "gateway/gen/purchase";
+option java_multiple_files = true;
+option java_package = "com.example.grpc.purchase";
+option java_outer_classname = "PurchaseProto";
+
+package purchase;
+
+import "google/api/annotations.proto";
+
+service PurchaseService {
+  rpc AddToCart (AddToCartGrpcRequest) returns (AddToCartGrpcResponse) {
+    option (google.api.http) = {
+      post: "/v1/purchase/cart/add"
+      body: "*"
+    };
+  }
+
+  rpc Checkout (CheckoutGrpcRequest) returns (CheckoutGrpcResponse) {
+    option (google.api.http) = {
+      post: "/v1/purchase/checkout"
+      body: "*"
+    };
+  }
+}
+
+message AddToCartGrpcRequest {
+  int64 tourist_id = 1;
+  int64 tour_id = 2;
+}
+
+message AddToCartGrpcResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message CheckoutGrpcRequest {
+  int64 tourist_id = 1;
+}
+
+message CheckoutGrpcResponse {
+  bool success = 1;
+  string message = 2;
+  repeated string generated_tokens = 3;
+}
