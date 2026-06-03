@@ -18,7 +18,8 @@ try {
             --go-grpc_out="$PWD\gateway\gen" --go-grpc_opt=paths=source_relative `
             proto/common/user.proto `
             proto/blog/blog.proto `
-            proto/followers/followers.proto
+            proto/followers/followers.proto `
+            proto/tours/tours.proto
     }
     else {
         Write-Host "Skipping Go gRPC generation; install missing Go plugins if needed:"
@@ -32,7 +33,8 @@ try {
             --grpc-gateway_out="$PWD\gateway\gen" --grpc-gateway_opt=paths=source_relative `
             proto/common/user.proto `
             proto/blog/blog.proto `
-            proto/followers/followers.proto
+            proto/followers/followers.proto `
+            proto/tours/tours.proto
     }
     else {
         Write-Host "Skipping grpc-gateway generation; install the plugin if needed:"
@@ -71,6 +73,31 @@ try {
     }
     else {
         Write-Warning "Generated file not found: $generatedFile"
+    }
+
+    # Tours (Go)
+    if ($null -ne $goPlugin -and $null -ne $goGrpcPlugin) {
+        & $protoc -I proto `
+            --go_out="$PWD\tours\gen" --go_opt=paths=source_relative `
+            --go_opt=Mcommon/user.proto=tours/gen/common `
+            --go-grpc_out="$PWD\tours\gen" --go-grpc_opt=paths=source_relative `
+            --go-grpc_opt=Mcommon/user.proto=tours/gen/common `
+            proto/common/user.proto `
+            proto/tours/tours.proto
+    }
+
+    # Followers (Java)
+    $grpcJavaPlugin = Join-Path $scriptDir 'protoc-gen-grpc-java-windows.exe'
+    if (Test-Path $grpcJavaPlugin) {
+        & $protoc -I proto `
+            --java_out="$PWD\followers\demo\src\main\gen" `
+            --plugin=protoc-gen-grpc-java=$grpcJavaPlugin `
+            --grpc-java_out="$PWD\followers\demo\src\main\gen" `
+            proto/common/user.proto `
+            proto/followers/followers.proto
+    }
+    else {
+        Write-Host "Skipping Java gRPC generation; protoc-gen-grpc-java-windows.exe not found."
     }
 }
 finally {

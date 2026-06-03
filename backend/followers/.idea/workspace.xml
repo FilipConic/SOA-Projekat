@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440165b-83a8-401c-9483-d5cffcbcb5a0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../buf.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bun.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/FollowersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/FollowersServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protoc-gen-grpc-java.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protoc-run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../protoc-run.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +23,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "nikolina-aleksic"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/FilipConic/SOA-Projekat.git",
+    "accountId": "9c0a634a-4588-4b91-8748-b58da465780a"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -62,7 +65,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "Rebasing feat/grpc-all",
+    "git-widget-placeholder": "feat/grpc-all",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/filip/programming/golang/soa-project/backend/followers",
     "vue.rearranger.settings.migration": "true"
