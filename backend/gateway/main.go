@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	genblog "gateway/gen/blog"
+	genpurchase "gateway/gen/purchase"
 	"gateway/internal/auth"
 )
 
@@ -22,6 +23,9 @@ const (
 	stakeholdersRestService = "http://stakeholders:8000"
 	followerRestService     = "http://followers:8081"
 	toursRestService        = "http://tours:8082"
+	purchaseGrpcService     = "purchase:50054"
+    purchaseRestService     = "http://purchase:8083"
+
 )
 
 var protectedRoutes = map[auth.Permission]bool{
@@ -49,6 +53,10 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/followers/recommendations", Role: auth.RoleTourist}: true,
 
 	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
+
+	{Path: "/v1/purchase/cart/add", Role: auth.RoleTourist}: true,
+    {Path: "/v1/purchase/checkout", Role: auth.RoleTourist}: true,
+   	{Path: "/api/purchase/cart/remove", Role: auth.RoleTourist}: true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -74,16 +82,25 @@ func main() {
 		log.Fatalf("Failed to register blog service: %v", err)
 	}
 
+    if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
+    		log.Fatalf("Failed to register purchase service: %v", err)
+    	}
+
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
 	followerRestProxy := newReverseProxy(followerRestService)
 	toursRestProxy := newReverseProxy(toursRestService)
+	purchaseRestProxy := newReverseProxy(purchaseRestService)
 
 	mainMux := http.NewServeMux()
 
 	mainMux.Handle("/v1/blog/new", grpcMux)
 	mainMux.Handle("/v1/blog/all", grpcMux)
 	mainMux.Handle("/v1/blog/user/", grpcMux)
+
+	mainMux.Handle("/v1/purchase/cart/add", grpcMux)
+    mainMux.Handle("/v1/purchase/checkout", grpcMux)
+
 	mainMux.HandleFunc("/api/blog/", func(res http.ResponseWriter, req *http.Request) {
 		blogRestProxy.ServeHTTP(res, req)
 	})
@@ -102,6 +119,9 @@ func main() {
 	mainMux.HandleFunc("/api/tours/", func(res http.ResponseWriter, req *http.Request) {
 		toursRestProxy.ServeHTTP(res, req)
 	})
+    mainMux.HandleFunc("/api/purchase/", func(res http.ResponseWriter, req *http.Request) {
+    		purchaseRestProxy.ServeHTTP(res, req)
+    })
 
 	authMiddleware := auth.Middleware(jwtSecret, protectedRoutes)
 
