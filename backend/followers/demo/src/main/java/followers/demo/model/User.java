@@ -17,15 +17,24 @@ public class User {
     @Property("username")
     private String username;
 
+    @Property("avatar")
+    private String avatar;
+
     @Relationship(type = "FOLLOWS", direction = Relationship.Direction.OUTGOING)
     private Set<User> following = new HashSet<>();
 
-    public User() {
+    public User(String avatar) {
+        this.avatar = avatar;
     }
 
-    public User(String id, String username) {
+    public User(String id, String username, String avatar) {
         this.id = id;
         this.username = username;
+        this.avatar = avatar;
+    }
+
+    public User() {
+
     }
 
     @Override
@@ -70,5 +79,13 @@ public class User {
             following = new HashSet<>();
         }
         following.add(userToFollow);
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
