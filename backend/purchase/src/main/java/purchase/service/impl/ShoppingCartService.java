@@ -109,4 +109,15 @@ public class ShoppingCartService implements IShoppingCartService {
                 .items(itemDtos)
                 .build();
     }
+
+    public ShoppingCartResponseDto getCart(Long touristId) {
+        ShoppingCart cart = cartRepository.findByTouristId(touristId)
+                .orElseGet(() -> cartRepository.save(ShoppingCart.builder().touristId(touristId).totalPrice(0.0).build()));
+
+        List<OrderItemResponseDto> itemDtos = cart.getItems().stream()
+                .map(item -> new OrderItemResponseDto(item.getId(), item.getTourId(), item.getTourName(), item.getPrice()))
+                .collect(Collectors.toList());
+
+        return new ShoppingCartResponseDto(cart.getTouristId(), cart.getTotalPrice(), itemDtos);
+    }
 }

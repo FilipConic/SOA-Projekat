@@ -32,4 +32,9 @@ public class PurchaseController {
     public ResponseEntity<CheckoutResponseDto> checkout(@RequestBody CheckoutRequestDto dto) {
         return ResponseEntity.ok(checkoutService.processCheckout(dto));
     }
+
+    @GetMapping("/cart/{touristId}")
+    public ResponseEntity<ShoppingCartResponseDto> getCart(@PathVariable Long touristId) {
+        return ResponseEntity.ok(shoppingCartService.getCart(touristId));
+    }
 }

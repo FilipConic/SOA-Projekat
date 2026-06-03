@@ -1,0 +1,46 @@
+<div class="drawer-backdrop" *ngIf="isOpen" (click)="toggleDrawer()"></div>
+
+<div class="drawer" [class.open]="isOpen">
+  <mat-toolbar color="primary" class="drawer-header">
+    <span>Moja Korpa</span>
+    <button mat-icon-button (click)="toggleDrawer()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-list class="drawer-items">
+      <app-order-item-card 
+        *ngFor="let item of cart?.items" 
+        [touristId]="touristId" 
+        [tour]="item" 
+        (cartUpdated)="loadCart()" 
+        (closeDrawer)="toggleDrawer()"> 
+      </app-order-item-card>
+      
+      <div class="empty-cart" *ngIf="cart?.items?.length === 0 || !cart">
+        <mat-icon class="empty-icon">shopping_cart</mat-icon>
+        <span>Vaša korpa je prazna.</span>
+        <a href="javascript:void(0)" (click)="goToTours()">Pogledajte dostupne ture ovde!</a>
+      </div>
+  </mat-list>
+
+  <div class="drawer-footer">
+    <div class="pricing">
+      <span>Ukupno:</span>
+      <div class="total-price">
+        {{ (cart?.totalPrice || 0) | number:'1.0-2' }}
+        <mat-icon>paid</mat-icon>
+      </div>
+    </div>
+    
+    <button 
+      mat-raised-button 
+      color="accent" 
+      class="checkout-button" 
+      [disabled]="!cart || cart.items.length === 0 || isProcessing" 
+      (click)="checkout()">
+      <span *ngIf="!isProcessing">Kupi ture</span>
+      <span *ngIf="isProcessing">Procesiranje...</span>
+    </button>
+  </div>
+</div>

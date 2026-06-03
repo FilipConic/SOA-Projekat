@@ -1,0 +1,31 @@
+<div class="tours-container">
+  <h2>Available Tours</h2>
+  
+  <div class="tours-grid">
+    <mat-card class="tour-card" *ngFor="let tour of tours">
+      
+      <img mat-card-image [src]="tour.imageUrls[0] || 'assets/placeholder-tour.png'" alt="Tour Image">
+      
+      <mat-card-content>
+        <mat-card-title>{{ tour.name }}</mat-card-title>
+        <mat-card-subtitle>{{ tour.startingPoint }} • {{ tour.estimatedTimeMinutes }} mins</mat-card-subtitle>
+        
+        <p class="description">
+          {{ tour.description }}
+        </p>
+        
+        <div class="tour-stats">
+          <span><mat-icon>straighten</mat-icon> {{ tour.length }} km</span>
+          <span class="price-tag">{{ tour.price | number:'1.0-2' }} <mat-icon>fiber_smart_record</mat-icon></span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="addToCart(tour)">
+          <mat-icon>add_shopping_cart</mat-icon> Add to Cart
+        </button>
+      </mat-card-actions>
+      
+    </mat-card>
+  </div>
+</div>
