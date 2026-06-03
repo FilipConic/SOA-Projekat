@@ -1,7 +1,6 @@
 package purchase.dto;
 
-import org.jetbrains.annotations.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotNull;import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +12,5 @@ public class CheckoutRequestDto {
 
     @NotNull(message = "ID turiste je obavezan za checkout.")
     @Positive(message = "ID turiste mora biti pozitivan.")
-    private Long touristId;
+    private String touristId;
 }

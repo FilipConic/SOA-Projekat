@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderItemResponseDto {
     private Long itemId;
-    private Long tourId;
+    private String tourId;
     private String tourName;
     private double price;
 }

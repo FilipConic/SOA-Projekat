@@ -13,9 +13,9 @@ public class AddToCartRequestDto {
 
     @NotNull(message = "ID turiste ne sme biti null.")
     @Positive(message = "ID turiste mora biti pozitivan.")
-    private Long touristId;
+    private String touristId;
 
     @NotNull(message = "ID ture ne sme biti null.")
     @Positive(message = "ID ture mora biti pozitivan.")
-    private Long tourId;
+    private String tourId;
 }

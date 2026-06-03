@@ -18,7 +18,9 @@ try {
             --go-grpc_out="$PWD\gateway\gen" --go-grpc_opt=paths=source_relative `
             proto/common/user.proto `
             proto/blog/blog.proto `
-            proto/followers/followers.proto
+            proto/followers/followers.proto `
+            proto/purchase/purchase.proto `
+            proto/tours/tours.proto
     }
     else {
         Write-Host "Skipping Go gRPC generation; install missing Go plugins if needed:"
@@ -32,7 +34,9 @@ try {
             --grpc-gateway_out="$PWD\gateway\gen" --grpc-gateway_opt=paths=source_relative `
             proto/common/user.proto `
             proto/blog/blog.proto `
-            proto/followers/followers.proto
+            proto/followers/followers.proto `
+            proto/purchase/purchase.proto `
+            proto/tours/tours.proto
     }
     else {
         Write-Host "Skipping grpc-gateway generation; install the plugin if needed:"
@@ -63,7 +67,9 @@ try {
         proto/google/api/http.proto `
         proto/common/user.proto `
         proto/blog/blog.proto `
-        proto/followers/followers.proto
+        proto/followers/followers.proto `
+        proto/purchase/purchase.proto `
+        proto/tours/tours.proto
 
     $generatedFile = Join-Path $scriptDir 'blog\gen\blog\blog_grpc_pb.js'
     if (Test-Path $generatedFile) {

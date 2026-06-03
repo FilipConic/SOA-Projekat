@@ -5,5 +5,6 @@ import purchase.dto.ShoppingCartResponseDto;
 
 public interface IShoppingCartService {
     ShoppingCartResponseDto addItemToCart(AddToCartRequestDto request);
-    ShoppingCartResponseDto removeItemFromCart(Long touristId, Long tourId);
+    ShoppingCartResponseDto removeItemFromCart(String touristId, String tourId);
+    ShoppingCartResponseDto getCart(String touristId);
 }

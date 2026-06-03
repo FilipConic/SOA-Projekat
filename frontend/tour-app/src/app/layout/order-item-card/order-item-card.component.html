@@ -1,0 +1,16 @@
+<div class="order-item-card">
+  <div class="item-info">
+    <span class="item-name" (click)="goToDetail()">
+      {{ tour.tourName }}
+    </span>
+    <span class="item-desc">Standard Tour Ticket</span>
+  </div>
+  
+  <div class="item-pricing">
+    <span class="regular-price">
+      {{ tour.price | number:'1.0-2' }}
+      <mat-icon>paid</mat-icon>
+    </span>
+    <a class="item-remove" href="javascript:void(0)" (click)="removeFromCart($event)">Remove item</a>
+  </div>
+</div>
