@@ -7,6 +7,7 @@ protoc -I proto \
   proto/common/user.proto \
   proto/blog/blog.proto \
   proto/followers/followers.proto \
+  proto/purchase/purchase.proto \
   proto/tours/tours.proto
 
 $(pwd)/blog/node_modules/.bin/grpc_tools_node_protoc \
@@ -38,3 +39,4 @@ protoc -I proto \
   --grpc-java_out=followers/demo/src/main/gen \
   proto/common/user.proto \
   proto/followers/followers.proto
+
