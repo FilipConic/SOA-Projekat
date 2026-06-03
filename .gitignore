@@ -3,6 +3,10 @@ __pycache__/
 media/
 .**/
 backend/gateway/gateway
-# Ignoriši lokalno sačuvane slike za ključne tačke i recenzije
 uploads/
-
+__pycache__/
+*.pyc
+TODO.md
+**/gen/
+**/buf.yaml
+**/buf.lock

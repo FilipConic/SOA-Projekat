@@ -42,3 +42,8 @@ Komanda ```./run.sh``` pokrece redom ```./protoc-run.sh```, nakon toga izvrsava 
 12. Kada je endpoint unutar protectedRoutes:
  - REST: unutar request header-a ce se nalaziti ID user-a pod nazivom "X-User-ID", takodje se tu nalaze i "X-User-Email" i "X-User-Role"
  - gRPC: potrebno je da _.proto_ objekat koji se nalazi unutar Response objekta sadrzi common.User
+
+13. Portovi za gRPC:
+ - Blog: 50051
+ - Tours: 50052
+ - Followers: 50053

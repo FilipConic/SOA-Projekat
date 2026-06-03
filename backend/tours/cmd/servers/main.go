@@ -1,14 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"tours/internal/tours"
 
+	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	pb "tours/gen/tours"
 )
 
 func main() {
@@ -41,13 +46,35 @@ func main() {
 	service := tours.NewService(repo)
 	handler := tours.NewHandler(service)
 
+	grpcHandler := tours.NewGrpcHandler(service)
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+			log.Printf("gRPC call: %s", info.FullMethod)
+			resp, err := handler(ctx, req)
+			log.Printf("gRPC result: %v", err)
+			return resp, err
+		}),
+	)
+	pb.RegisterToursServiceServer(grpcServer, grpcHandler)
+
 	mux := http.NewServeMux()
 	handler.RegisterRoutes(mux)
 
-	log.Printf("Tours servis uspešno pokrenut na portu :8082 (Baza povezana na %s:%s)\n", dbHost, dbPort)
-	if err := http.ListenAndServe(":8082", mux); err != nil {
-		log.Fatalf("Server pao: %v", err)
-	}
+	go func() {
+		log.Printf("Tours servis uspešno pokrenut na portu :8082 (Baza povezana na %s:%s)\n", dbHost, dbPort)
+		if err := http.ListenAndServe(":8082", mux); err != nil {
+			log.Fatalf("Server pao: %v", err)
+		}
+	}();
+	
+	lis, err := net.Listen("tcp", ":50052")
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println("Tours gRPC server running on :50052")
+    if err := grpcServer.Serve(lis); err != nil {
+        log.Fatal(err)
+    }
 }
 
 func getEnv(key, fallback string) string {

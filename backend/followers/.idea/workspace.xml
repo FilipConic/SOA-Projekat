@@ -5,30 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440165b-83a8-401c-9483-d5cffcbcb5a0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../blog-service/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/bun.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/src/db/client.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/src/db/init.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/src/plugins/authPlugin.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/src/routes/blog.routes.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/src/routes/comment.routes.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../blog-service/tsconfig.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/controller/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/dto/UserDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/repository/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/IUserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/user_info_serializer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../stakeholders/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../stakeholders/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../stakeholders/config/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/views/profile_view.py" beforeDir="false" afterPath="$PROJECT_DIR$/../stakeholders/stakeholders/views/profile_view.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../buf.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bun.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/demo/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/FollowersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/FollowersServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../protoc-gen-grpc-java.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../protoc-run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../protoc-run.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,8 +24,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Dockerfile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -53,10 +39,17 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="3DgKtd7CeqgfHKlmLDA4pUXxPcq" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -65,16 +58,30 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feat/followers-create",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "Rebasing feat/grpc-all",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/SOA/SOA-Projekat/backend/followers"
+    "last_opened_file_path": "/home/filip/programming/golang/soa-project/backend/followers",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="demo" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="followers.demo.DemoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
       </set>
     </attachedChunks>
   </component>
@@ -85,7 +92,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1778698490178</updated>
+      <workItem from="1780434808444" duration="5770000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

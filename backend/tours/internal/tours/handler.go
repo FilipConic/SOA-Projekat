@@ -14,9 +14,9 @@ func NewHandler(s *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("POST /api/tours/new", h.createTour)
+	// mux.HandleFunc("POST /api/tours/new", h.createTour)
 	mux.HandleFunc("GET /api/tours/find/{tour_id}", h.getTour)
-	mux.HandleFunc("GET /api/tours/all", h.getAllTours)
+	// mux.HandleFunc("GET /api/tours/all", h.getAllTours)
 
 	mux.HandleFunc("POST /api/tours/keypoints/new/{tour_id}", h.addKeyPoint)
 	mux.HandleFunc("PUT /api/tours/keypoints/update/{tour_id}/{kp_id}", h.updateKeyPoint)
@@ -34,19 +34,19 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE /api/tours/keypoints/delete/{id}", h.deleteKeyPoint)
 }
 
-func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
-	var dto CreateTourDTO
-	json.NewDecoder(r.Body).Decode(&dto)
-	creatorID := r.Header.Get("X-User-ID")
-	tour, err := h.service.CreateTour(dto, creatorID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "  ")
-	enc.Encode(tour)
-}
+// func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
+// 	var dto CreateTourDTO
+// 	json.NewDecoder(r.Body).Decode(&dto)
+// 	creatorID := r.Header.Get("X-User-ID")
+// 	tour, err := h.service.CreateTour(dto, creatorID)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
+// 	enc := json.NewEncoder(w)
+// 	enc.SetIndent("", "  ")
+// 	enc.Encode(tour)
+// }
 
 func (h *Handler) updateTour(w http.ResponseWriter, r *http.Request) {
 	tourID := r.PathValue("tour_id")
@@ -75,16 +75,16 @@ func (h *Handler) getTour(w http.ResponseWriter, r *http.Request) {
 	enc.Encode(tour)
 }
 
-func (h *Handler) getAllTours(w http.ResponseWriter, r *http.Request) {
-	tours, err := h.service.GetAllTours()
-	if err != nil {
-		http.Error(w, "Greška prilikom dohvatanja tura", http.StatusInternalServerError)
-		return
-	}
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "  ")
-	enc.Encode(tours)
-}
+// func (h *Handler) getAllTours(w http.ResponseWriter, r *http.Request) {
+// 	tours, err := h.service.GetAllTours()
+// 	if err != nil {
+// 		http.Error(w, "Greška prilikom dohvatanja tura", http.StatusInternalServerError)
+// 		return
+// 	}
+// 	enc := json.NewEncoder(w)
+// 	enc.SetIndent("", "  ")
+// 	enc.Encode(tours)
+// }
 
 func (h *Handler) addKeyPoint(w http.ResponseWriter, r *http.Request) {
 	tourID := r.PathValue("tour_id")

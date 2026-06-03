@@ -113,7 +113,9 @@ services:
         condition: service_healthy
 
   followers:
-    build: ./followers/demo
+    build:
+      context: .
+      dockerfile: followers/demo/Dockerfile
     ports:
       - "8081:8081"
     environment:

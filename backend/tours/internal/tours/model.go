@@ -1,6 +1,9 @@
 package tours
 
-import "time"
+import (
+	"time"
+	toursgen "tours/gen/tours"
+)
 
 type TourStatus string
 
@@ -17,6 +20,12 @@ const (
 	DifficultyMedium TourDifficulty = "medium"
 	DifficultyHard   TourDifficulty = "hard"
 )
+
+var difficultyMap = map[toursgen.TourDifficulty]TourDifficulty{
+	toursgen.TourDifficulty_TOUR_DIFFICULTY_EASY: DifficultyEasy,
+	toursgen.TourDifficulty_TOUR_DIFFICULTY_MEDIUM: DifficultyMedium,
+	toursgen.TourDifficulty_TOUR_DIFFICULTY_HARD: DifficultyHard,
+}
 
 type Tour struct {
 	ID          string         `gorm:"primaryKey"`

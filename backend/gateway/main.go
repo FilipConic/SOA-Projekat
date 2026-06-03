@@ -7,14 +7,16 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/credentials/insecure"
 
 	genblog "gateway/gen/blog"
+	gentours "gateway/gen/tours"
 	genpurchase "gateway/gen/purchase"
 	"gateway/internal/auth"
+	genfollowers "gateway/gen/followers"
 )
 
 const (
@@ -22,6 +24,8 @@ const (
 	blogRestService         = "http://blog:3000"
 	stakeholdersRestService = "http://stakeholders:8000"
 	followerRestService     = "http://followers:8081"
+	folowersGrpcService     = "followers:50053"
+	toursGrpcService  		= "tours:50052"
 	toursRestService        = "http://tours:8082"
 	purchaseGrpcService     = "purchase:50054"
     purchaseRestService     = "http://purchase:8083"
@@ -36,7 +40,7 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/blog/comments/new", Role: auth.RoleTourist}: true,
 
 	{Path: "/api/followers", Role: auth.RoleTourist}:                 true,
-	{Path: "/api/tours/new", Role: auth.RoleGuide}:                   true,
+	{Path: "/v1/tours/new", Role: auth.RoleGuide}:                    true,
 	{Path: "/api/tours/find/", Role: auth.RoleTourist}:               true,
 	{Path: "/api/tours/keypoints/new", Role: auth.RoleGuide}:         true,
 	{Path: "/api/tours/reviews/", Role: auth.RoleTourist}:            true,
@@ -44,8 +48,8 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/tours/update/", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/find-my", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/keypoints/delete", Role: auth.RoleGuide}:      true,
-	{Path: "/api/followers/follow/", Role: auth.RoleTourist}:         true,
-	{Path: "/api/followers/unfollow/", Role: auth.RoleTourist}:       true,
+	{Path: "/v1/followers/follow/", Role: auth.RoleTourist}:         true,
+	{Path: "/v1/followers/unfollow/", Role: auth.RoleTourist}:       true,
 	{Path: "/api/followers/followers/", Role: auth.RoleTourist}:      true,
 	{Path: "/api/followers/following/", Role: auth.RoleTourist}:      true,
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
@@ -75,16 +79,28 @@ func main() {
 	jwtSecret := getEnv("JWT_SECRET", "secret")
 	ctx := context.Background()
 
-	grpcMux := runtime.NewServeMux()
+	grpcMux := runtime.NewServeMux(
+		runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
+			if md, ok := metadata.FromOutgoingContext(req.Context()); ok {
+				return md
+			}
+			return nil
+		}),
+	)
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
 	if err := genblog.RegisterBlogServiceHandlerFromEndpoint(ctx, grpcMux, blogGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register blog service: %v", err)
 	}
-
-    if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
-    		log.Fatalf("Failed to register purchase service: %v", err)
-    	}
+	if err := gentours.RegisterToursServiceHandlerFromEndpoint(ctx, grpcMux, toursGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register tours service: %v", err)
+	}
+	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register followers service: %v", err)
+	}
+	if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register purchase service: %v", err)
+	}
 
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
@@ -97,7 +113,10 @@ func main() {
 	mainMux.Handle("/v1/blog/new", grpcMux)
 	mainMux.Handle("/v1/blog/all", grpcMux)
 	mainMux.Handle("/v1/blog/user/", grpcMux)
-
+	mainMux.Handle("/v1/followers/follow/", grpcMux)
+	mainMux.Handle("/v1/followers/unfollow/", grpcMux)
+	mainMux.Handle("/v1/tours/new", grpcMux)
+	mainMux.Handle("/v1/tours/all", grpcMux)
 	mainMux.Handle("/v1/purchase/cart/add", grpcMux)
     mainMux.Handle("/v1/purchase/checkout", grpcMux)
 

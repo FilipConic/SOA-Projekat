@@ -9,6 +9,7 @@ import { SimpleUser } from '../models/user.model';
 })
 export class FollowersService {
     private baseUrl = environment.apiHost + 'followers';
+    private baseGrpcUrl = 'http://localhost:8080/v1/followers';
     constructor(private http: HttpClient) {}
 
     getRecommendations(): Observable<SimpleUser[]> {
@@ -16,10 +17,10 @@ export class FollowersService {
     }
 
     followUser(userId: string): Observable<void> {
-        return this.http.post<void>(`${this.baseUrl}/follow/${userId}`, {});
+        return this.http.post<void>(`${this.baseGrpcUrl}/follow/${userId}`, {});
     }
 
     unfollowUser(userId: string): Observable<void> {
-        return this.http.delete<void>(`${this.baseUrl}/unfollow/${userId}`, {});
+        return this.http.delete<void>(`${this.baseGrpcUrl}/unfollow/${userId}`, {});
     }
 }
