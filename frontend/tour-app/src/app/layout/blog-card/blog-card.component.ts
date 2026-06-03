@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { BlogService, Blog, Comment } from '../../services/blog.service';
+import { FollowersService } from 'src/app/services/followers.service';
 
 @Component({
   selector: 'app-blog-card',
@@ -39,7 +40,10 @@ export class BlogCardComponent implements OnInit, OnChanges {
   editTitle: string = '';
   editDescription: string = '';
 
-  constructor(private blogService: BlogService) {}
+  constructor(
+    private blogService: BlogService,
+    private followService: FollowersService,
+  ) {}
 
   ngOnInit(): void {
     this.isOwner = this.currentUserId === this.blog.userId;
@@ -182,14 +186,14 @@ export class BlogCardComponent implements OnInit, OnChanges {
     if (this.isFollowing) {
       this.showUnfollowModal = true;
     } else {
-      this.blogService.followUser(this.blog.userId).subscribe({
+      this.followService.followUser(this.blog.userId).subscribe({
         next: () => { this.isFollowing = true; }
       });
     }
   }
 
   confirmUnfollow(): void {
-    this.blogService.unfollowUser(this.blog.userId).subscribe({
+    this.followService.unfollowUser(this.blog.userId).subscribe({
       next: () => {
         this.isFollowing = false;
         this.showUnfollowModal = false;

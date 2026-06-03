@@ -1,21 +1,27 @@
 export interface Tour {
-  ID: string;
+  id: string;
   Title: string;
   CreatorID: string;
   Description: string;
   Price: number;
-  Difficulty: string;
+  Difficulty: TourDifficulty;
   Tags: string[];
   Status: 'draft' | 'published' | 'archived';
   Duration: number;
   CreatedAt: string;
 }
 
+export enum TourDifficulty {
+  Easy = 0,
+  Medium = 1,
+  Hard = 2,
+}
+
 export interface CreateTourDTO {
-  Title: string;
-  Description: string;
-  Difficulty: string;
-  Tags: string[];
+  title: string;
+  description: string;
+  difficulty: TourDifficulty;
+  tags: string[];
 }
 
 export interface UpdateTourDTO {

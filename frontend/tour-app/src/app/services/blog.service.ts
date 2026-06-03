@@ -85,13 +85,6 @@ export class BlogService {
     return this.http.get(`${this.base}/api/followers/following/${userId}`);
   }
 
-  followUser(followedId: string): Observable<any> {
-    return this.http.post(`${this.base}/api/followers/follow/${followedId}`, {});
-  }
-
-  unfollowUser(followedId: string): Observable<any> {
-    return this.http.delete(`${this.base}/api/followers/unfollow/${followedId}`);
-  }
 
   getAllBlogs(): Observable<any> {
     return this.http.get(`${this.base}/v1/blog/all`);
