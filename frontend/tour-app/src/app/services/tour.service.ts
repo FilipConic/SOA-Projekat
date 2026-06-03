@@ -23,16 +23,55 @@ export class TourService {
 
   constructor(private http: HttpClient) {}
 
+  // getAllTours(): Observable<Tour[]> {
+  //     return this.http.get<any>(`${this.baseGrpcUrl}/all`).pipe(
+  //         map(res => res.tours)
+  //     );
+  // }
+
   getAllTours(): Observable<Tour[]> {
-      return this.http.get<any>(`${this.baseGrpcUrl}/all`).pipe(
-          map(res => res.tours)
-      );
+    return this.http.get<any>(`${this.baseGrpcUrl}/all`).pipe(
+      map(res => {
+        console.log('RAW GRPC TOURS:', JSON.stringify(res.tours[0])); // ← dodaj
+        return res.tours.map((t: any) => ({
+          id: t.id ?? t.ID,
+          Title: t.Title ?? t.title,
+          Description: t.Description ?? t.description,
+          Price: t.Price ?? t.price,
+          Difficulty: t.Difficulty ?? t.difficulty,
+          Tags: t.Tags ?? t.tags,
+          Status: t.Status ?? t.status,
+          Duration: t.Duration ?? t.duration,
+          CreatedAt: t.CreatedAt
+        }));
+      })
+    );
   }
 
   // NOVO: Dobavljanje svih tura koje je kreirao trenutno ulogovani autor
   // Ruta na bekendu: GET /api/tours/find-my
+  // getMyTours(): Observable<Tour[]> {
+  //   return this.http.get<Tour[]>(`${this.baseUrl}/find-my`);
+  // }
+
   getMyTours(): Observable<Tour[]> {
-    return this.http.get<Tour[]>(`${this.baseUrl}/find-my`);
+    return this.http.get<any[]>(`${this.baseUrl}/find-my`).pipe(
+      map(tours => {
+        console.log('RAW MY TOURS:', JSON.stringify(tours[0])); // ← dodaj
+        return tours.map((t: any) => ({
+          id: t.ID ?? t.id,
+          Title: t.Title ?? t.title,
+          Description: t.Description ?? t.description,
+          Price: t.Price ?? t.price,
+          Difficulty: t.Difficulty ?? t.difficulty,
+          Tags: t.Tags ?? t.tags,
+          Status: t.Status ?? t.status,
+          Duration: t.Duration ?? t.duration,
+          CreatedAt: t.CreatedAt ?? t.created_at,
+          CreatorID: t.CreatorID ?? t.creator_id
+        }));
+      })
+    );
   }
 
   createTour(newTour: CreateTourDTO): Observable<Tour> {
@@ -48,7 +87,20 @@ export class TourService {
   // PROMENJENO: Preimenovano iz getTourById u getTour da odgovara tour-edit komponenti
   // Ruta na bekendu: GET /api/tours/find/{tour_id}
   getTour(id: string): Observable<Tour> {
-    return this.http.get<Tour>(`${this.baseUrl}/find/${id}`);
+      return this.http.get<any>(`${this.baseUrl}/find/${id}`).pipe(
+        map(t => ({
+          id: t.ID,
+          Title: t.Title,
+          Description: t.Description,
+          Price: t.Price,
+          Difficulty: t.Difficulty,
+          Tags: t.Tags,
+          Status: t.Status,
+          Duration: t.Duration,
+          CreatedAt: t.CreatedAt,
+          CreatorID: t.CreatorID
+        }))
+      );
   }
 
   // ================= KLJUČNE TAČKE (KEYPOINTS) =================

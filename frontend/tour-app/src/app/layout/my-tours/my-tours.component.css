@@ -52,11 +52,30 @@
   padding: 20px;
 }
 
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
 .tour-title {
-  margin: 0 0 10px 0;
+  margin: 0;
   font-size: 1.3rem;
   color: #333;
 }
+
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-draft { background: #f0f0f0; color: #666; }
+.status-published { background: #d4edda; color: #155724; }
+.status-archived { background: #fff3cd; color: #856404; }
 
 .tour-description {
   color: #666;
@@ -98,6 +117,7 @@
   border-bottom-right-radius: 8px;
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .btn-view {
@@ -112,9 +132,49 @@
   transition: background 0.2s;
 }
 
-.btn-view:hover {
-  background: #1976d2;
+.btn-view:hover { background: #1976d2; }
+
+.btn-publish {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
 }
+
+.btn-publish:hover { background: #218838; }
+
+.btn-archive {
+  background: #ffc107;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-archive:hover { background: #e0a800; }
+
+.btn-reactivate {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-reactivate:hover { background: #138496; }
 
 .loading-state, .empty-state {
   text-align: center;
@@ -137,6 +197,4 @@
   color: #555;
 }
 
-.create-btn:hover {
-  background: #f5f5f5;
-}
+.create-btn:hover { background: #f5f5f5; }

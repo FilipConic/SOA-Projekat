@@ -5,38 +5,70 @@
     <button class="create-btn" (click)="onCreateClick()">+</button>
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-state">
     <p>Loading your tours...</p>
   </div>
 
-  <!-- Empty State -->
   <div *ngIf="!isLoading && tours.length === 0" class="empty-state">
     <p>You haven't created any tours yet.</p>
   </div>
 
-  <!-- Tours Grid -->
   <div *ngIf="!isLoading && tours.length > 0" class="tours-grid">
     <div *ngFor="let tour of tours" class="tour-card">
       <div class="card-content">
-        <h3 class="tour-title">{{ tour.Title }}</h3>
+
+        <div class="title-row">
+          <h3 class="tour-title">{{ tour.Title }}</h3>
+          <span class="status-badge" [ngClass]="{
+            'status-draft': tour.Status === 'draft',
+            'status-published': tour.Status === 'published',
+            'status-archived': tour.Status === 'archived'
+          }">
+            {{ getStatusLabel(tour.Status) }}
+          </span>
+        </div>
+
         <p class="tour-description">{{ tour.Description }}</p>
 
         <div class="tour-badges">
           <span class="badge">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
             {{ tour.Duration }} min
           </span>
           <span class="badge badge-price">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
             {{ tour.Price }}
           </span>
         </div>
       </div>
 
       <div class="card-actions">
-        <!-- Links directly to your TourDetailsComponent using the tour ID -->
-        <a [routerLink]="['/tour/edit', tour.id]" class="btn-view">Edit Tour</a>
+        <a [routerLink]="['/tour/edit', tour.id]" class="btn-view">Edit</a>
+
+        <button 
+          *ngIf="tour.Status === 'draft'" 
+          class="btn-publish" 
+          (click)="changeStatus(tour, 'published')">
+          Objavi
+        </button>
+
+        <button 
+          *ngIf="tour.Status === 'published'" 
+          class="btn-archive" 
+          (click)="changeStatus(tour, 'archived')">
+          Arhiviraj
+        </button>
+
+        <button 
+          *ngIf="tour.Status === 'archived'" 
+          class="btn-reactivate" 
+          (click)="changeStatus(tour, 'published')">
+          Reaktiviraj
+        </button>
       </div>
     </div>
   </div>
