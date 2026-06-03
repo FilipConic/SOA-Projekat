@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TourRepository extends JpaRepository<Tour, Long> {
 
-    boolean existsByIdAndArchivedFalse(Long id);
+    boolean existsByIdAndArchivedFalse(String id);
 }

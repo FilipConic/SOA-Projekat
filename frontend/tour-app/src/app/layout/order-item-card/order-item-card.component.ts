@@ -9,7 +9,7 @@ import { ShoppingCartService } from '../../services/shopping-cart.service';
   styleUrls: ['./order-item-card.component.css']
 })
 export class OrderItemCardComponent {
-  @Input() touristId!: number;
+  @Input() touristId!: string;
   @Input() tour!: OrderItem;
   @Output() cartUpdated = new EventEmitter<void>();
   @Output() closeDrawer = new EventEmitter<void>();
@@ -17,7 +17,6 @@ export class OrderItemCardComponent {
   constructor(private router: Router, private cartService: ShoppingCartService) {}
 
   goToDetail(): void {
-    // Pretpostavka da je ruta za detalje ture /public/tours/:id
     this.router.navigate(['/public/tours', this.tour.tourId]);
     this.closeDrawer.emit();
   }

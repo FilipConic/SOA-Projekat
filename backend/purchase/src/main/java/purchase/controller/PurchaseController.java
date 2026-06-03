@@ -34,7 +34,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/cart/{touristId}")
-    public ResponseEntity<ShoppingCartResponseDto> getCart(@PathVariable Long touristId) {
+    public ResponseEntity<ShoppingCartResponseDto> getCart(@PathVariable String touristId) {
         return ResponseEntity.ok(shoppingCartService.getCart(touristId));
     }
 }

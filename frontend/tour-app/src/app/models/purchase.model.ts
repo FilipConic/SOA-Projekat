@@ -1,18 +1,18 @@
 export interface OrderItem {
     id?: number;
-    tourId: number;
+    tourId: string;
     tourName: string;
     price: number;
 }
 
 export interface ShoppingCart {
-    touristId: number;
+    touristId: string;
     totalPrice: number;
     items: OrderItem[];
 }
 
 export interface CheckoutResponse {
-    touristId: number;
+    touristId: string;
     purchaseDate: Date;
     totalAmountPaid: number;
     numberOfToursPurchased: number;

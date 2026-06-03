@@ -16,8 +16,8 @@ public class TourPurchaseToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long touristId;
-    private Long tourId;
+    private String touristId;
+    private String tourId;
 
     private LocalDateTime purchaseTime;
 

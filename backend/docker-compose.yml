@@ -125,6 +125,8 @@ services:
     depends_on:
       followers-db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   purchase-db:
     image: postgres:15
@@ -188,4 +190,5 @@ volumes:
   media:
   followers_data:
   tours_postgres_data:
+  purchase_postgres_data:
 

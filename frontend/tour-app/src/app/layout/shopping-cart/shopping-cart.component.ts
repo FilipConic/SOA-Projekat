@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShoppingCart } from '../../models/purchase.model'; 
 import { ShoppingCartService } from '../../services/shopping-cart.service';
-import { AuthService } from 'src/app/layout/services/auth.service'; 
+import { AuthService } from 'src/app/services/auth.service'; 
 
 @Component({
   selector: 'app-shopping-cart',
@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/layout/services/auth.service';
 export class ShoppingCartComponent implements OnInit {
   isOpen = false;
   cart: ShoppingCart | null = null;
-  touristId!: number;
+  touristId!: string;
   isProcessing = false;
 
   constructor(
@@ -64,7 +64,6 @@ export class ShoppingCartComponent implements OnInit {
     this.cartService.checkout(this.touristId).subscribe({
       next: (response) => {
         this.isProcessing = false;
-        this.toastService.success(response.message || 'Kupovina uspešno završena!');
         
         this.toggleDrawer();
         this.cart = null; 
@@ -73,7 +72,7 @@ export class ShoppingCartComponent implements OnInit {
       },
       error: (err) => {
         this.isProcessing = false;
-        this.toastService.error(err?.error?.message || 'Došlo je do greške prilikom kupovine.');
+        console.error('Došlo je do greške prilikom kupovine:', err);
       }
     });
   }

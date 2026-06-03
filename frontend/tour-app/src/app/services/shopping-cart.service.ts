@@ -14,23 +14,23 @@ export class ShoppingCartService {
     this.cartState.next(!this.cartState.value);
   }
 
-  getCart(touristId: number): Observable<ShoppingCart> {
+  getCart(touristId: string): Observable<ShoppingCart> {
     return this.http.get<ShoppingCart>(`${environment.apiHost}purchase/cart/${touristId}`);
   }
 
-  addToCart(touristId: number, tourId: number): Observable<ShoppingCart> {
-    const payload = { touristId, tourId };
-    return this.http.post<ShoppingCart>(`${environment.apiHost}purchase/cart/add`, payload).pipe(
+  addToCart(touristId: string, tourId: string): Observable<ShoppingCart> {
+    const payload = { touristId: Number(touristId), tourId };
+    return this.http.post<ShoppingCart>(`/v1/purchase/cart/add`, payload).pipe(
       tap(() => this.cartState.next(true))
     );
   }
 
-  removeFromCart(touristId: number, tourId: number): Observable<ShoppingCart> {
+  removeFromCart(touristId: string, tourId: string): Observable<ShoppingCart> {
     return this.http.delete<ShoppingCart>(`${environment.apiHost}purchase/cart/remove?touristId=${touristId}&tourId=${tourId}`);
   }
 
-  checkout(touristId: number): Observable<CheckoutResponse> {
-    const payload = { touristId };
-    return this.http.post<CheckoutResponse>(`${environment.apiHost}purchase/checkout`, payload);
+  checkout(touristId: string): Observable<CheckoutResponse> {
+    const payload = { touristId: Number(touristId) };
+    return this.http.post<CheckoutResponse>(`/v1/purchase/checkout`, payload);
   }
 }

@@ -26,8 +26,8 @@ service PurchaseService {
 }
 
 message AddToCartGrpcRequest {
-  int64 tourist_id = 1;
-  int64 tour_id = 2;
+  string tourist_id = 1;
+  string tour_id = 2;
 }
 
 message AddToCartGrpcResponse {
