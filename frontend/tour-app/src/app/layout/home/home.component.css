@@ -92,3 +92,24 @@
 .btn:hover {
   opacity: 0.9;
 }
+
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.snackbar.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
