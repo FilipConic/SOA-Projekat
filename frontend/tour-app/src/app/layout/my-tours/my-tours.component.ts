@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TourService } from 'src/app/services/tour.service';
 import { Tour, UpdateTourDTO } from 'src/app/models/tour.model';
+import { TourExecutionService } from 'src/app/services/tour-execution.service';
 
 @Component({
   selector: 'app-my-tours',
@@ -15,7 +16,8 @@ export class MyToursComponent implements OnInit {
 
   constructor(
     private tourService: TourService,
-    private router: Router
+    private router: Router,
+    private tourExecutionService: TourExecutionService
   ) {}
 
   ngOnInit() {

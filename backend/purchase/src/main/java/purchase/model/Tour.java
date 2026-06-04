@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class Tour {
     @Id
-    private Long id;
+    private String id;
 
     private String name;
     private double price;

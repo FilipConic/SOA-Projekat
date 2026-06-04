@@ -1,8 +1,10 @@
 package tours
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
+	"os"
 )
 
 type Handler struct {
@@ -32,6 +34,13 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /api/tours/update/{tour_id}", h.updateTour)
 	mux.HandleFunc("GET /api/tours/find-my", h.getMyTours)
 	mux.HandleFunc("DELETE /api/tours/keypoints/delete/{id}", h.deleteKeyPoint)
+
+	mux.HandleFunc("POST /api/tours/tour-executions/start/{tour_id}", h.startTour)
+	mux.HandleFunc("GET /api/tours/tour-executions/find/{id}", h.getTourExecution)
+	mux.HandleFunc("GET /api/tours/tour-executions/my", h.getMyTourExecutions)
+	mux.HandleFunc("PUT /api/tours/tour-executions/check-position/{id}", h.checkPosition)
+	mux.HandleFunc("PUT /api/tours/tour-executions/complete/{id}", h.completeTour)
+	mux.HandleFunc("PUT /api/tours/tour-executions/abandon/{id}", h.abandonTour)
 }
 
 // func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +67,9 @@ func (h *Handler) updateTour(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	go syncTourWithPurchase(tour.ID, tour.Title, tour.Price, string(tour.Status))
+
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	enc.Encode(tour)
@@ -234,4 +246,109 @@ func (h *Handler) deleteKeyPoint(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"message": "Ključna tačka je uspešno obrisana"}`))
+}
+
+func (h *Handler) startTour(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	touristID := r.Header.Get("X-User-ID")
+
+	var initialPosition CheckPositionDTO
+	json.NewDecoder(r.Body).Decode(&initialPosition)
+
+	execution, err := h.service.StartTour(tourID, touristID, initialPosition)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(execution)
+}
+
+func (h *Handler) checkPosition(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	touristID := r.Header.Get("X-User-ID")
+
+	var pos CheckPositionDTO
+	json.NewDecoder(r.Body).Decode(&pos)
+
+	updatedExecution, err := h.service.CheckPosition(execID, touristID, pos)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(updatedExecution)
+}
+
+func (h *Handler) getTourExecution(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	execution, err := h.service.GetTourExecution(execID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(execution)
+}
+
+func (h *Handler) getMyTourExecutions(w http.ResponseWriter, r *http.Request) {
+	touristID := r.Header.Get("X-User-ID")
+	executions, err := h.service.GetMyTourExecutions(touristID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(executions)
+}
+
+func (h *Handler) completeTour(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	touristID := r.Header.Get("X-User-ID")
+
+	err := h.service.CompleteTour(execID, touristID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) abandonTour(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	touristID := r.Header.Get("X-User-ID")
+
+	err := h.service.AbandonTour(execID, touristID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func syncTourWithPurchase(id string, title string, price float64, status string) {
+	purchaseURL := os.Getenv("PURCHASE_SERVICE_URL")
+	if purchaseURL == "" {
+		purchaseURL = "http://purchase:8083"
+	}
+
+	payload := map[string]interface{}{
+		"id":       id,
+		"name":     title,
+		"price":    price,
+		"archived": status == "Archived",
+	}
+
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return
+	}
+
+	resp, err := http.Post(purchaseURL+"/api/internal/tours", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
 }

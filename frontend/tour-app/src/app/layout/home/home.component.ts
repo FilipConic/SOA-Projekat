@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TourService } from 'src/app/services/tour.service';
 import { Tour } from 'src/app/models/tour.model';
 import { Router } from '@angular/router';
+import { TourExecutionService } from 'src/app/services/tour-execution.service';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,8 @@ export class HomeComponent implements OnInit{
 
   constructor (
     private tourService: TourService,
-    private router: Router
+    private router: Router,
+    private tourExecutionService: TourExecutionService
   ) {}
 
 
@@ -40,6 +42,26 @@ export class HomeComponent implements OnInit{
     }
     console.log("CLICKED ID:", id);
     this.router.navigate(['/tour', id]);
+  }
+
+  startTour(id: string) {
+    if( !this.isLoggedIn()){
+      this.showSnackbar = true;
+      clearTimeout(this.snackbarTimer);
+
+      this.snackbarTimer =  setTimeout(() => {
+        this.showSnackbar = false;
+      }, 2000);
+      return;
+    }
+    
+    this.tourExecutionService.startTour(id).subscribe({
+      next: (execution) => {
+        console.log("Tour started, execution ID:", execution.id);
+        this.router.navigate(['/tour-execution', execution.id]);
+      },
+      error: (err) => console.error('Error starting tour:', err)
+    });
   }
 
   isLoggedIn(): boolean {

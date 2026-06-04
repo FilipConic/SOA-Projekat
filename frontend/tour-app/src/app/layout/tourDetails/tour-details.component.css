@@ -28,11 +28,7 @@
   margin: 0 0 20px;
 }
 
-.tour-badges {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+
 
 .badge {
   display: inline-flex;
@@ -55,4 +51,25 @@
 
 .tour-body {
   border-top: none;
+}
+
+.tour-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.tour-badges {
+  display: flex;
+  gap: 10px;
+}
+
+.detail-cart-btn {
+  padding: 8px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
 }

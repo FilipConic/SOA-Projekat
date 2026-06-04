@@ -1,10 +1,11 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY proto-files /proto-files
+COPY proto ./proto
 
-COPY purchase/pom.xml .
-COPY purchase/src ./src
+COPY purchase ./purchase
+
+WORKDIR /app/purchase
 
 RUN mvn clean package -DskipTests
 
@@ -13,7 +14,7 @@ WORKDIR /app
 
 LABEL maintainer="Vule"
 
-COPY --from=build /app/target/purchase-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/purchase/target/purchase-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8083
 EXPOSE 50054

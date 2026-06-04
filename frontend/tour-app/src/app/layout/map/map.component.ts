@@ -22,9 +22,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() markerClicked = new EventEmitter<number>();
 
   // =============== LEAF ICON SECTION ===============
-  private defaultMarkerUrl: string = "https://unpkg.com/leaflet@1.6.0/dist/images/marker-icon.png";
-  private shadowUrl: string = "https://unpkg.com/leaflet@1.6.0/dist/images/marker-shadow.png";
-  private markerWidth: number = 60;
+  private defaultMarkerUrl: string = "https://github.com/pointhi/leaflet-color-markers/blob/master/img/marker-icon-2x-green.png?raw=true";
+  private shadowUrl: string = "https://github.com/pointhi/leaflet-color-markers/blob/master/img/marker-shadow.png?raw=true";
+  private markerWidth: number = 40;
   private markerHeight: number = 60;
   private shadowWidth: number = 60;
   private shadowHeight: number = 25;
@@ -107,7 +107,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges {
     // Use routeWaypoints if provided, otherwise use waypoints
     const waypointsForRoute = this.routeWaypoints && this.routeWaypoints.length >= 2 
       ? this.routeWaypoints 
-      : this.waypoints;
+      : [];
 
     if (!waypointsForRoute || waypointsForRoute.length < 2) return;
 
@@ -151,7 +151,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnChanges {
 
     // Add markers
     waypointsToRender.forEach((wp, i) => {
-      const marker = L.marker(wp).bindPopup(this.waypointNames[i] || '');
+      const marker = L.marker(wp).bindTooltip(this.waypointNames[i], {
+              permanent: true,
+              direction: 'top',
+              offset: [0, -50]
+            });
       
       // Emit marker index when marker is clicked OR when popup opens
       marker.on('click', () => {

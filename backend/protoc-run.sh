@@ -1,5 +1,11 @@
 #!/bin/bash
 
+mkdir -p ./gateway/gen/
+mkdir -p ./blog/gen/
+mkdir -p ./tours/gen/
+mkdir -p ./purchase/gen/
+mkdir -p ./followers/demo/src/main/gen/
+
 protoc -I proto \
   --go_out=$(pwd)/gateway/gen --go_opt=paths=source_relative \
   --go-grpc_out=$(pwd)/gateway/gen --go-grpc_opt=paths=source_relative \
@@ -8,7 +14,8 @@ protoc -I proto \
   proto/blog/blog.proto \
   proto/followers/followers.proto \
   proto/purchase/purchase.proto \
-  proto/tours/tours.proto
+  proto/tours/tours.proto \
+  proto/purchase/purchase.proto
 
 $(pwd)/blog/node_modules/.bin/grpc_tools_node_protoc \
   -I proto \
@@ -39,4 +46,14 @@ protoc -I proto \
   --grpc-java_out=followers/demo/src/main/gen \
   proto/common/user.proto \
   proto/followers/followers.proto
+
+protoc -I proto \
+  --go_out=purchase/gen/ \
+  --go_opt=paths=source_relative \
+  --go_opt=Mcommon/user.proto=purchase/gen/common \
+  --go-grpc_out=purchase/gen/ \
+  --go-grpc_opt=paths=source_relative \
+  --go-grpc_opt=Mcommon/user.proto=purchase/gen/common \
+  proto/common/user.proto \
+  proto/purchase/purchase.proto
 

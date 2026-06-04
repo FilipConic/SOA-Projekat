@@ -1,19 +1,24 @@
 package purchase.grpc;
 
+import purchase.grpc.PurchaseServiceGrpc;
+import purchase.grpc.AddToCartGrpcRequest;
+import purchase.grpc.AddToCartGrpcResponse;
+import purchase.grpc.CheckoutGrpcRequest;
+import purchase.grpc.CheckoutGrpcResponse;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import purchase.dto.AddToCartRequestDto;
 import purchase.dto.CheckoutRequestDto;
-import purchase.service.CheckoutService;
-import purchase.service.ShoppingCartService;
+import purchase.service.ICheckoutService;
+import purchase.service.IShoppingCartService;
 
 @GrpcService
 @RequiredArgsConstructor
 public class PurchaseGrpcServer extends PurchaseServiceGrpc.PurchaseServiceImplBase {
 
-    private final ShoppingCartService shoppingCartService;
-    private final CheckoutService checkoutService;
+    private final IShoppingCartService shoppingCartService;
+    private final ICheckoutService checkoutService;
 
     @Override
     public void addToCart(AddToCartGrpcRequest request, StreamObserver<AddToCartGrpcResponse> responseObserver) {

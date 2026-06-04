@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class TourDetailsResponseDto {
-    private Long tourId;
+    private String tourId;
     private String name;
     private String description;
     private double length;
