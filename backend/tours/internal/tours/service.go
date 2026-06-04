@@ -490,3 +490,17 @@ func loadImageAsBase64(filePath string) (string, error) {
 
 	return dataURI, nil
 }
+
+func (s *Service) AddPurchaseToken(dto CreatePurchaseTokenDTO) error {
+	if dto.TourID == "" || dto.TouristID == "" {
+		return errors.New("tour_id i tourist_id su obavezni podaci")
+	}
+
+	token := &TourPurchaseToken{
+		ID:        uuid.New().String(),
+		TourID:    dto.TourID,
+		TouristID: dto.TouristID,
+	}
+
+	return s.repo.SaveTourPurchaseToken(token)
+}

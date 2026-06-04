@@ -28,6 +28,7 @@ type Repository interface {
 	GetTourExecutionByID(id string) (*TourExecution, error)
 	GetTourExecutionByTouristID(touristID string) ([]TourExecution, error)
 	UpdateTourExecution(exec *TourExecution) error
+	SaveTourPurchaseToken(token *TourPurchaseToken) error
 }
 
 type PostgresRepo struct {
@@ -147,4 +148,8 @@ func (r *PostgresRepo) GetTourExecutionByTouristID(touristID string) ([]TourExec
 func (r *PostgresRepo) UpdateTourExecution(exec *TourExecution) error {
 	// FullSaveAssociations osigurava da se čuvaju promene nad CompletedPoints nizom
 	return r.db.Session(&gorm.Session{FullSaveAssociations: true}).Save(exec).Error
+}
+
+func (r *PostgresRepo) SaveTourPurchaseToken(token *TourPurchaseToken) error {
+	return r.db.Create(token).Error
 }

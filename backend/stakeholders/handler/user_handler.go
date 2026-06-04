@@ -1,39 +1,38 @@
 package handler
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
-	"os"
 	"stakeholders/auth"
 	"stakeholders/models"
 	"stakeholders/repository"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type UserHandler struct {
-	users *repository.UserRepository
-	profiles *repository.ProfileRepository
+	users         *repository.UserRepository
+	profiles      *repository.ProfileRepository
+	rabbitChannel *amqp.Channel
 }
 
-func NewUserHandler(users *repository.UserRepository, profiles *repository.ProfileRepository) *UserHandler {
-	return &UserHandler{users: users, profiles: profiles}
+func NewUserHandler(users *repository.UserRepository, profiles *repository.ProfileRepository, rabbitChannel *amqp.Channel) *UserHandler {
+	return &UserHandler{users: users, profiles: profiles, rabbitChannel: rabbitChannel}
 }
 
 type createUserRequest struct {
 	Username string `json:"username"`
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
-	Role string `json:"role"`
+	Role     string `json:"role"`
 }
 
-func (h* UserHandler) Create(w http.ResponseWriter, r* http.Request) {
+func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var req createUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid request body")
@@ -76,11 +75,11 @@ func (h* UserHandler) Create(w http.ResponseWriter, r* http.Request) {
 	}
 
 	user := &models.User{
-		ID: uuid.New(),
+		ID:       uuid.New(),
 		Username: req.Username,
-		Email: req.Email,
+		Email:    req.Email,
 		Password: hashed,
-		Role: role,
+		Role:     role,
 		IsActive: true,
 	}
 
@@ -93,19 +92,19 @@ func (h* UserHandler) Create(w http.ResponseWriter, r* http.Request) {
 		log.Printf("failed to create profile for user %s: %v", user.ID, err)
 	}
 
-	go h.syncUserToFollowers(user)
+	go h.publishUserSync(context.Background(), "", user.ID.String(), user.Username)
 
 	writeJSON(w, http.StatusCreated, user)
 }
-func (h* UserHandler) List(w http.ResponseWriter, r* http.Request) {
-	users, err := h.users.ListNonAdmin(r.Context());
+func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
+	users, err := h.users.ListNonAdmin(r.Context())
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "could not list users")
 		return
 	}
 	writeJSON(w, http.StatusOK, users)
 }
-func (h* UserHandler) Retrive(w http.ResponseWriter, r* http.Request) {
+func (h *UserHandler) Retrive(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "invalid user id")
@@ -124,7 +123,7 @@ func (h* UserHandler) Retrive(w http.ResponseWriter, r* http.Request) {
 
 	writeJSON(w, http.StatusOK, user)
 }
-func (h* UserHandler) Block(w http.ResponseWriter, r* http.Request) {
+func (h *UserHandler) Block(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "invalid user id")
@@ -149,39 +148,27 @@ func (h* UserHandler) Block(w http.ResponseWriter, r* http.Request) {
 
 	writeJSON(w, http.StatusOK, user)
 }
-func (h* UserHandler) syncUserToFollowers(user *models.User) {
-	url := os.Getenv("FOLLOWERS_SYNC_URL")
-	if url == "" {
-		url = "http://followers:8081/api/followers/sync"
+func (h *UserHandler) publishUserSync(ctx context.Context, sagaID string, userID string, username string) {
+	event := map[string]interface{}{
+		"id":       userID,
+		"username": username,
 	}
 
-	payload, err := json.Marshal(map[string]string {
-		"id": user.ID.String(),
-		"username": user.Username,
-	})
+	body, _ := json.Marshal(event)
+
+	err := h.rabbitChannel.PublishWithContext(ctx,
+		"user-exchange",
+		"user.sync.routing",
+		false, false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        body,
+			Headers: amqp.Table{
+				"sagaId": sagaID,
+			},
+		},
+	)
 	if err != nil {
-		log.Printf("failed to marshal followers sync payload: %v", err)
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10 * time.Second)
-	defer cancel()
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
-	if err != nil {
-		log.Printf("failed to build followers sync request: %v", err)
-		return
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Printf("failed to sync user %s with followers: %v", user.ID, err)
-		return
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		log.Printf("followers sync returned status %d for user %s", resp.StatusCode, user.ID)
+		log.Printf("Failed to publish user creation sync: %v", err)
 	}
 }

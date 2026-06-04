@@ -103,3 +103,9 @@ type ExecutionKeyPoint struct {
 	IsCompleted bool `gorm:"not null;default:false"`
 	CompletedAt *time.Time
 }
+
+type TourPurchaseToken struct {
+	ID        string `gorm:"primaryKey"`
+	TourID    string `gorm:"foreignKey;not null"`
+	TouristID string `gorm:"foreignKey;not null"`
+}
