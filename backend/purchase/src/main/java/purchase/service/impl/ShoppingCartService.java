@@ -8,10 +8,8 @@ import purchase.dto.OrderItemResponseDto;
 import purchase.dto.ShoppingCartResponseDto;
 import purchase.model.OrderItem;
 import purchase.model.ShoppingCart;
-import purchase.model.Tour;
 import purchase.repository.ShoppingCartRepository;
 import purchase.repository.TourPurchaseTokenRepository;
-import purchase.repository.TourRepository;
 import purchase.service.IShoppingCartService;
 
 import java.util.List;
@@ -22,43 +20,35 @@ import java.util.stream.Collectors;
 public class ShoppingCartService implements IShoppingCartService {
 
     private final ShoppingCartRepository cartRepository;
-    private final TourRepository tourRepository;
     private final TourPurchaseTokenRepository tokenRepository;
 
     @Override
     @Transactional
-    public ShoppingCartResponseDto addItemToCart(AddToCartRequestDto request) {
-        Tour tour = tourRepository.findById(request.getTourId())
-                .orElseThrow(() -> new IllegalArgumentException("Tura nije pronađena."));
-
-        if (tour.isArchived()) {
-            throw new IllegalStateException("Arhivirane ture se ne mogu kupiti.");
-        }
-
-        if (tokenRepository.existsByTouristIdAndTourId(request.getTouristId(), request.getTourId())) {
+    public ShoppingCartResponseDto addItemToCart(String touristId, AddToCartRequestDto request) {
+        if (tokenRepository.existsByTouristIdAndTourId(touristId, request.getTourId())) {
             throw new IllegalStateException("Već ste kupili ovu turu.");
         }
 
-        ShoppingCart cart = cartRepository.findByTouristId(request.getTouristId())
+        ShoppingCart cart = cartRepository.findByTouristId(touristId)
                 .orElseGet(() -> {
                     ShoppingCart newCart = ShoppingCart.builder()
-                            .touristId(request.getTouristId())
+                            .touristId(touristId)
                             .totalPrice(0.0)
                             .build();
                     return cartRepository.save(newCart);
                 });
 
         boolean alreadyInCart = cart.getItems().stream()
-                .anyMatch(item -> item.getTourId().equals(tour.getId()));
+                .anyMatch(item -> item.getTourId().equals(request.getTourId()));
 
         if (alreadyInCart) {
             throw new IllegalStateException("Tura se već nalazi u korpi.");
         }
 
         OrderItem orderItem = OrderItem.builder()
-                .tourId(tour.getId())
-                .tourName(tour.getName())
-                .price(tour.getPrice())
+                .tourId(request.getTourId())
+                .tourName(request.getTourName())
+                .price(request.getPrice())
                 .build();
 
         cart.addItem(orderItem);
@@ -74,7 +64,6 @@ public class ShoppingCartService implements IShoppingCartService {
                 .collect(Collectors.toList());
 
         return ShoppingCartResponseDto.builder()
-                .touristId(savedCart.getTouristId())
                 .totalPrice(savedCart.getTotalPrice())
                 .items(itemDtos)
                 .build();
@@ -104,7 +93,6 @@ public class ShoppingCartService implements IShoppingCartService {
                 .collect(Collectors.toList());
 
         return ShoppingCartResponseDto.builder()
-                .touristId(savedCart.getTouristId())
                 .totalPrice(savedCart.getTotalPrice())
                 .items(itemDtos)
                 .build();
@@ -118,6 +106,6 @@ public class ShoppingCartService implements IShoppingCartService {
                 .map(item -> new OrderItemResponseDto(item.getId(), item.getTourId(), item.getTourName(), item.getPrice()))
                 .collect(Collectors.toList());
 
-        return new ShoppingCartResponseDto(cart.getTouristId(), cart.getTotalPrice(), itemDtos);
+        return new ShoppingCartResponseDto(cart.getTotalPrice(), itemDtos);
     }
 }

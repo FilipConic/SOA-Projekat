@@ -77,7 +77,6 @@ export class JwtInterceptor implements HttpInterceptor {
                     }),
                     catchError((err) => {
                         this.isRefreshing = false;
-                        this.tokenStorage.clear();
                         
                         // If the refresh token is also expired, force a hard reload or redirect to login
                         window.location.reload(); 

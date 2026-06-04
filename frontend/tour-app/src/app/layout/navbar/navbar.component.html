@@ -10,6 +10,10 @@
       <button *ngIf="isGuide" class="nav-btn" (click)="onMyToursClick()">My Tours</button>
       <button *ngIf="isTourist" class="nav-btn" (click)="onTourSimClick()">Tour Simulator</button>
       <button *ngIf="isTourist" class="nav-btn" (click)="onMyExecutionsClick()">My Executions</button>
+      <button class="cart-button" (click)="onViewCartClick()">
+        <mat-icon>shopping_cart</mat-icon>
+        View Cart
+      </button>
       <button class="nav-btn logout-btn" (click)="onLogoutClick()">Logout</button>
     </ng-container>
 

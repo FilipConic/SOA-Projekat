@@ -24,7 +24,7 @@ export class OrderItemCardComponent {
   removeFromCart(event: MouseEvent): void {
     event.stopPropagation();
     
-    this.cartService.removeFromCart(this.touristId, this.tour.tourId).subscribe({
+    this.cartService.removeFromCart(this.tour.tourId).subscribe({
       next: () => { 
         this.cartUpdated.emit(); 
       },
