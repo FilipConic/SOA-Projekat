@@ -10,3 +10,4 @@ TODO.md
 **/gen/
 **/buf.yaml
 **/buf.lock
+**/.idea/
