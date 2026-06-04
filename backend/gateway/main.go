@@ -56,6 +56,9 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/my-following", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/recommendations", Role: auth.RoleTourist}: true,
+	{Path: "/api/tours/publish/", Role: auth.RoleGuide}: true,
+	{Path: "/api/tours/archive/", Role: auth.RoleGuide}: true,
+	{Path: "/api/tours/republish/", Role: auth.RoleGuide}: true,
 
 	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 
@@ -99,15 +102,15 @@ func main() {
 	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register followers service: %v", err)
 	}
-		// if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
-		// 	log.Fatalf("Failed to register purchase service: %v", err)
-		// }
+	if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register purchase service: %v", err)
+	}
 
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
 	followerRestProxy := newReverseProxy(followerRestService)
 	toursRestProxy := newReverseProxy(toursRestService)
-	// purchaseRestProxy := newReverseProxy(purchaseRestService)
+	purchaseRestProxy := newReverseProxy(purchaseRestService)
 
 	mainMux := http.NewServeMux()
 

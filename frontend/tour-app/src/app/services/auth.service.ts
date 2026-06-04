@@ -36,26 +36,17 @@ export class AuthService {
     }
 
     register(registration: Registration): Observable<string> {
-        return this.http.post(environment.apiHost + 'users/', 
+        return this.http.post(environment.apiHost + 'users/',
                 registration,
                 { responseType: 'text' }
             );
     }
 
     logout(): void {
-        this.router.navigate(['/home']).then(_ => {
-                this.http.post(environment.apiHost + 'auth/logout/', { refresh: this.tokenStorage.getRefreshToken() }).subscribe({
-                    next: () => {
-                        console.log('Logged out successfully');
-                        this.tokenStorage.clear();
-                        this.user$.next({email: "", id: '', role: ''});
-                    },
-                    error: (err) => {
-                        console.error('Error occurred while logging out:', err);
-                    }
-                });
-            }
-        );
+        localStorage.removeItem('access-token');
+        localStorage.removeItem('refresh-token');
+        this.user$.next({id: '', email: '', role: ''});
+        this.router.navigate(['/home']);
     }
 
     private setUser(): void {

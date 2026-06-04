@@ -14,9 +14,9 @@ export class TourEditComponent implements OnInit {
   tourId!: string;
   tourForm!: FormGroup;
   originalTour!: Tour; // cuvamo originalnu turu kako bismo zadržali Price, Duration i ostalo
-  
+
   keypoints: KeyPoint[] = [];
-  
+
   // Map Variables for xp-map
   mapWaypoints: L.LatLng[] = [];
   mapWaypointNames: string[] = [];
@@ -53,14 +53,16 @@ export class TourEditComponent implements OnInit {
   loadTourData() {
     this.tourService.getTour(this.tourId).subscribe(tour => {
       this.originalTour = tour;
-      
+
       this.tourForm.patchValue({
         title: tour.Title,
         description: tour.Description,
         difficulty: tour.Difficulty,
         tags: tour.Tags && tour.Tags.length > 0 ? tour.Tags.join(', ') : '',
         price: tour.Price,
-        duration: tour.Duration
+        duration_walk: tour.DurationWalk,
+        duration_bike: tour.DurationBike,
+        duration_car: tour.DurationCar,
       });
     });
 
@@ -85,17 +87,19 @@ export class TourEditComponent implements OnInit {
   saveMainDetails() {
     if (this.tourForm.valid) {
       const formValues = this.tourForm.value;
-      
+
       const updatePayload: UpdateTourDTO = {
         Title: formValues.title,
         Description: formValues.description,
         Difficulty: formValues.difficulty,
-        Tags: formValues.tags 
+        Tags: formValues.tags
           ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
           : [],
         Price: formValues.price,
-        Duration: formValues.duration,
         Status: (this.originalTour?.status as any) || 'draft',
+        DurationWalk: formValues.duration_walk,
+        DurationBike: formValues.duration_bike,
+        DurationCar: formValues.duration_car,
         distance_km: this.distanceKm
       };
       console.log("Payload za ažuriranje ture:", updatePayload);
@@ -128,7 +132,9 @@ export class TourEditComponent implements OnInit {
         ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
         : [],
       Price: formValues.price,
-      Duration: formValues.duration,
+      DurationWalk: formValues.duration_walk,
+      DurationBike: formValues.duration_bike,
+      DurationCar: formValues.duration_car,
       Status: 'published'
     };
     this.tourService.updateTour(this.tourId, updatePayload)
@@ -161,7 +167,7 @@ export class TourEditComponent implements OnInit {
 
   deleteKeypoint(id: string) {
     if (!id) return;
-    
+
     if (confirm("Are you sure you want to delete this keypoint?")) {
       this.tourService.deleteKeypoint(id).subscribe(() => {
         this.fetchKeypoints();

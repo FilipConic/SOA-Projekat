@@ -13,7 +13,6 @@ protoc -I proto \
   proto/common/user.proto \
   proto/blog/blog.proto \
   proto/followers/followers.proto \
-  proto/purchase/purchase.proto \
   proto/tours/tours.proto \
   proto/purchase/purchase.proto
 

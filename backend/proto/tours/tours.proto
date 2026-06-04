@@ -51,11 +51,13 @@ message Tour {
   double price = 6;
   TourDifficulty difficulty = 7;
   repeated string tags = 8;
-  int32 duration = 9;
-  google.protobuf.Timestamp created_at = 10;
-  repeated KeyPoint key_points = 11;
-  repeated Review reviews = 12;
-  double distance_km = 13;
+  int32 duration_walk = 9;
+  int32 duration_bike = 10;
+  int32 duration_car = 11;
+  google.protobuf.Timestamp created_at = 12;
+  repeated KeyPoint key_points = 13;
+  repeated Review reviews = 14;
+  double distance_km = 15;
 }
 
 enum TourDifficulty {

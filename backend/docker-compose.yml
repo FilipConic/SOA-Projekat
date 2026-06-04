@@ -148,6 +148,7 @@ services:
        interval: 5s
        timeout: 5s
        retries: 5
+
   purchase:
      build:
        context: .
@@ -176,7 +177,7 @@ services:
       - stakeholders
       - followers
       - tours
-      # - purchase
+      - purchase
 
   rabbitmq:
     image: rabbitmq:3-management

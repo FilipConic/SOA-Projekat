@@ -18,8 +18,17 @@ type Service struct {
 	repo Repository
 }
 
+var ErrUnauthorized = errors.New("unauthorized")
+var ErrWrongStatus = errors.New("wrong status")
+var ErrCantUnarchive = errors.New("tour not valid to unarchive")
+
 func NewService(repo Repository) *Service {
 	return &Service{repo: repo}
+}
+
+func ptrIfNotZero(v int) *int {
+	if v != 0 { return &v }
+	return nil
 }
 
 func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error) {
@@ -35,7 +44,9 @@ func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error)
 		Price:       0.0,
 		Difficulty:  dto.Difficulty,
 		Tags:        dto.Tags,
-		Duration:    0,
+		DurationWalk: ptrIfNotZero(dto.DurationWalk),
+		DurationBike: ptrIfNotZero(dto.DurationBike),
+		DurationCar:  ptrIfNotZero(dto.DurationCar),
 		CreatedAt:   time.Now(),
 		DistanceKm: dto.DistanceKm,
 	}
@@ -58,7 +69,9 @@ func (s *Service) UpdateTour(id string, dto UpdateTourDTO, creatorID string) (*T
 	tour.Status = dto.Status
 	tour.Difficulty = dto.Difficulty
 	tour.Tags = dto.Tags
-	tour.Duration = dto.Duration
+	tour.DurationWalk = ptrIfNotZero(dto.DurationWalk)
+	tour.DurationBike = ptrIfNotZero(dto.DurationBike)
+	tour.DurationCar = ptrIfNotZero(dto.DurationCar)
 	tour.DistanceKm = dto.DistanceKm
 
 	err = s.repo.UpdateTour(tour)
@@ -430,6 +443,62 @@ func (s *Service) AbandonTour(executionID string, touristID string) error {
 	return s.repo.UpdateTourExecution(exec)
 }
 
+func (s *Service) publish(guideID, tourID string) error {
+	tour, err := s.repo.GetTourByID(tourID)
+	if tour.CreatorID != guideID {
+		return ErrUnauthorized
+	}
+	if tour.Status != StatusPublished {
+		return ErrWrongStatus
+	}
+	if err != nil {
+		return err
+	}
+	tour.Status = StatusPublished
+	tour.PublishTime = time.Now()
+	return s.repo.UpdateTour(tour)
+}
+func (s *Service) archive(guideID, tourID string) error {
+	tour, err := s.repo.GetTourByID(tourID)
+	if tour.CreatorID != guideID {
+		return ErrUnauthorized
+	}
+	if tour.Status != StatusPublished {
+		return ErrWrongStatus
+	}
+	if err != nil {
+		return err
+	}
+	tour.Status = StatusArchived
+	tour.ArchiveTime = time.Now()
+	return s.repo.UpdateTour(tour)
+}
+func (s* Service) publishAgain(guideID, tourID string) error {
+	tour, err := s.repo.GetTourByID(tourID)
+
+	if tour.CreatorID != guideID {
+		return ErrUnauthorized
+	}
+	if tour.Status != StatusArchived {
+		return ErrWrongStatus
+	}
+	if err != nil {
+		return err
+	}
+
+	if tour.Title == "" || tour.Description == "" || tour.Difficulty == "" || len(tour.Tags) == 0 ||
+		len(tour.KeyPoints) < 2 || 
+		tour.DurationWalk == nil || *tour.DurationWalk == 0 ||
+		tour.DurationBike == nil || *tour.DurationBike == 0 ||
+		tour.DurationCar == nil || *tour.DurationCar == 0 {
+		return ErrCantUnarchive
+	}
+
+	tour.Status = StatusPublished
+	tour.PublishTime = time.Now()
+	return s.repo.UpdateTour(tour)
+}
+
 func saveBase64Image(base64Str string) (string, error) {
 	if idx := strings.Index(base64Str, ","); idx != -1 {
 		base64Str = base64Str[idx+1:]
@@ -492,3 +561,4 @@ func loadImageAsBase64(filePath string) (string, error) {
 
 	return dataURI, nil
 }
+

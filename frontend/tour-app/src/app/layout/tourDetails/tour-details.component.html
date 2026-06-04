@@ -14,7 +14,7 @@
       <div class="tour-badges">
 
         <span class="badge">
-          {{ tour.Duration }} min
+          {{ tour.DurationWalk }} min
         </span>
 
         <span class="badge price">
@@ -36,8 +36,8 @@
   </div>
 
   <div class="tour-body">
-    <app-tour-review 
-      *ngIf="tour?.id" 
+    <app-tour-review
+      *ngIf="tour?.id"
       [tourID]="tour.id">
     </app-tour-review>
   </div>

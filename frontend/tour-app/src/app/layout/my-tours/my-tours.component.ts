@@ -41,7 +41,7 @@ export class MyToursComponent implements OnInit {
     });
   }
 
-  changeStatus(tour: Tour, newStatus: 'published' | 'archived' | 'draft') 
+  changeStatus(tour: Tour, newStatus: 'published' | 'archived' | 'draft')
   {
     const payload: UpdateTourDTO = {
       Title: tour.Title,
@@ -49,7 +49,9 @@ export class MyToursComponent implements OnInit {
       Difficulty: tour.Difficulty as unknown as string, // enum ---> string konverzija za API
       Tags: tour.Tags,
       Price: tour.Price,
-      Duration: tour.Duration,
+      DurationWalk: tour.DurationWalk,
+      DurationBike: tour.DurationBike,
+      DurationCar: tour.DurationCar,
       Status: newStatus
     };
     this.tourService.updateTour(tour.id, payload).subscribe({

@@ -7,6 +7,9 @@ type CreateTourDTO struct {
 	Description string         `json:"description"`
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
+	DurationWalk int           `json:"duration_walk"`
+	DurationBike int           `json:"duration_bike"`
+	DurationCar  int           `json:"duration_car"`
 	DistanceKm  float64        `json:"distance_km"`
 }
 
@@ -17,7 +20,9 @@ type UpdateTourDTO struct {
 	Status      TourStatus     `json:"status"` // Može da prebaci iz "draft" u "published"
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
-	Duration    int            `json:"duration"`
+	DurationWalk int           `json:"duration_walk"`
+	DurationBike int           `json:"duration_bike"`
+	DurationCar  int           `json:"duration_car"`
 	DistanceKm  float64        `json:"distance_km"`
 }
 
@@ -30,7 +35,9 @@ type TourDTO struct {
 	Price       float64        `json:"price"`
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
-	Duration    int            `json:"duration"`
+	DurationWalk int           `json:"duration_walk"`
+	DurationBike int           `json:"duration_bike"`
+	DurationCar  int           `json:"duration_car"`
 	CreatedAt   time.Time      `json:"created_at"`
 	KeyPoints   []KeyPointDTO  `json:"key_points"`
 	Reviews     []ReviewDTO    `json:"reviews"`

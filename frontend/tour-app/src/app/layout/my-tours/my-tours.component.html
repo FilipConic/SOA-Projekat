@@ -35,7 +35,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
             </svg>
-            {{ tour.Duration }} min
+            {{ tour.DurationWalk }} min
           </span>
           <span class="badge badge-price">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -49,23 +49,23 @@
       <div class="card-actions">
         <a [routerLink]="['/tour/edit', tour.id]" class="btn-view">Edit</a>
 
-        <button 
-          *ngIf="tour.status === 'draft'" 
-          class="btn-publish" 
+        <button
+          *ngIf="tour.status === 'draft'"
+          class="btn-publish"
           (click)="changeStatus(tour, 'published')">
           Publish
         </button>
 
-        <button 
-          *ngIf="tour.status === 'published'" 
-          class="btn-archive" 
+        <button
+          *ngIf="tour.status === 'published'"
+          class="btn-archive"
           (click)="changeStatus(tour, 'archived')">
           Archive
         </button>
 
-        <button 
-          *ngIf="tour.status === 'archived'" 
-          class="btn-reactivate" 
+        <button
+          *ngIf="tour.status === 'archived'"
+          class="btn-reactivate"
           (click)="changeStatus(tour, 'published')">
           Reactivate
         </button>

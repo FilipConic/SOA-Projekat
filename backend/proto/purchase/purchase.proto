@@ -5,20 +5,19 @@ option java_multiple_files = true;
 option java_package = "purchase.grpc";
 option java_outer_classname = "PurchaseProto";
 
-
 package purchase;
 
 import "google/api/annotations.proto";
 
 service PurchaseService {
-  rpc AddToCart (AddToCartGrpcRequest) returns (AddToCartGrpcResponse) {
+  rpc AddToCart(AddToCartGrpcRequest) returns (AddToCartGrpcResponse) {
     option (google.api.http) = {
       post: "/v1/purchase/cart/add"
       body: "*"
     };
   }
 
-  rpc Checkout (CheckoutGrpcRequest) returns (CheckoutGrpcResponse) {
+  rpc Checkout(CheckoutGrpcRequest) returns (CheckoutGrpcResponse) {
     option (google.api.http) = {
       post: "/v1/purchase/checkout"
       body: "*"

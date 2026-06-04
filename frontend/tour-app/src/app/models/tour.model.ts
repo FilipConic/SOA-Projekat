@@ -7,8 +7,12 @@ export interface Tour {
   Difficulty: TourDifficulty;
   Tags: string[];
   status: 'draft' | 'published' | 'archived';
-  Duration: number;
+  DurationWalk: number;
+  DurationBike: number;
+  DurationCar: number;
   CreatedAt: string;
+  PublishedAt: string;
+  ArchivedAt: string;
   distance_km?: number;
   Keypoints?: KeyPoint[];
 }
@@ -32,7 +36,9 @@ export interface UpdateTourDTO {
   Difficulty: string;
   Tags: string[];
   Price: number;
-  Duration: number;
+  DurationWalk: number;
+  DurationBike: number;
+  DurationCar: number;
   Status: 'draft' | 'published' | 'archived';
   distance_km?: number;
 }

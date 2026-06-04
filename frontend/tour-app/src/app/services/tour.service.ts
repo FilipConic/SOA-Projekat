@@ -66,8 +66,13 @@ export class TourService {
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
           status: t.Status ?? t.status,
-          Duration: t.Duration ?? t.duration,
+          Status: t.Status ?? t.status,
+          DurationWalk: t.DurationWalk ?? t.duration_walk,
+          DurationBike: t.DurationBike ?? t.duration_bike,
+          DurationCar: t.DurationCar ?? t.duration_car,
           CreatedAt: t.CreatedAt ?? t.created_at,
+          PublishedAt: t.PublishedAt ?? t.published_at,
+          ArchivedAt: t.ArchivedAt ?? t.archived_at,
           CreatorID: t.CreatorID ?? t.creator_id
         }));
       })
@@ -84,6 +89,19 @@ export class TourService {
     return this.http.put<Tour>(`${this.baseUrl}/update/${tourId}`, updatedTour);
   }
 
+  publishTour(tourId: string) {
+    this.http.post(`${this.baseUrl}/publish/${tourId}`, {})
+  }
+
+  archiveTour(tourId: string) {
+    this.http.post(`${this.baseUrl}/archive/${tourId}`, {})
+  }
+
+  publishFromArchiveTour(tourId: string) {
+    this.http.post(`${this.baseUrl}/republish/${tourId}`, {})
+  }
+
+
   // PROMENJENO: Preimenovano iz getTourById u getTour da odgovara tour-edit komponenti
   // Ruta na bekendu: GET /api/tours/find/{tour_id}
   getTour(id: string): Observable<Tour> {
@@ -96,10 +114,15 @@ export class TourService {
           Difficulty: t.Difficulty,
           Tags: t.Tags,
           status: t.status ?? t.Status,
-          Duration: t.Duration,
+          Status: t.Status,
+          DurationWalk: t.DurationWalk,
+          DurationBike: t.DurationBike,
+          DurationCar: t.DurationCar,
           CreatedAt: t.CreatedAt,
+          PublishedAt: t.PublishedAt,
+          ArchivedAt: t.ArchivedAt,
           CreatorID: t.CreatorID,
-          distance_km: t.DistanceKm ?? t.distance_km ?? 0, 
+          distance_km: t.DistanceKm ?? t.distance_km ?? 0,
           Keypoints: t.Keypoints
         }))
       );
