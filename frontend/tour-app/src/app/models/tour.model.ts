@@ -9,6 +9,7 @@ export interface Tour {
   Status: 'draft' | 'published' | 'archived';
   Duration: number;
   CreatedAt: string;
+  DistanceKm?: number;
 }
 
 export enum TourDifficulty {
@@ -32,6 +33,7 @@ export interface UpdateTourDTO {
   Price: number;
   Duration: number;
   Status: 'draft' | 'published' | 'archived';
+  DistanceKm?: number;
 }
 
 export interface CreateKeyPointDTO {

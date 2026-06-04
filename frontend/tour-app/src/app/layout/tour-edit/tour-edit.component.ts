@@ -25,6 +25,8 @@ export class TourEditComponent implements OnInit {
   showModal = false;
   selectedKeypoint: KeyPoint | null = null;
 
+  distanceKm: number = 0;
+
   constructor(
     private route: ActivatedRoute,
     private fb: FormBuilder,
@@ -70,6 +72,8 @@ export class TourEditComponent implements OnInit {
       this.keypoints = kp;
       console.log("Učitane ključne tačke:", this.keypoints);
       this.updateMapData();
+
+      this.distanceKm = this.calculateDistance();
     });
   }
 
@@ -91,7 +95,8 @@ export class TourEditComponent implements OnInit {
           : [],
         Price: formValues.price,
         Duration: formValues.duration,
-        Status: (this.originalTour?.Status as any) || 'draft'
+        Status: (this.originalTour?.Status as any) || 'draft',
+        DistanceKm: this.distanceKm || this.originalTour?.DistanceKm || 0
       };
       console.log("Payload za ažuriranje ture:", updatePayload);
 
@@ -161,5 +166,36 @@ export class TourEditComponent implements OnInit {
         this.fetchKeypoints();
       });
     }
+  }
+
+  calculateDistance(): number {
+    let total = 0;
+
+    for (let i = 1; i < this.mapWaypoints.length; i++) {
+      const a = this.mapWaypoints[i - 1];
+      const b = this.mapWaypoints[i];
+
+      total += this.getDistanceMeters(
+      a.lat, a.lng,
+      b.lat, b.lng
+    );
+    }
+    return total/1000; // Convert to km
+  }
+
+  private getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Earth radius in meters
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    // Haversine formula
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
   }
 }

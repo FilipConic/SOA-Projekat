@@ -39,9 +39,11 @@
             (click)="publishTour()" 
             [disabled]="!canPublish()"
             [title]="!canPublish() ? 'Potrebno: popunjeni podaci, trajanje > 0, min 2 ključne tačke' : 'Objavi turu'">
-            Objavi turu
+            Publish
           </button>
         </div>
+
+        
 
       </form>
     </div>
@@ -53,7 +55,7 @@
       </div>
 
       <div *ngIf="keypoints.length < 2" class="warning-msg">
-        ⚠ Dodajte najmanje 2 ključne tačke da biste objavili turu.
+        Add at least 2 keypoints to be able to publish the tour.
       </div>
 
       <div class="keypoint-cards">
@@ -67,7 +69,15 @@
           </div>
         </div>
       </div>
+
+      
+      <div class="tour-metrics" *ngIf="distanceKm > 0">
+        <span> Total distance: {{ distanceKm | number:'1.2-2' }} km</span>
+      </div>
+
     </div>
+
+    
 
   </div>
 </div>
