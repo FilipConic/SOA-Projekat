@@ -1,25 +1,45 @@
 <div *ngIf="tour" class="tour-page">
 
   <div class="tour-hero">
+
     <div class="tour-hero-content">
-      <h1 class="tour-title">{{ tour.Title}}</h1>
-      <p class="tour-description">{{ tour.Description}}</p>
+
+      <h1 class="tour-title">{{ tour.Title }}</h1>
+
+      <p class="tour-description">
+        {{ tour.Description }}
+      </p>
+
+      <!-- META STRIP -->
       <div class="tour-badges">
+
         <span class="badge">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          {{ tour.Duration}} min
+          {{ tour.Duration }} min
         </span>
-        <span class="badge badge-price">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          {{ tour.Price}}
+
+        <span class="badge price">
+          {{ tour.Price }} €
         </span>
+
+        <span class="badge" *ngIf="distanceKm">
+          {{ distanceKm | number:'1.1-2' }} km
+        </span>
+
+        <span class="badge" *ngIf="keypoints?.length">
+          Start: {{ keypoints[0]?.Name }}
+        </span>
+
       </div>
 
     </div>
+
   </div>
 
   <div class="tour-body">
-   <app-tour-review *ngIf="tour?.id" [tourID]="tour.id"></app-tour-review>
+    <app-tour-review 
+      *ngIf="tour?.id" 
+      [tourID]="tour.id">
+    </app-tour-review>
   </div>
 
 </div>

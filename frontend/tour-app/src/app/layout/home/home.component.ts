@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit{
     this.tourService.getAllTours().subscribe(data => {
      // console.log("HOME DATA:", data);
      console.log("STATUSI:", data.map(t => ({ id: t.id, status: t.Status })));
-      this.tours = data.filter(t => t.Status === 'published');
+      this.tours = data;
     });
   }
 

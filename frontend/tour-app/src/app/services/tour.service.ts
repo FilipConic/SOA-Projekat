@@ -98,7 +98,9 @@ export class TourService {
           Status: t.Status,
           Duration: t.Duration,
           CreatedAt: t.CreatedAt,
-          CreatorID: t.CreatorID
+          CreatorID: t.CreatorID,
+          DistanceKm: t.DistanceKm ?? t.distance_km ?? 0,
+          Keypoints: t.Keypoints
         }))
       );
   }

@@ -6,7 +6,8 @@ import { CreateTourDTO, TourDifficulty } from 'src/app/models/tour.model';
 
 @Component({
   selector: 'app-tour-create',
-  templateUrl: './tour-create.component.html'
+  templateUrl: './tour-create.component.html',
+  styleUrls: ['./tour-create.component.css']
 })
 export class TourCreateComponent {
   tourForm: FormGroup;

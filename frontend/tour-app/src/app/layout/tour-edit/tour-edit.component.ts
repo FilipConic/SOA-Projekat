@@ -13,7 +13,7 @@ import { Tour, KeyPoint, UpdateTourDTO } from '../../models/tour.model';
 export class TourEditComponent implements OnInit {
   tourId!: string;
   tourForm!: FormGroup;
-  originalTour!: Tour; // Čuvamo originalnu turu kako bismo zadržali Price, Duration i ostalo
+  originalTour!: Tour; // cuvamo originalnu turu kako bismo zadržali Price, Duration i ostalo
   
   keypoints: KeyPoint[] = [];
   
@@ -96,7 +96,7 @@ export class TourEditComponent implements OnInit {
         Price: formValues.price,
         Duration: formValues.duration,
         Status: (this.originalTour?.Status as any) || 'draft',
-        DistanceKm: this.distanceKm || this.originalTour?.DistanceKm || 0
+        distance_km: this.distanceKm
       };
       console.log("Payload za ažuriranje ture:", updatePayload);
 

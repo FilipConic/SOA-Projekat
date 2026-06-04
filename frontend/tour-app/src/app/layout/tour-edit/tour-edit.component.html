@@ -1,5 +1,4 @@
 <div class="edit-layout">
-  
   <div class="left-column">
     <xp-map 
       [mapType]="'showWaypoints'" 
@@ -11,7 +10,6 @@
   </div>
 
   <div class="right-column">
-    
     <div class="details-section">
       <h2>Tour Details</h2>
       <form [formGroup]="tourForm" (ngSubmit)="saveMainDetails()">
@@ -25,37 +23,38 @@
             <option value="Hard">Hard</option>
           </select>
           <input type="text" formControlName="tags" placeholder="Tags (comma separated)">
-          <input type="number" formControlName="price" placeholder="Price" step="0.1" min="0">
-          <input type="number" formControlName="duration" placeholder="Duration (min)" min="1">
+        </div>
+
+        <div class="row">
+          <input type="number" formControlName="price" placeholder="Price (€)">
+          <small class="hint">Price in Euros</small>
+
+          <input type="number" formControlName="duration" placeholder="Duration (min)">
+          <small class="hint">Approximate duration in minutes</small>
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn-primary" [disabled]="tourForm.invalid">
-            Save Changes
-          </button>
+          <button type="submit" class="btn-primary" [disabled]="tourForm.invalid">Save</button>
           <button 
             type="button"
             class="btn-publish" 
             (click)="publishTour()" 
             [disabled]="!canPublish()"
-            [title]="!canPublish() ? 'Potrebno: popunjeni podaci, trajanje > 0, min 2 ključne tačke' : 'Objavi turu'">
+            [title]="!canPublish() ? 'Need: filled data, duration > 0, min 2 keypoints' : 'Publish tour'">
             Publish
           </button>
         </div>
-
-        
-
       </form>
     </div>
 
     <div class="keypoints-section">
       <div class="header-row">
-        <h3>KEYPOINTS</h3>
-        <button (click)="openCreateModal()" class="btn-success">+ Create new keypoint</button>
+        <h3>Keypoints</h3>
+        <button (click)="openCreateModal()" class="btn-success">+ Add keypoint</button>
       </div>
 
       <div *ngIf="keypoints.length < 2" class="warning-msg">
-        Add at least 2 keypoints to be able to publish the tour.
+        Add at least 2 keypoints to publish the tour.
       </div>
 
       <div class="keypoint-cards">
@@ -70,15 +69,10 @@
         </div>
       </div>
 
-      
       <div class="tour-metrics" *ngIf="distanceKm > 0">
-        <span> Total distance: {{ distanceKm | number:'1.2-2' }} km</span>
+        <span>Total distance: {{ distanceKm | number:'1.2-2' }} km</span>
       </div>
-
     </div>
-
-    
-
   </div>
 </div>
 

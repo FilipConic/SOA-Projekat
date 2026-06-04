@@ -15,6 +15,9 @@ export class TourDetailsComponent implements OnInit {
   tour!: Tour;
   touristId!: string;
 
+  distanceKm: number = 0;
+  keypoints: any[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private tourService: TourService,
@@ -35,6 +38,11 @@ export class TourDetailsComponent implements OnInit {
     this.tourService.getTour(id).subscribe({
       next: (data) => {
         this.tour = data;
+
+        console.log('TOUR DATA:', data);
+        
+        this.keypoints = (data as any).Keypoints || [];
+        this.distanceKm = (data as any).DistanceKm || 0;
       },
       error: (err) => {
         console.error(err);
