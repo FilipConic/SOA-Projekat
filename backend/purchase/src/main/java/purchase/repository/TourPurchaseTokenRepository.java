@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TourPurchaseTokenRepository extends JpaRepository<TourPurchaseToken, Long> {
+public interface TourPurchaseTokenRepository extends JpaRepository<TourPurchaseToken, String> {
 
     boolean existsByTouristIdAndTourId(String touristId, String tourId);
 

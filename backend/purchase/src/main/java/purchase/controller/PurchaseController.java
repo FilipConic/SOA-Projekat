@@ -24,7 +24,7 @@ public class PurchaseController {
     }
 
     @DeleteMapping("/cart/remove")
-    public ResponseEntity<ShoppingCartResponseDto> removeFromCart(@RequestParam Long touristId, @RequestParam Long tourId) {
+    public ResponseEntity<ShoppingCartResponseDto> removeFromCart(@RequestParam String touristId, @RequestParam String tourId) {
         return ResponseEntity.ok(shoppingCartService.removeItemFromCart(touristId, tourId));
     }
 

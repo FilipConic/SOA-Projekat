@@ -21,7 +21,7 @@
     "elysia": "^1.4.28",
     "google-protobuf": "^4.0.2",
     "jsonwebtoken": "^9.0.3",
-    "mongodb": "^7.2.0",
+    "mongodb": "^5.9.2",
     "pg": "^8.20.0",
     "uuid": "^14.0.0"
   }

@@ -1,8 +1,10 @@
 package tours
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
+	"os"
 )
 
 type Handler struct {
@@ -65,6 +67,9 @@ func (h *Handler) updateTour(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	go syncTourWithPurchase(tour.ID, tour.Title, tour.Price, string(tour.Status))
+
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	enc.Encode(tour)
@@ -321,4 +326,29 @@ func (h *Handler) abandonTour(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func syncTourWithPurchase(id string, title string, price float64, status string) {
+	purchaseURL := os.Getenv("PURCHASE_SERVICE_URL")
+	if purchaseURL == "" {
+		purchaseURL = "http://purchase:8083"
+	}
+
+	payload := map[string]interface{}{
+		"id":       id,
+		"name":     title,
+		"price":    price,
+		"archived": status == "Archived",
+	}
+
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return
+	}
+
+	resp, err := http.Post(purchaseURL+"/api/internal/tours", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
 }
