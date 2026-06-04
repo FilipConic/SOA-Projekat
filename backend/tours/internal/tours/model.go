@@ -48,6 +48,7 @@ type Tour struct {
 	CreatedAt   time.Time
 	KeyPoints   []KeyPoint `gorm:"foreignKey:TourID"`
 	Reviews     []Review   `gorm:"foreignKey:TourID"`
+	DistanceKm  float64    `gorm:"type:numeric"`
 }
 
 type KeyPoint struct {

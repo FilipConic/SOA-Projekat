@@ -7,6 +7,7 @@ type CreateTourDTO struct {
 	Description string         `json:"description"`
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
+	DistanceKm  float64        `json:"distance_km"`
 }
 
 type UpdateTourDTO struct {
@@ -17,6 +18,7 @@ type UpdateTourDTO struct {
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
 	Duration    int            `json:"duration"`
+	DistanceKm  float64        `json:"distance_km"`
 }
 
 type TourDTO struct {
@@ -32,6 +34,7 @@ type TourDTO struct {
 	CreatedAt   time.Time      `json:"created_at"`
 	KeyPoints   []KeyPointDTO  `json:"key_points"`
 	Reviews     []ReviewDTO    `json:"reviews"`
+	DistanceKm  float64        `json:"distance_km"`
 }
 
 type CreateKeyPointDTO struct {

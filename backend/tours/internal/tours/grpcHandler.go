@@ -36,6 +36,7 @@ func (h *GrpcHandler) CreateTour(ctx context.Context, req *pb.CreateTourRequest)
 		Description: req.Description,
 		Difficulty:  difficultyMap[req.Difficulty],
 		Tags:        req.Tags,
+		DistanceKm: req.DistanceKm,
 	}
 
 	tour, err := h.service.CreateTour(dto, userID)
@@ -69,6 +70,7 @@ func toProtoTour(t *Tour) *pb.Tour {
 		Price:       t.Price,
 		Duration:    int32(t.Duration),
 		Tags:        t.Tags,
+		DistanceKm: t.DistanceKm,
 	}
 	if t.Difficulty == DifficultyEasy {
 		ret.Difficulty = pb.TourDifficulty_TOUR_DIFFICULTY_EASY

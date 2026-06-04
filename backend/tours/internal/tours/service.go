@@ -37,6 +37,7 @@ func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error)
 		Tags:        dto.Tags,
 		Duration:    0,
 		CreatedAt:   time.Now(),
+		DistanceKm: dto.DistanceKm,
 	}
 	err := s.repo.SaveTour(tour)
 	return tour, err
@@ -58,6 +59,7 @@ func (s *Service) UpdateTour(id string, dto UpdateTourDTO, creatorID string) (*T
 	tour.Difficulty = dto.Difficulty
 	tour.Tags = dto.Tags
 	tour.Duration = dto.Duration
+	tour.DistanceKm = dto.DistanceKm
 
 	err = s.repo.UpdateTour(tour)
 	return tour, err
