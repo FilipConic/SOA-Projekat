@@ -47,6 +47,7 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/tours/tourists/", Role: auth.RoleTourist}:           true,
 	{Path: "/api/tours/update/", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/find-my", Role: auth.RoleGuide}:               true,
+	{Path: "/api/tours/tour-executions/", Role: auth.RoleTourist}:    true,
 	{Path: "/api/tours/keypoints/delete", Role: auth.RoleGuide}:      true,
 	{Path: "/v1/followers/follow/", Role: auth.RoleTourist}:          true,
 	{Path: "/v1/followers/unfollow/", Role: auth.RoleTourist}:        true,

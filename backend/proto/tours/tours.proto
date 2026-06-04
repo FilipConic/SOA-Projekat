@@ -67,14 +67,11 @@ enum TourDifficulty {
 }
 
 message CreateTourRequest {
-  common.User user    = 1;
+  common.User user = 1;
   string title        = 2;
   string description  = 3;
-  double price         = 4;
-  int32 duration      = 5;
-  TourDifficulty difficulty = 6;
-  repeated string tags = 7;
-  repeated string images = 8;
+  TourDifficulty difficulty = 4;
+  repeated string tags = 5;
 }
 
 message CreateTourResponse {

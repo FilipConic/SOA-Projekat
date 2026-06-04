@@ -47,7 +47,7 @@ export class TourDetailsComponent implements OnInit {
       return;
     }
 
-    this.cartService.addToCart(this.touristId, this.tour.id).subscribe({
+    this.cartService.addToCart(this.touristId, this.tour.ID).subscribe({
       next: () => {},
       error: (err) => {
         console.error(err);

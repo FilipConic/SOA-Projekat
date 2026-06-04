@@ -34,7 +34,9 @@ export class TourCreateComponent {
         tags: tags
       }
       this.tourService.createTour(payload).subscribe((newTour) => {
-        this.router.navigate(['/tour/edit', newTour.id]);
+        console.log('Tour created successfully:', newTour);
+        console.log('Navigating to tour edit page for tour ID:', newTour.ID);
+        this.router.navigate(['/tour/edit', newTour.ID]);
       });
     }
   }

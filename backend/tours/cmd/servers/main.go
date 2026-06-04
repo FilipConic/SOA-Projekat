@@ -36,6 +36,8 @@ func main() {
 		&tours.KeyPoint{},
 		&tours.Review{},
 		&tours.TouristPosition{},
+		&tours.TourExecution{},
+		&tours.ExecutionKeyPoint{},
 	)
 	if err != nil {
 		log.Fatalf("Greška tokom migracije: %v", err)
@@ -65,16 +67,16 @@ func main() {
 		if err := http.ListenAndServe(":8082", mux); err != nil {
 			log.Fatalf("Server pao: %v", err)
 		}
-	}();
-	
+	}()
+
 	lis, err := net.Listen("tcp", ":50052")
-    if err != nil {
-        log.Fatal(err)
-    }
-    log.Println("Tours gRPC server running on :50052")
-    if err := grpcServer.Serve(lis); err != nil {
-        log.Fatal(err)
-    }
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Tours gRPC server running on :50052")
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func getEnv(key, fallback string) string {

@@ -35,7 +35,7 @@ func (s *Service) CreateTour(dto CreateTourDTO, creatorID string) (*Tour, error)
 		Price:       0.0,
 		Difficulty:  dto.Difficulty,
 		Tags:        dto.Tags,
-		Duration:    dto.Duration,
+		Duration:    0,
 		CreatedAt:   time.Now(),
 	}
 	err := s.repo.SaveTour(tour)
@@ -235,7 +235,7 @@ func calculateHaversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
 }
 
 // --- Pomoćna funkcija: Mapiranje Modela u DTO za Frontend ---
-func mapExecutionToDTO(exec *TourExecution) *TourExecutionDTO {
+func mapExecutionToDTO(s *Service, exec *TourExecution) *TourExecutionDTO {
 	dto := &TourExecutionDTO{
 		ID:              exec.ID,
 		TourID:          exec.TourID,
@@ -249,6 +249,14 @@ func mapExecutionToDTO(exec *TourExecution) *TourExecutionDTO {
 	}
 
 	for _, kp := range exec.CompletedPoints {
+		actualKp, err := s.repo.GetKeyPointByID(kp.KeyPointID)
+		if err != nil {
+			return nil
+		}
+		image, err := loadImageAsBase64(actualKp.Image)
+		if err != nil {
+			return nil
+		}
 		dto.Keypoints = append(dto.Keypoints, ExecutionKeyPointDTO{
 			ID:          kp.ID,
 			Name:        kp.Name,
@@ -258,6 +266,7 @@ func mapExecutionToDTO(exec *TourExecution) *TourExecutionDTO {
 			Order:       kp.Order,
 			IsCompleted: kp.IsCompleted,
 			CompletedAt: kp.CompletedAt,
+			Image:       image,
 		})
 	}
 	return dto
@@ -315,7 +324,27 @@ func (s *Service) StartTour(tourID string, touristID string, initialPosition Che
 
 	// Ponovno dohvatamo da bismo imali pre-loadovan Tour objekat zbog naziva
 	fullExec, _ := s.repo.GetTourExecutionByID(execID)
-	return mapExecutionToDTO(fullExec), nil
+	return mapExecutionToDTO(s, fullExec), nil
+}
+
+func (s *Service) GetTourExecution(executionID string) (*TourExecutionDTO, error) {
+	exec, err := s.repo.GetTourExecutionByID(executionID)
+	if err != nil {
+		return nil, errors.New("sesija nije pronađena")
+	}
+	return mapExecutionToDTO(s, exec), nil
+}
+
+func (s *Service) GetMyTourExecutions(touristID string) ([]TourExecutionDTO, error) {
+	execs, err := s.repo.GetTourExecutionByTouristID(touristID)
+	if err != nil {
+		return nil, errors.New("greška prilikom dohvatanja vaših sesija")
+	}
+	dtos := make([]TourExecutionDTO, 0)
+	for _, exec := range execs {
+		dtos = append(dtos, *mapExecutionToDTO(s, &exec))
+	}
+	return dtos, nil
 }
 
 // 2. Ping pozicije svakih 10 sekundi
@@ -360,7 +389,7 @@ func (s *Service) CheckPosition(executionID string, touristID string, dto CheckP
 	}
 
 	err = s.repo.UpdateTourExecution(exec)
-	return mapExecutionToDTO(exec), err
+	return mapExecutionToDTO(s, exec), err
 }
 
 // 3. Zvanično kompletiranje
@@ -369,10 +398,22 @@ func (s *Service) CompleteTour(executionID string, touristID string) error {
 	if err != nil || exec.TouristID != touristID {
 		return errors.New("nedozvoljena akcija")
 	}
+	if !allKeyPointsCompleted(exec.CompletedPoints) {
+		return errors.New("ne možete završiti turu dok ne posetite sve ključne tačke")
+	}
 	now := time.Now()
 	exec.Status = ExecutionCompleted
 	exec.EndTime = &now
 	return s.repo.UpdateTourExecution(exec)
+}
+
+func allKeyPointsCompleted(points []ExecutionKeyPoint) bool {
+	for _, kp := range points {
+		if !kp.IsCompleted {
+			return false
+		}
+	}
+	return true
 }
 
 // 4. Napuštanje ture

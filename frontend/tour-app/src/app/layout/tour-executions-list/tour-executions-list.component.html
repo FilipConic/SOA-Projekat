@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>My Tours</h2>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    Loading...
+  </div>
+
+  <div *ngIf="errorMessage" class="error-banner">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && executions.length === 0" class="empty-state">
+    <p>No executions found.</p>
+  </div>
+
+  <div *ngIf="!isLoading && executions.length > 0" class="executions-grid">
+    <div *ngFor="let exec of executions" class="execution-card">
+      
+      <div class="card-header">
+        <h3>{{ exec.tourTitle }}</h3>
+        <span class="status-badge" [ngClass]="getStatusClass(exec.status)">
+          {{ exec.status }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <p class="description">{{ exec.tourDescription }}</p>
+        <div class="meta-info">
+          <small>Started: {{ exec.startTime | date:'dd.MM.yyyy. HH:mm' }}</small>
+          <small *ngIf="exec.endTime">Completed: {{ exec.endTime | date:'dd.MM.yyyy. HH:mm' }}</small>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button 
+          (click)="resumeTour(exec.id)" 
+          [disabled]="exec.status.toUpperCase() !== 'ACTIVE'"
+          class="btn-resume">
+          {{ exec.status.toUpperCase() === 'ACTIVE' ? 'Resume Tour' : 'Tour Completed' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

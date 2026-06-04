@@ -103,9 +103,9 @@ try {
         proto/followers/followers.proto
 
     & $protoc -I proto `
-        --java_out="$PWD\purchase\src\main\java\purchase\grpc" `
+        --java_out="$PWD\purchase\src\main\gen" `
         --plugin=protoc-gen-grpc-java=$grpcJavaPlugin `
-        --grpc-java_out="$PWD\purchase\src\main\java\purchase\grpc" `
+        --grpc-java_out="$PWD\purchase\src\main\gen" `
         proto/common/user.proto `
         proto/purchase/purchase.proto
 }

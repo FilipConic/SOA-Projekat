@@ -26,6 +26,7 @@ type Repository interface {
 	DeleteKeyPoint(id string) error
 	SaveTourExecution(exec *TourExecution) error
 	GetTourExecutionByID(id string) (*TourExecution, error)
+	GetTourExecutionByTouristID(touristID string) ([]TourExecution, error)
 	UpdateTourExecution(exec *TourExecution) error
 }
 
@@ -135,6 +136,12 @@ func (r *PostgresRepo) GetTourExecutionByID(id string) (*TourExecution, error) {
 	// Preloadujemo Turu (zbog naslova) i sve pripadajuće tačke sesije
 	err := r.db.Preload("Tour").Preload("CompletedPoints").First(&exec, "id = ?", id).Error
 	return &exec, err
+}
+
+func (r *PostgresRepo) GetTourExecutionByTouristID(touristID string) ([]TourExecution, error) {
+	var execs []TourExecution
+	err := r.db.Preload("Tour").Preload("CompletedPoints").Where("tourist_id = ?", touristID).Find(&execs).Error
+	return execs, err
 }
 
 func (r *PostgresRepo) UpdateTourExecution(exec *TourExecution) error {

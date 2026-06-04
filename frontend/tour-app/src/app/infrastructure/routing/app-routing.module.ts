@@ -11,6 +11,8 @@ import { FollowRecommendationsComponent } from 'src/app/layout/follow-recommenda
 import { BlogListComponent } from 'src/app/layout/blog-list/blog-list.component';
 import { BlogCreateComponent } from 'src/app/layout/blog-create/blog-create.component';
 import { PositionSimulatorComponent } from 'src/app/layout/position-simulator/position-simulator.component';
+import { TourExecutionComponent } from 'src/app/layout/tour-execution/tour-execution.component';
+import { TourExecutionsListComponent } from 'src/app/layout/tour-executions-list/tour-executions-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -25,6 +27,8 @@ const routes: Routes = [
   { path: 'blogs/create', component: BlogCreateComponent },
   { path: 'blogs', component: BlogListComponent },
   { path: 'position-simulator', component: PositionSimulatorComponent },
+  { path: 'my-tour-executions', component: TourExecutionsListComponent },
+  { path: 'tour-execution/:id', component: TourExecutionComponent }
 ];
 
 @NgModule({

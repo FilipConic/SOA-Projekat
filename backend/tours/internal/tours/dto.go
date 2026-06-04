@@ -5,8 +5,6 @@ import "time"
 type CreateTourDTO struct {
 	Title       string         `json:"title"`
 	Description string         `json:"description"`
-	Price       float64        `json:"price"`
-	Duration    int            `json:"duration"`
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
 }
@@ -95,6 +93,7 @@ type ExecutionKeyPointDTO struct {
 	ID          string     `json:"id"`
 	Name        string     `json:"name"`
 	Description string     `json:"description"`
+	Image       string     `json:"image"`
 	Latitude    float64    `json:"latitude"`
 	Longitude   float64    `json:"longitude"`
 	Order       int        `json:"order"`
