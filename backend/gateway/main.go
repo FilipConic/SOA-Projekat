@@ -27,8 +27,8 @@ const (
 	folowersGrpcService     = "followers:50053"
 	toursGrpcService  		= "tours:50052"
 	toursRestService        = "http://tours:8082"
-	purchaseGrpcService     = "purchase:50054"
-    purchaseRestService     = "http://purchase:8083"
+	// purchaseGrpcService     = "purchase:50054"
+    // purchaseRestService     = "http://purchase:8083"
 
 )
 
@@ -58,9 +58,9 @@ var protectedRoutes = map[auth.Permission]bool{
 
 	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 
-	{Path: "/v1/purchase/cart/add", Role: auth.RoleTourist}: true,
-    {Path: "/v1/purchase/checkout", Role: auth.RoleTourist}: true,
-   	{Path: "/api/purchase/cart/remove", Role: auth.RoleTourist}: true,
+	// {Path: "/v1/purchase/cart/add", Role: auth.RoleTourist}: true,
+    // {Path: "/v1/purchase/checkout", Role: auth.RoleTourist}: true,
+   	// {Path: "/api/purchase/cart/remove", Role: auth.RoleTourist}: true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -98,15 +98,15 @@ func main() {
 	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register followers service: %v", err)
 	}
-	if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
-		log.Fatalf("Failed to register purchase service: %v", err)
-	}
+		// if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
+		// 	log.Fatalf("Failed to register purchase service: %v", err)
+		// }
 
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
 	followerRestProxy := newReverseProxy(followerRestService)
 	toursRestProxy := newReverseProxy(toursRestService)
-	purchaseRestProxy := newReverseProxy(purchaseRestService)
+	// purchaseRestProxy := newReverseProxy(purchaseRestService)
 
 	mainMux := http.NewServeMux()
 
@@ -117,8 +117,8 @@ func main() {
 	mainMux.Handle("/v1/followers/unfollow/", grpcMux)
 	mainMux.Handle("/v1/tours/new", grpcMux)
 	mainMux.Handle("/v1/tours/all", grpcMux)
-	mainMux.Handle("/v1/purchase/cart/add", grpcMux)
-    mainMux.Handle("/v1/purchase/checkout", grpcMux)
+	// mainMux.Handle("/v1/purchase/cart/add", grpcMux)
+    // mainMux.Handle("/v1/purchase/checkout", grpcMux)
 
 	mainMux.HandleFunc("/api/blog/", func(res http.ResponseWriter, req *http.Request) {
 		blogRestProxy.ServeHTTP(res, req)
@@ -138,9 +138,9 @@ func main() {
 	mainMux.HandleFunc("/api/tours/", func(res http.ResponseWriter, req *http.Request) {
 		toursRestProxy.ServeHTTP(res, req)
 	})
-    mainMux.HandleFunc("/api/purchase/", func(res http.ResponseWriter, req *http.Request) {
-    		purchaseRestProxy.ServeHTTP(res, req)
-    })
+    // mainMux.HandleFunc("/api/purchase/", func(res http.ResponseWriter, req *http.Request) {
+    // 		purchaseRestProxy.ServeHTTP(res, req)
+    // })
 
 	authMiddleware := auth.Middleware(jwtSecret, protectedRoutes)
 

@@ -10,6 +10,6 @@ public interface IUserService {
     List<User> getRecommendations(String userId);
     List<String> getFollowingIds(String userId);
     List<String> getFollowerIds(String userId);
-    void syncUser(String id, String username);
+    void syncUser(String id, String username, String avatar);
     void deleteUser(String id);
 }

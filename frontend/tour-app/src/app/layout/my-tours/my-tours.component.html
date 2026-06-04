@@ -53,21 +53,21 @@
           *ngIf="tour.Status === 'draft'" 
           class="btn-publish" 
           (click)="changeStatus(tour, 'published')">
-          Objavi
+          Publish
         </button>
 
         <button 
           *ngIf="tour.Status === 'published'" 
           class="btn-archive" 
           (click)="changeStatus(tour, 'archived')">
-          Arhiviraj
+          Archive
         </button>
 
         <button 
           *ngIf="tour.Status === 'archived'" 
           class="btn-reactivate" 
           (click)="changeStatus(tour, 'published')">
-          Reaktiviraj
+          Reactivate
         </button>
       </div>
     </div>

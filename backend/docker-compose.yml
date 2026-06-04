@@ -126,35 +126,35 @@ services:
       followers-db:
         condition: service_healthy
 
-  purchase-db:
-    image: postgres:15
-    volumes:
-      - purchase_postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_DB=purchase_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=root
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d purchase_db" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  # purchase-db:
+  #   image: postgres:15
+  #   volumes:
+  #     - purchase_postgres_data:/var/lib/postgresql/data/
+  #   environment:
+  #     - POSTGRES_DB=purchase_db
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=root
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U postgres -d purchase_db" ]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
 
-  purchase:
-    build:
-      context: .
-      dockerfile: purchase/Dockerfile
-    ports:
-      - "8083:8083"
-      - "50054:50054"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://purchase-db:5432/purchase_db
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    depends_on:
-      purchase-db:
-        condition: service_healthy
+  # purchase:
+  #   build:
+  #     context: .
+  #     dockerfile: purchase/Dockerfile
+  #   ports:
+  #     - "8083:8083"
+  #     - "50054:50054"
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://purchase-db:5432/purchase_db
+  #     - SPRING_DATASOURCE_USERNAME=postgres
+  #     - SPRING_DATASOURCE_PASSWORD=root
+  #     - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  #   depends_on:
+  #     purchase-db:
+  #       condition: service_healthy
 
   gateway:
     build:
@@ -168,7 +168,7 @@ services:
       - stakeholders
       - followers
       - tours
-      - purchase
+    #  - purchase
 
   rabbitmq:
     image: rabbitmq:3-management

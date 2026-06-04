@@ -61,8 +61,8 @@ export class MyToursComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     switch (status) {
-      case 'published': return 'Objavljena';
-      case 'archived': return 'Arhivirana';
+      case 'published': return 'Published';
+      case 'archived': return 'Archived';
       default: return 'Draft';
     }
   }
