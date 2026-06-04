@@ -24,6 +24,9 @@ type Repository interface {
 	GetKeyPointByID(id string) (*KeyPoint, error)
 	UpdateKeyPoint(kp *KeyPoint) error
 	DeleteKeyPoint(id string) error
+	SaveTourExecution(exec *TourExecution) error
+	GetTourExecutionByID(id string) (*TourExecution, error)
+	UpdateTourExecution(exec *TourExecution) error
 }
 
 type PostgresRepo struct {
@@ -121,4 +124,20 @@ func (r *PostgresRepo) UpdateKeyPoint(kp *KeyPoint) error {
 
 func (r *PostgresRepo) DeleteKeyPoint(id string) error {
 	return r.db.Delete(&KeyPoint{}, "id = ?", id).Error
+}
+
+func (r *PostgresRepo) SaveTourExecution(exec *TourExecution) error {
+	return r.db.Create(exec).Error
+}
+
+func (r *PostgresRepo) GetTourExecutionByID(id string) (*TourExecution, error) {
+	var exec TourExecution
+	// Preloadujemo Turu (zbog naslova) i sve pripadajuće tačke sesije
+	err := r.db.Preload("Tour").Preload("CompletedPoints").First(&exec, "id = ?", id).Error
+	return &exec, err
+}
+
+func (r *PostgresRepo) UpdateTourExecution(exec *TourExecution) error {
+	// FullSaveAssociations osigurava da se čuvaju promene nad CompletedPoints nizom
+	return r.db.Session(&gorm.Session{FullSaveAssociations: true}).Save(exec).Error
 }

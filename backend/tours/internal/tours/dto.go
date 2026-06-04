@@ -85,3 +85,31 @@ type UpdatePositionDTO struct {
 	Latitude  float64 `json:"latitude"`
 	Longitude float64 `json:"longitude"`
 }
+
+type CheckPositionDTO struct {
+	Latitude  float64 `json:"latitude"`
+	Longitude float64 `json:"longitude"`
+}
+
+type ExecutionKeyPointDTO struct {
+	ID          string     `json:"id"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	Latitude    float64    `json:"latitude"`
+	Longitude   float64    `json:"longitude"`
+	Order       int        `json:"order"`
+	IsCompleted bool       `json:"isCompleted"`
+	CompletedAt *time.Time `json:"completedAt,omitempty"`
+}
+
+type TourExecutionDTO struct {
+	ID              string                 `json:"id"`
+	TourID          string                 `json:"tourId"`
+	TourTitle       string                 `json:"tourTitle"`
+	TourDescription string                 `json:"tourDescription"`
+	Status          string                 `json:"status"`
+	StartTime       time.Time              `json:"startTime"`
+	EndTime         *time.Time             `json:"endTime,omitempty"`
+	LastActivity    time.Time              `json:"lastActivity"`
+	Keypoints       []ExecutionKeyPointDTO `json:"keypoints"`
+}

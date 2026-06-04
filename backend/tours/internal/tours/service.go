@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -214,6 +216,175 @@ func (s *Service) GetTouristPosition(touristID string) (*TouristPosition, error)
 
 func (s *Service) DeleteReview(reviewID string, touristID string) error {
 	return s.repo.DeleteReview(reviewID, touristID)
+}
+
+// --- Pomoćna funkcija: Haversine formula (udaljenost u metrima) ---
+func calculateHaversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
+	const R = 6371e3 // Radijus Zemlje u metrima
+	phi1 := lat1 * math.Pi / 180
+	phi2 := lat2 * math.Pi / 180
+	deltaPhi := (lat2 - lat1) * math.Pi / 180
+	deltaLambda := (lon2 - lon1) * math.Pi / 180
+
+	a := math.Sin(deltaPhi/2)*math.Sin(deltaPhi/2) +
+		math.Cos(phi1)*math.Cos(phi2)*
+			math.Sin(deltaLambda/2)*math.Sin(deltaLambda/2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+
+	return R * c
+}
+
+// --- Pomoćna funkcija: Mapiranje Modela u DTO za Frontend ---
+func mapExecutionToDTO(exec *TourExecution) *TourExecutionDTO {
+	dto := &TourExecutionDTO{
+		ID:              exec.ID,
+		TourID:          exec.TourID,
+		TourTitle:       exec.Tour.Title,
+		TourDescription: exec.Tour.Description,
+		Status:          string(exec.Status),
+		StartTime:       exec.StartTime,
+		EndTime:         exec.EndTime,
+		LastActivity:    exec.LastActivity,
+		Keypoints:       make([]ExecutionKeyPointDTO, 0),
+	}
+
+	for _, kp := range exec.CompletedPoints {
+		dto.Keypoints = append(dto.Keypoints, ExecutionKeyPointDTO{
+			ID:          kp.ID,
+			Name:        kp.Name,
+			Description: kp.Description,
+			Latitude:    kp.Latitude,
+			Longitude:   kp.Longitude,
+			Order:       kp.Order,
+			IsCompleted: kp.IsCompleted,
+			CompletedAt: kp.CompletedAt,
+		})
+	}
+	return dto
+}
+
+// 1. Započinjanje ture
+func (s *Service) StartTour(tourID string, touristID string, initialPosition CheckPositionDTO) (*TourExecutionDTO, error) {
+	tour, err := s.repo.GetTourByID(tourID)
+	if err != nil {
+		return nil, errors.New("tura nije pronađena")
+	}
+
+	// Preduslov: Da li je tura objavljena (ili arhivirana)
+	if tour.Status == StatusDraft {
+		return nil, errors.New("ne možete pokrenuti turu koja je u draft statusu")
+	}
+
+	execID := uuid.New().String()
+	execPoints := make([]ExecutionKeyPoint, 0)
+
+	// Kopiramo ključne tačke iz Ture u Sesiju, inicijalno IsCompleted = false
+	for i, kp := range tour.KeyPoints {
+		order := kp.Order
+		if order == 0 {
+			order = i + 1 // Fallback ako baza nema unet redosled
+		}
+
+		execPoints = append(execPoints, ExecutionKeyPoint{
+			ID:          uuid.New().String(),
+			ExecutionID: execID,
+			KeyPointID:  kp.ID,
+			Name:        kp.Name,
+			Description: kp.Description,
+			Latitude:    kp.Latitude,
+			Longitude:   kp.Longitude,
+			Order:       order,
+			IsCompleted: false,
+		})
+	}
+
+	execution := &TourExecution{
+		ID:              execID,
+		TourID:          tourID,
+		TouristID:       touristID,
+		Status:          ExecutionActive,
+		StartTime:       time.Now(),
+		LastActivity:    time.Now(),
+		CompletedPoints: execPoints,
+	}
+
+	err = s.repo.SaveTourExecution(execution)
+	if err != nil {
+		return nil, err
+	}
+
+	// Ponovno dohvatamo da bismo imali pre-loadovan Tour objekat zbog naziva
+	fullExec, _ := s.repo.GetTourExecutionByID(execID)
+	return mapExecutionToDTO(fullExec), nil
+}
+
+// 2. Ping pozicije svakih 10 sekundi
+func (s *Service) CheckPosition(executionID string, touristID string, dto CheckPositionDTO) (*TourExecutionDTO, error) {
+	exec, err := s.repo.GetTourExecutionByID(executionID)
+	if err != nil {
+		return nil, errors.New("sesija nije pronađena")
+	}
+	if exec.TouristID != touristID {
+		return nil, errors.New("nemate pravo pristupa ovoj sesiji")
+	}
+	if exec.Status != ExecutionActive {
+		return nil, errors.New("ova tura više nije aktivna")
+	}
+
+	// Uvek beležimo poslednju aktivnost (ping)
+	exec.LastActivity = time.Now()
+
+	// Sortiramo tačke po redosledu da bismo uvek tražili PRVU sledeću
+	sort.Slice(exec.CompletedPoints, func(i, j int) bool {
+		return exec.CompletedPoints[i].Order < exec.CompletedPoints[j].Order
+	})
+
+	// Nalazimo sledeću tačku koju treba posetiti
+	var nextKp *ExecutionKeyPoint
+	for i := range exec.CompletedPoints {
+		if !exec.CompletedPoints[i].IsCompleted {
+			nextKp = &exec.CompletedPoints[i]
+			break
+		}
+	}
+
+	// Ako postoji sledeća tačka, proveravamo udaljenost
+	if nextKp != nil {
+		distance := calculateHaversineDistance(dto.Latitude, dto.Longitude, nextKp.Latitude, nextKp.Longitude)
+
+		if distance <= 50.0 { // Tolerancija 50 metara
+			nextKp.IsCompleted = true
+			now := time.Now()
+			nextKp.CompletedAt = &now
+		}
+	}
+
+	err = s.repo.UpdateTourExecution(exec)
+	return mapExecutionToDTO(exec), err
+}
+
+// 3. Zvanično kompletiranje
+func (s *Service) CompleteTour(executionID string, touristID string) error {
+	exec, err := s.repo.GetTourExecutionByID(executionID)
+	if err != nil || exec.TouristID != touristID {
+		return errors.New("nedozvoljena akcija")
+	}
+	now := time.Now()
+	exec.Status = ExecutionCompleted
+	exec.EndTime = &now
+	return s.repo.UpdateTourExecution(exec)
+}
+
+// 4. Napuštanje ture
+func (s *Service) AbandonTour(executionID string, touristID string) error {
+	exec, err := s.repo.GetTourExecutionByID(executionID)
+	if err != nil || exec.TouristID != touristID {
+		return errors.New("nedozvoljena akcija")
+	}
+	now := time.Now()
+	exec.Status = ExecutionAbandoned
+	exec.EndTime = &now
+	return s.repo.UpdateTourExecution(exec)
 }
 
 func saveBase64Image(base64Str string) (string, error) {

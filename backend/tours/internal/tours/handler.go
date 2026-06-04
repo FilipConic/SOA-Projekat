@@ -32,6 +32,11 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /api/tours/update/{tour_id}", h.updateTour)
 	mux.HandleFunc("GET /api/tours/find-my", h.getMyTours)
 	mux.HandleFunc("DELETE /api/tours/keypoints/delete/{id}", h.deleteKeyPoint)
+
+	mux.HandleFunc("POST /api/tour-executions/start/{tour_id}", h.startTour)
+	mux.HandleFunc("PUT /api/tour-executions/check-position/{id}", h.checkPosition)
+	mux.HandleFunc("PUT /api/tour-executions/complete/{id}", h.completeTour)
+	mux.HandleFunc("PUT /api/tour-executions/abandon/{id}", h.abandonTour)
 }
 
 // func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -234,4 +239,62 @@ func (h *Handler) deleteKeyPoint(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"message": "Ključna tačka je uspešno obrisana"}`))
+}
+
+func (h *Handler) startTour(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	touristID := r.Header.Get("X-User-ID")
+
+	var initialPosition CheckPositionDTO
+	json.NewDecoder(r.Body).Decode(&initialPosition)
+
+	execution, err := h.service.StartTour(tourID, touristID, initialPosition)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(execution)
+}
+
+func (h *Handler) checkPosition(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	touristID := r.Header.Get("X-User-ID")
+
+	var pos CheckPositionDTO
+	json.NewDecoder(r.Body).Decode(&pos)
+
+	updatedExecution, err := h.service.CheckPosition(execID, touristID, pos)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(updatedExecution)
+}
+
+func (h *Handler) completeTour(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	touristID := r.Header.Get("X-User-ID")
+
+	err := h.service.CompleteTour(execID, touristID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handler) abandonTour(w http.ResponseWriter, r *http.Request) {
+	execID := r.PathValue("id")
+	touristID := r.Header.Get("X-User-ID")
+
+	err := h.service.AbandonTour(execID, touristID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }

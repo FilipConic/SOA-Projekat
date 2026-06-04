@@ -46,7 +46,7 @@ import { MatIconModule } from '@angular/material/icon';
     ReactiveFormsModule,
     RouterModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
   ],
   exports: [
     NavbarComponent,
