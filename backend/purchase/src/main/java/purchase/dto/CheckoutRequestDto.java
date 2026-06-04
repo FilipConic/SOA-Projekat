@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CheckoutRequestDto {
 
-    @NotNull(message = "ID turiste je obavezan za checkout.")
+    @NotNull(message = "ID turiste ne sme biti null.")
     @Positive(message = "ID turiste mora biti pozitivan.")
     private String touristId;
 }

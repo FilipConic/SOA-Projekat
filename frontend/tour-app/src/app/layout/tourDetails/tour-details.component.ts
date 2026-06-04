@@ -4,6 +4,7 @@ import { TourService } from 'src/app/services/tour.service';
 import { ShoppingCartService } from 'src/app/services/shopping-cart.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Tour } from 'src/app/models/tour.model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-tour-details',

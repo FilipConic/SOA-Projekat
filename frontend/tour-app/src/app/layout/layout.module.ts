@@ -19,6 +19,7 @@ import { BlogListComponent } from './blog-list/blog-list.component';
 import { BlogCardComponent } from './blog-card/blog-card.component';
 import { BlogCreateComponent } from './blog-create/blog-create.component';
 import { PositionSimulatorComponent } from './position-simulator/position-simulator.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { PositionSimulatorComponent } from './position-simulator/position-simula
     ReactiveFormsModule,
     RouterModule,
     FormsModule,
+    MatIconModule
   ],
   exports: [
     NavbarComponent,
