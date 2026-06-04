@@ -17,15 +17,28 @@ type ProfileRepository struct {
 }
 
 func NewProfileRepository(db *pgxpool.Pool) *ProfileRepository {
+	query := `CREATE TABLE IF NOT EXISTS profiles (
+				id SERIAL PRIMARY KEY,
+				user_id UUID UNIQUE NOT NULL,
+				first_name TEXT NOT NULL,
+				last_name TEXT NOT NULL,
+				avatar TEXT,
+				bio TEXT,
+				quote TEXT
+			)`
+	_, err := db.Exec(context.Background(), query)
+	if err != nil {
+		panic("Failed to create profiles table: " + err.Error())
+	}
 	return &ProfileRepository{db}
 }
 
-func (r* ProfileRepository) Create(ctx context.Context, userID uuid.UUID) error {
+func (r *ProfileRepository) Create(ctx context.Context, userID uuid.UUID) error {
 	query := `INSERT INTO profiles (user_id, first_name, last_name, avatar, bio, quote) VALUES ($1, '', '', NULL, '', '')`
 	_, err := r.db.Exec(ctx, query, userID)
 	return err
 }
-func (r* ProfileRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*models.ProfileWithUser, error) {
+func (r *ProfileRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (*models.ProfileWithUser, error) {
 	query := `
 		SELECT p.id, p.user_id, p.first_name, p.last_name, COALESCE(p.avatar, ''), p.bio, p.quote, u.username, u.email
 		FROM profiles p JOIN users u ON u.id == p.user_id WHERE p.user_id = $1
@@ -43,9 +56,9 @@ func (r* ProfileRepository) GetByUserID(ctx context.Context, userID uuid.UUID) (
 	}
 	return &p, nil
 }
-func (r* ProfileRepository) GetUserInfo(ctx context.Context, userID uuid.UUID) (*models.UserInfo, error) {
+func (r *ProfileRepository) GetUserInfo(ctx context.Context, userID uuid.UUID) (*models.UserInfo, error) {
 	query := `SELECT u.username, COALESCE(p.avatar, '') FROM profiles p JOIN users u ON p.user_id = u.id WHERE p.user_id = $1`
-	
+
 	var info models.UserInfo
 	err := r.db.QueryRow(ctx, query, userID).Scan(&info.Username, &info.Avatar)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -56,7 +69,7 @@ func (r* ProfileRepository) GetUserInfo(ctx context.Context, userID uuid.UUID) (
 	}
 	return &info, nil
 }
-func (r* ProfileRepository) Update(ctx context.Context, userID uuid.UUID, p *models.Profile) error {
+func (r *ProfileRepository) Update(ctx context.Context, userID uuid.UUID, p *models.Profile) error {
 	query := `UPDATE profiles SET first_name = $1, last_name = $2, bio = $3, quote = $4 WHERE user_id = $5`
 
 	tag, err := r.db.Exec(ctx, query, p.FirstName, p.LastName, p.Bio, p.Quote, userID)
@@ -68,8 +81,8 @@ func (r* ProfileRepository) Update(ctx context.Context, userID uuid.UUID, p *mod
 	}
 	return nil
 }
-func (r* ProfileRepository) UpdateAvatar(ctx context.Context, userID uuid.UUID, avatar string) (string, error) {
-	var oldAvatar string 
+func (r *ProfileRepository) UpdateAvatar(ctx context.Context, userID uuid.UUID, avatar string) (string, error) {
+	var oldAvatar string
 	err := r.db.QueryRow(ctx, `SELECT COALESCE(avatar, '') FROM profiles WHERE user_id = $1`, userID).Scan(&oldAvatar)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return "", ErrProfileNotFound
@@ -77,7 +90,7 @@ func (r* ProfileRepository) UpdateAvatar(ctx context.Context, userID uuid.UUID, 
 	if err != nil {
 		return "", err
 	}
-	
+
 	_, err = r.db.Exec(ctx, `UPDATE profiles SET avatar = $1 WHERE user_id = $2`, avatar, userID)
 	if err != nil {
 		return "", err

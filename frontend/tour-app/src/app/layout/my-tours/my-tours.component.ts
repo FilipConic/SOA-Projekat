@@ -17,7 +17,6 @@ export class MyToursComponent implements OnInit {
   constructor(
     private tourService: TourService,
     private router: Router,
-    private tourExecutionService: TourExecutionService
   ) {}
 
   ngOnInit() {

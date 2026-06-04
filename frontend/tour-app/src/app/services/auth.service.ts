@@ -44,16 +44,8 @@ export class AuthService {
 
     logout(): void {
         this.router.navigate(['/home']).then(_ => {
-                this.http.post(environment.apiHost + 'auth/logout/', { refresh: this.tokenStorage.getRefreshToken() }).subscribe({
-                    next: () => {
-                        console.log('Logged out successfully');
-                        this.tokenStorage.clear();
-                        this.user$.next({email: "", id: '', role: ''});
-                    },
-                    error: (err) => {
-                        console.error('Error occurred while logging out:', err);
-                    }
-                });
+                this.tokenStorage.clear();
+                this.user$.next({email: "", id: '', role: ''});
             }
         );
     }

@@ -1,18 +1,20 @@
 package purchase.grpc;
 
-import purchase.grpc.PurchaseServiceGrpc;
-import purchase.grpc.AddToCartGrpcRequest;
-import purchase.grpc.AddToCartGrpcResponse;
-import purchase.grpc.CheckoutGrpcRequest;
-import purchase.grpc.CheckoutGrpcResponse;
+import lombok.extern.slf4j.Slf4j;
+import purchase.PurchaseServiceGrpc;
+import purchase.AddToCartGrpcRequest;
+import purchase.AddToCartGrpcResponse;
+import purchase.CheckoutGrpcRequest;
+import purchase.CheckoutGrpcResponse;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import purchase.dto.AddToCartRequestDto;
-import purchase.dto.CheckoutRequestDto;
+import purchase.interceptor.UserContext;
 import purchase.service.ICheckoutService;
 import purchase.service.IShoppingCartService;
 
+@Slf4j
 @GrpcService
 @RequiredArgsConstructor
 public class PurchaseGrpcServer extends PurchaseServiceGrpc.PurchaseServiceImplBase {
@@ -23,8 +25,14 @@ public class PurchaseGrpcServer extends PurchaseServiceGrpc.PurchaseServiceImplB
     @Override
     public void addToCart(AddToCartGrpcRequest request, StreamObserver<AddToCartGrpcResponse> responseObserver) {
         try {
-            AddToCartRequestDto dto = new AddToCartRequestDto(request.getTouristId(), request.getTourId());
-            shoppingCartService.addItemToCart(dto);
+            AddToCartRequestDto dto = new AddToCartRequestDto(
+                                                        request.getTourId(),
+                                                        request.getTourName(), 
+                                                        request.getPrice()
+                                                    );
+            String userId = request.hasUser() ? request.getUser().getUserId() : UserContext.USER_ID_KEY.get();
+            log.info("Adding tour {} to cart for user {}", dto.getTourId(), userId);
+            shoppingCartService.addItemToCart(userId, dto);
 
             AddToCartGrpcResponse response = AddToCartGrpcResponse.newBuilder()
                     .setSuccess(true)
@@ -45,8 +53,7 @@ public class PurchaseGrpcServer extends PurchaseServiceGrpc.PurchaseServiceImplB
     @Override
     public void checkout(CheckoutGrpcRequest request, StreamObserver<CheckoutGrpcResponse> responseObserver) {
         try {
-            CheckoutRequestDto dto = new CheckoutRequestDto(request.getTouristId());
-            checkoutService.processCheckout(dto);
+            checkoutService.processCheckout(request.hasUser() ? request.getUser().getUserId() : UserContext.USER_ID_KEY.get());
 
             CheckoutGrpcResponse response = CheckoutGrpcResponse.newBuilder()
                     .setSuccess(true)

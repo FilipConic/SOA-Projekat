@@ -62,6 +62,7 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/v1/purchase/cart/add", Role: auth.RoleTourist}:     true,
 	{Path: "/v1/purchase/checkout", Role: auth.RoleTourist}:     true,
 	{Path: "/api/purchase/cart/remove", Role: auth.RoleTourist}: true,
+	{Path: "/api/purchase/cart/get", Role: auth.RoleTourist}:    true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -99,15 +100,15 @@ func main() {
 	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register followers service: %v", err)
 	}
-		// if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
-		// 	log.Fatalf("Failed to register purchase service: %v", err)
-		// }
+	if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
+		log.Fatalf("Failed to register purchase service: %v", err)
+	}
 
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
 	followerRestProxy := newReverseProxy(followerRestService)
 	toursRestProxy := newReverseProxy(toursRestService)
-	// purchaseRestProxy := newReverseProxy(purchaseRestService)
+	purchaseRestProxy := newReverseProxy(purchaseRestService)
 
 	mainMux := http.NewServeMux()
 
