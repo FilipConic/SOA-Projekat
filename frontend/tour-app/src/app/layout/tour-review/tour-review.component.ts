@@ -24,6 +24,7 @@ export class ReviewTourComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     this.reviewForm = this.fb.group({
       rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
       comment: ['', Validators.required],

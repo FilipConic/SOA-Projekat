@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TourService } from 'src/app/services/tour.service';
-import { Tour } from 'src/app/models/tour.model';
+import { Tour, UpdateTourDTO } from 'src/app/models/tour.model';
 import { TourExecutionService } from 'src/app/services/tour-execution.service';
 
 @Component({
@@ -21,19 +21,51 @@ export class MyToursComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadTours();
+  }
+  onCreateClick() {
+    this.router.navigate(['/tours/create']);
+  }
+
+  loadTours(){
+    this.isLoading = true;
     this.tourService.getMyTours().subscribe({
       next: (data) => {
         this.tours = data;
         this.isLoading = false;
-        console.log("My tours loaded:", this.tours);
       },
       error: (err) => {
-        console.error("Error fetching your tours:", err);
+        console.error('Error fetching tours:', err);
         this.isLoading = false;
       }
     });
   }
-  onCreateClick() {
-    this.router.navigate(['/tours/create']);
+
+  changeStatus(tour: Tour, newStatus: 'published' | 'archived' | 'draft') 
+  {
+    const payload: UpdateTourDTO = {
+      Title: tour.Title,
+      Description: tour.Description,
+      Difficulty: tour.Difficulty as unknown as string, // enum ---> string konverzija za API
+      Tags: tour.Tags,
+      Price: tour.Price,
+      Duration: tour.Duration,
+      Status: newStatus
+    };
+    this.tourService.updateTour(tour.id, payload).subscribe({
+      next: () => {
+        tour.Status = newStatus;
+      },
+      error: (err) => console.error('Failed to update status:', err)
+    });
+
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'published': return 'Published';
+      case 'archived': return 'Archived';
+      default: return 'Draft';
+    }
   }
 }

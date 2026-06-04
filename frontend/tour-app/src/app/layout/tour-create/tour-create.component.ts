@@ -33,10 +33,15 @@ export class TourCreateComponent {
         difficulty: TourDifficulty[this.tourForm.value.difficulty as keyof typeof TourDifficulty],
         tags: tags
       }
-      this.tourService.createTour(payload).subscribe((newTour) => {
-        console.log('Tour created successfully:', newTour);
-        console.log('Navigating to tour edit page for tour ID:', newTour.ID);
-        this.router.navigate(['/tour/edit', newTour.ID]);
+      // this.tourService.createTour(payload).subscribe((newTour) => {
+        
+      //   this.router.navigate(['/tour/edit', newTour.id]);
+      // });
+      this.tourService.createTour(payload).subscribe((newTour: any) => {
+       // console.log('FULL RESPONSE:', JSON.stringify(newTour));
+        const tourId = newTour.tour.id;
+        //console.log('TOUR ID:', tourId);
+        this.router.navigate(['/tour/edit', tourId]);
       });
     }
   }

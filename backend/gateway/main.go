@@ -99,15 +99,15 @@ func main() {
 	if err := genfollowers.RegisterFollowersServiceHandlerFromEndpoint(ctx, grpcMux, folowersGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register followers service: %v", err)
 	}
-	if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
-		log.Fatalf("Failed to register purchase service: %v", err)
-	}
+		// if err := genpurchase.RegisterPurchaseServiceHandlerFromEndpoint(ctx, grpcMux, purchaseGrpcService, opts); err != nil {
+		// 	log.Fatalf("Failed to register purchase service: %v", err)
+		// }
 
 	blogRestProxy := newReverseProxy(blogRestService)
 	stakeholderRestProxy := newReverseProxy(stakeholdersRestService)
 	followerRestProxy := newReverseProxy(followerRestService)
 	toursRestProxy := newReverseProxy(toursRestService)
-	purchaseRestProxy := newReverseProxy(purchaseRestService)
+	// purchaseRestProxy := newReverseProxy(purchaseRestService)
 
 	mainMux := http.NewServeMux()
 

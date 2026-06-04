@@ -43,7 +43,8 @@ export class TourEditComponent implements OnInit {
       description: ['', Validators.required],
       difficulty: ['Easy', Validators.required],
       tags: [''],
-      price: [0, [Validators.required, Validators.min(0)]]
+      price: [0, [Validators.required, Validators.min(0)]],
+      duration: [0, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -56,7 +57,8 @@ export class TourEditComponent implements OnInit {
         description: tour.Description,
         difficulty: tour.Difficulty,
         tags: tour.Tags && tour.Tags.length > 0 ? tour.Tags.join(', ') : '',
-        price: tour.Price
+        price: tour.Price,
+        duration: tour.Duration
       });
     });
 
@@ -88,7 +90,7 @@ export class TourEditComponent implements OnInit {
           ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
           : [],
         Price: formValues.price,
-        Duration: this.originalTour?.Duration || 0,
+        Duration: formValues.duration,
         Status: (this.originalTour?.Status as any) || 'draft'
       };
       console.log("Payload za ažuriranje ture:", updatePayload);
@@ -96,6 +98,38 @@ export class TourEditComponent implements OnInit {
       this.tourService.updateTour(this.tourId, updatePayload)
         .subscribe(() => alert('Detalji ture uspešno sačuvani!'));
     }
+  }
+
+  canPublish(): boolean {
+    const f = this.tourForm.value;
+    return (
+      !!f.title &&
+      !!f.description &&
+      !!f.difficulty &&
+      f.duration > 0 &&
+      this.keypoints.length >= 2
+    );
+  }
+
+  publishTour() {
+    if (!this.canPublish()) return;
+    const formValues = this.tourForm.value;
+    const updatePayload: UpdateTourDTO = {
+      Title: formValues.title,
+      Description: formValues.description,
+      Difficulty: formValues.difficulty,
+      Tags: formValues.tags
+        ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
+        : [],
+      Price: formValues.price,
+      Duration: formValues.duration,
+      Status: 'published'
+    };
+    this.tourService.updateTour(this.tourId, updatePayload)
+      .subscribe(() => {
+        this.originalTour.Status = 'published';
+        alert('Tura uspešno objavljena!');
+      });
   }
 
   // --- Modal Logic ---

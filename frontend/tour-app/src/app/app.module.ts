@@ -8,6 +8,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { JwtInterceptor } from './infrastructure/auth/jwt/jwt.interceptor';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { MatIconModule } from '@angular/material/icon';
     LayoutModule,
     MatIconModule,
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    BrowserAnimationsModule
   ],
   providers: [
     {

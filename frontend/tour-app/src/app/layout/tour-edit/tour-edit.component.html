@@ -26,9 +26,23 @@
           </select>
           <input type="text" formControlName="tags" placeholder="Tags (comma separated)">
           <input type="number" formControlName="price" placeholder="Price" step="0.1" min="0">
+          <input type="number" formControlName="duration" placeholder="Duration (min)" min="1">
         </div>
-        
-        <button type="submit" class="btn-primary" [disabled]="tourForm.invalid">Save Changes</button>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="tourForm.invalid">
+            Save Changes
+          </button>
+          <button 
+            type="button"
+            class="btn-publish" 
+            (click)="publishTour()" 
+            [disabled]="!canPublish()"
+            [title]="!canPublish() ? 'Potrebno: popunjeni podaci, trajanje > 0, min 2 ključne tačke' : 'Objavi turu'">
+            Objavi turu
+          </button>
+        </div>
+
       </form>
     </div>
 
@@ -36,6 +50,10 @@
       <div class="header-row">
         <h3>KEYPOINTS</h3>
         <button (click)="openCreateModal()" class="btn-success">+ Create new keypoint</button>
+      </div>
+
+      <div *ngIf="keypoints.length < 2" class="warning-msg">
+        ⚠ Dodajte najmanje 2 ključne tačke da biste objavili turu.
       </div>
 
       <div class="keypoint-cards">
