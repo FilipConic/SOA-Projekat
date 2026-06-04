@@ -174,9 +174,9 @@ services:
     depends_on:
       - blog
       - stakeholders
-      - followers
+      # - followers
       - tours
-      # - purchase
+      - purchase
 
   rabbitmq:
     image: rabbitmq:3-management

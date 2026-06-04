@@ -1,46 +1,46 @@
-<div class="drawer-backdrop" *ngIf="isOpen" (click)="toggleDrawer()"></div>
+<div class="cart-container">
+  <h2>Your Shopping Cart</h2>
 
-<div class="drawer" [class.open]="isOpen">
-  <mat-toolbar color="primary" class="drawer-header">
-    <span>Moja Korpa</span>
-    <button mat-icon-button (click)="toggleDrawer()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar>
+  <div *ngIf="isLoading" class="status-message">Loading...</div>
+  <div *ngIf="errorMessage" class="status-message error">{{ errorMessage }}</div>
 
-  <mat-list class="drawer-items">
-      <app-order-item-card 
-        *ngFor="let item of cart?.items" 
-        [touristId]="touristId" 
-        [tour]="item" 
-        (cartUpdated)="loadCart()" 
-        (closeDrawer)="toggleDrawer()"> 
-      </app-order-item-card>
-      
-      <div class="empty-cart" *ngIf="cart?.items?.length === 0 || !cart">
-        <mat-icon class="empty-icon">shopping_cart</mat-icon>
-        <span>Vaša korpa je prazna.</span>
-        <a href="javascript:void(0)" (click)="goToTours()">Pogledajte dostupne ture ovde!</a>
-      </div>
-  </mat-list>
+  <div *ngIf="!isLoading && (!cart || cart.items.length === 0)" class="empty-cart">
+    <p>Your cart is currently empty.</p>
+    <button routerLink="/tours" class="btn-browse">Explore Tours</button>
+  </div>
 
-  <div class="drawer-footer">
-    <div class="pricing">
-      <span>Ukupno:</span>
-      <div class="total-price">
-        {{ (cart?.totalPrice || 0) | number:'1.0-2' }}
-        <mat-icon>paid</mat-icon>
+  <div *ngIf="!isLoading && cart && cart.items.length > 0" class="cart-content">
+    
+    <div class="items-list">
+      <div *ngFor="let item of cart.items" class="cart-item">
+        <div class="item-details">
+          <span class="tour-name">{{ item.tourName }}</span>
+          <span class="tour-id">ID ture: {{ item.tourId }}</span>
+        </div>
+        <div class="item-price-action">
+          <span class="price">{{ item.price }} RSD</span>
+          <button (click)="removeItem(item.id)" class="btn-remove" title="Ukloni stavku">
+            &times;
+          </button>
+        </div>
       </div>
     </div>
-    
-    <button 
-      mat-raised-button 
-      color="accent" 
-      class="checkout-button" 
-      [disabled]="!cart || cart.items.length === 0 || isProcessing" 
-      (click)="checkout()">
-      <span *ngIf="!isProcessing">Kupi ture</span>
-      <span *ngIf="isProcessing">Procesiranje...</span>
-    </button>
+
+    <div class="cart-summary">
+      <h3>Order Summary</h3>
+      <div class="summary-row">
+        <span>Number of Tours:</span>
+        <span>{{ cart.items.length }}</span>
+      </div>
+      <hr>
+      <div class="summary-row total">
+        <span>Total to Pay:</span>
+        <span>{{ cart.totalPrice }} RSD</span>
+      </div>
+      <button (click)="checkout()" class="btn-checkout">
+        Continue to Payment
+      </button>
+    </div>
+
   </div>
 </div>

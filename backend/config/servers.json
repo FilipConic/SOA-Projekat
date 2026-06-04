@@ -29,6 +29,16 @@
             "Username": "postgres",
             "SSLMode": "prefer",
             "PassFile": "/tmp/pgpass"
+        },
+        "4": {
+            "Name": "purchase",
+            "Group": "Servers",
+            "Host": "purchase-db",
+            "Port": 5432,
+            "MaintenanceDB": "purchase_db",
+            "Username": "postgres",
+            "SSLMode": "prefer",
+            "PassFile": "/tmp/pgpass"
         }
     }
 }

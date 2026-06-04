@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ShoppingCartResponseDto {
-    private String touristId;
     private double totalPrice;
     private List<OrderItemResponseDto> items;
 }
