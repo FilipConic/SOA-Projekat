@@ -21,10 +21,18 @@ const (
 	DifficultyHard   TourDifficulty = "hard"
 )
 
+type ExecutionStatus string
+
+const (
+	ExecutionActive    ExecutionStatus = "ACTIVE"
+	ExecutionCompleted ExecutionStatus = "COMPLETED"
+	ExecutionAbandoned ExecutionStatus = "ABANDONED"
+)
+
 var difficultyMap = map[toursgen.TourDifficulty]TourDifficulty{
-	toursgen.TourDifficulty_TOUR_DIFFICULTY_EASY: DifficultyEasy,
+	toursgen.TourDifficulty_TOUR_DIFFICULTY_EASY:   DifficultyEasy,
 	toursgen.TourDifficulty_TOUR_DIFFICULTY_MEDIUM: DifficultyMedium,
-	toursgen.TourDifficulty_TOUR_DIFFICULTY_HARD: DifficultyHard,
+	toursgen.TourDifficulty_TOUR_DIFFICULTY_HARD:   DifficultyHard,
 }
 
 type Tour struct {
@@ -46,6 +54,7 @@ type KeyPoint struct {
 	ID          string `gorm:"primaryKey"`
 	TourID      string `gorm:"foreignKey;index;not null"`
 	Name        string `gorm:"not null"`
+	Order       int    `gorm:"not null;default:0"`
 	Description string
 	Image       string
 	Latitude    float64 `gorm:"not null"`
@@ -53,14 +62,14 @@ type KeyPoint struct {
 }
 
 type Review struct {
-	ID          string `gorm:"primaryKey" json:"id"`
-	TourID      string `gorm:"foreignKey;index;not null" json:"tour_id"`
-	TouristID   string `gorm:"index;not null" json:"tourist_id"`
-	Rating      int    `gorm:"not null" json:"rating"`
-	Comment     string `gorm:"type:text" json:"comment"`
+	ID          string    `gorm:"primaryKey" json:"id"`
+	TourID      string    `gorm:"foreignKey;index;not null" json:"tour_id"`
+	TouristID   string    `gorm:"index;not null" json:"tourist_id"`
+	Rating      int       `gorm:"not null" json:"rating"`
+	Comment     string    `gorm:"type:text" json:"comment"`
 	VisitDate   time.Time `json:"visit_date"`
 	CommentDate time.Time `json:"comment_date"`
-	Images      []string `gorm:"type:jsonb;serializer:json" json:"images"`
+	Images      []string  `gorm:"type:jsonb;serializer:json" json:"images"`
 }
 
 type TouristPosition struct {
@@ -68,4 +77,29 @@ type TouristPosition struct {
 	Latitude  float64 `gorm:"not null"`
 	Longitude float64 `gorm:"not null"`
 	UpdatedAt time.Time
+}
+
+type TourExecution struct {
+	ID              string          `gorm:"primaryKey"`
+	TourID          string          `gorm:"index;not null"`
+	Tour            Tour            `gorm:"foreignKey:TourID"` // Za lako dohvatanje naslova i opisa
+	TouristID       string          `gorm:"index;not null"`
+	Status          ExecutionStatus `gorm:"type:varchar(20);not null;default:'ACTIVE'"`
+	StartTime       time.Time       `gorm:"not null"`
+	EndTime         *time.Time
+	LastActivity    time.Time           `gorm:"not null"`
+	CompletedPoints []ExecutionKeyPoint `gorm:"foreignKey:ExecutionID;constraint:OnDelete:CASCADE;"`
+}
+
+type ExecutionKeyPoint struct {
+	ID          string `gorm:"primaryKey"`
+	ExecutionID string `gorm:"index;not null"`
+	KeyPointID  string `gorm:"not null"`
+	Name        string `gorm:"not null"`
+	Description string
+	Latitude    float64
+	Longitude   float64
+	Order       int
+	IsCompleted bool `gorm:"not null;default:false"`
+	CompletedAt *time.Time
 }

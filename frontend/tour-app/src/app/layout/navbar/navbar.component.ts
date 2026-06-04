@@ -55,4 +55,8 @@ export class NavbarComponent implements OnInit {
   onBrandClick(): void {
     this.router.navigate(['/']);
   }
+
+  onMyExecutionsClick(): void {
+    this.router.navigate(['/my-tour-executions']);
+  }
 }

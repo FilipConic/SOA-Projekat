@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Generate protobuf artifacts for both Go and Node.js projects on Windows.
+Generate protobuf artifacts for Go, Node.js, and Java projects on Windows.
 #>
 
 Set-StrictMode -Version Latest
@@ -66,10 +66,7 @@ try {
         proto/google/api/annotations.proto `
         proto/google/api/http.proto `
         proto/common/user.proto `
-        proto/blog/blog.proto `
-        proto/followers/followers.proto `
-        proto/purchase/purchase.proto `
-        proto/tours/tours.proto
+        proto/blog/blog.proto
 
     $generatedFile = Join-Path $scriptDir 'blog\gen\blog\blog_grpc_pb.js'
     if (Test-Path $generatedFile) {
@@ -78,6 +75,39 @@ try {
     else {
         Write-Warning "Generated file not found: $generatedFile"
     }
+
+    & $protoc -I proto `
+        --go_out="$PWD\tours\gen" --go_opt=paths=source_relative `
+        --go_opt=Mcommon/user.proto=tours/gen/common `
+        --go-grpc_out="$PWD\tours\gen" --go-grpc_opt=paths=source_relative `
+        --go-grpc_opt=Mcommon/user.proto=tours/gen/common `
+        proto/common/user.proto `
+        proto/tours/tours.proto
+
+    $grpcJavaPlugin = Join-Path $scriptDir 'protoc-gen-grpc-java-windows'
+    if (Test-Path "$grpcJavaPlugin.exe") {
+        $grpcJavaPlugin = "$grpcJavaPlugin.exe"
+    }
+    elseif (Test-Path "$grpcJavaPlugin.cmd") {
+        $grpcJavaPlugin = "$grpcJavaPlugin.cmd"
+    }
+    elseif (-not (Test-Path $grpcJavaPlugin)) {
+        throw "protoc-gen-grpc-java plugin not found. Place protoc-gen-grpc-java.exe or protoc-gen-grpc-java.cmd in the backend root."
+    }
+
+    & $protoc -I proto `
+        --java_out="$PWD\followers\demo\src\main\gen" `
+        --plugin=protoc-gen-grpc-java=$grpcJavaPlugin `
+        --grpc-java_out="$PWD\followers\demo\src\main\gen" `
+        proto/common/user.proto `
+        proto/followers/followers.proto
+
+    & $protoc -I proto `
+        --java_out="$PWD\purchase\src\main\gen" `
+        --plugin=protoc-gen-grpc-java=$grpcJavaPlugin `
+        --grpc-java_out="$PWD\purchase\src\main\gen" `
+        proto/common/user.proto `
+        proto/purchase/purchase.proto
 }
 finally {
     Pop-Location

@@ -1,5 +1,5 @@
 export interface Tour {
-  id: string;
+  ID: string;
   Title: string;
   CreatorID: string;
   Description: string;

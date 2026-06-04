@@ -1,0 +1,69 @@
+<div class="execution-wrapper" *ngIf="execution">
+  <div class="execution-header">
+    <div class="header-titles">
+      <h1>{{ execution.tourTitle }}</h1>
+      <span class="status-badge" [ngClass]="execution.status.toLowerCase()">
+        {{ execution.status }}
+      </span>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="completeTour()" [disabled]="isCompleteButtonDisabled">End Tour</button>
+      <button class="btn btn-danger" (click)="abandonTour()">Give Up</button>
+    </div>
+  </div>
+
+  <div class="execution-layout">
+    
+    <div class="map-container">
+      <xp-map 
+        [mapType]="'createWaypoint'" 
+        [waypoints]="getLeafletWaypoints()" 
+        [waypointNames]="getWaypointNames()"
+        [width]="'100%'" 
+        [height]="'600px'"
+        [mapId]="'tour-execution-map'"
+        (newWaypoint)="onMapClick($event)">
+      </xp-map>
+      <div class="map-hint">
+        <i class="icon">📍</i> 
+        <span>Click on the map to simulate movement. Get close to the active point to reveal it!</span>
+      </div>
+    </div>
+
+    <div class="keypoints-container">
+      <h2>Keypoints</h2>
+      <div class="keypoints-list">
+        
+        <div class="keypoint-card" 
+             *ngFor="let kp of sortedKeypoints()" 
+             [ngClass]="{
+               'completed': kp.isCompleted, 
+               'active-target': isNextPoint(kp)
+             }">
+          
+          <div class="kp-status">
+            <span *ngIf="kp.isCompleted" class="icon-completed">✔️</span>
+            <span *ngIf="isNextPoint(kp)" class="icon-active">🎯</span>
+            <span *ngIf="!kp.isCompleted && !isNextPoint(kp)" class="icon-pending">🔒</span>
+          </div>
+
+          <div class="kp-details">
+            <h3>{{ kp.name }}</h3>
+            <p class="description" *ngIf="kp.description && kp.isCompleted">{{ kp.description }}</p>
+            <img *ngIf="kp.image && kp.isCompleted" [src]="kp.image" alt="{{ kp.name }}" class="kp-image">
+            <span class="time-stamp" *ngIf="kp.completedAt">
+              Posetili ste u: {{ kp.completedAt | date:'HH:mm:ss' }}
+            </span>
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="loading" *ngIf="!execution">
+  <p>Učitavanje sesije...</p>
+</div>
