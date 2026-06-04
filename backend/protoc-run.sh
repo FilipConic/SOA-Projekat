@@ -1,5 +1,10 @@
 #!/bin/bash
 
+mkdir -p ./gateway/gen/
+mkdir -p ./blog/gen/
+mkdir -p ./tours/gen/
+mkdir -p ./followers/demo/src/main/gen/
+
 protoc -I proto \
   --go_out=$(pwd)/gateway/gen --go_opt=paths=source_relative \
   --go-grpc_out=$(pwd)/gateway/gen --go-grpc_opt=paths=source_relative \

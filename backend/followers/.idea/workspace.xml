@@ -5,16 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4440165b-83a8-401c-9483-d5cffcbcb5a0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../buf.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bun.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/FollowersServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/FollowersServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/demo/src/main/java/followers/demo/service/impl/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../protoc-gen-grpc-java.exe" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../protoc-run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../protoc-run.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../stakeholders/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/config/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/config/asgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/config/settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/config/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/config/wsgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/manage.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/permissions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/admin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/apps.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/migrations/0002_profile.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/migrations/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/models/profile.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/models/user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/auth_serializer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/avatar_seriallizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/profile_serializer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/user_info_serializer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/serializers/user_serializer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/views/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/views/auth_view.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/views/profile_view.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../stakeholders/stakeholders/views/user_view.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +86,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "Rebasing feat/grpc-all",
+    "git-widget-placeholder": "feat/stakeholders-rewrite",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/filip/programming/golang/soa-project/backend/followers",
     "vue.rearranger.settings.migration": "true"
@@ -93,6 +117,7 @@
       <option name="presentableId" value="Default" />
       <updated>1778698490178</updated>
       <workItem from="1780434808444" duration="5770000" />
+      <workItem from="1780531927812" duration="182000" />
     </task>
     <servers />
   </component>

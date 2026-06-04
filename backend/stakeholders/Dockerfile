@@ -1,6 +1,14 @@
-FROM python:3.12
+FROM golang:1.26-alpine AS builder
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN CGO_ENABLED=0 GOOS=linux go build -o stakeholders .
+
+FROM alpine:3.20
+WORKDIR /app
+RUN apk add --no-cache ca-certificates
+COPY --from=builder /app/stakeholders .
+RUN mkdir -p /app/media
+EXPOSE 8080
+CMD ["./stakeholders"]

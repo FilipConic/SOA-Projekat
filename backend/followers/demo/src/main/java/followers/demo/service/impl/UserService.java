@@ -50,11 +50,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void syncUser(String id, String username, String avatar) {
+    public void syncUser(String id, String username) {
         User user = userRepository.findById(id).orElse(new User());
         user.setId(id);
         user.setUsername(username);
-        user.setAvatar(avatar);
         userRepository.save(user);
     }
 
