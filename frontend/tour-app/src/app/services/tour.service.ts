@@ -40,7 +40,7 @@ export class TourService {
           Price: t.Price ?? t.price,
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
-          Status: t.Status ?? t.status,
+          status: t.Status ?? t.status,
           Duration: t.Duration ?? t.duration,
           CreatedAt: t.CreatedAt
         }));
@@ -65,7 +65,7 @@ export class TourService {
           Price: t.Price ?? t.price,
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
-          Status: t.Status ?? t.status,
+          status: t.Status ?? t.status,
           Duration: t.Duration ?? t.duration,
           CreatedAt: t.CreatedAt ?? t.created_at,
           CreatorID: t.CreatorID ?? t.creator_id
@@ -95,11 +95,11 @@ export class TourService {
           Price: t.Price,
           Difficulty: t.Difficulty,
           Tags: t.Tags,
-          Status: t.Status,
+          status: t.status ?? t.Status,
           Duration: t.Duration,
           CreatedAt: t.CreatedAt,
           CreatorID: t.CreatorID,
-          DistanceKm: t.DistanceKm ?? t.distance_km ?? 0,
+          distance_km: t.DistanceKm ?? t.distance_km ?? 0, 
           Keypoints: t.Keypoints
         }))
       );

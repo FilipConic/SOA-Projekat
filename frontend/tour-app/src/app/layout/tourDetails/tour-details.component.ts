@@ -41,8 +41,9 @@ export class TourDetailsComponent implements OnInit {
 
         console.log('TOUR DATA:', data);
         
-        this.keypoints = (data as any).Keypoints || [];
-        this.distanceKm = (data as any).DistanceKm || 0;
+        //this.keypoints = (data as any).Keypoints || [];
+        //this.distanceKm = (data as any).distance_km;
+        this.distanceKm = data.distance_km || 0;
       },
       error: (err) => {
         console.error(err);

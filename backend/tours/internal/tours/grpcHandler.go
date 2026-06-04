@@ -66,6 +66,7 @@ func toProtoTour(t *Tour) *pb.Tour {
 		Id:          t.ID,
 		CreatorId:   t.CreatorID,
 		Title:       t.Title,
+		Status:      string(t.Status),
 		Description: t.Description,
 		Price:       t.Price,
 		Duration:    int32(t.Duration),

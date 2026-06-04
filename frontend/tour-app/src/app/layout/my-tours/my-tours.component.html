@@ -20,11 +20,11 @@
         <div class="title-row">
           <h3 class="tour-title">{{ tour.Title }}</h3>
           <span class="status-badge" [ngClass]="{
-            'status-draft': tour.Status === 'draft',
-            'status-published': tour.Status === 'published',
-            'status-archived': tour.Status === 'archived'
+            'status-draft': tour.status === 'draft',
+            'status-published': tour.status === 'published',
+            'status-archived': tour.status === 'archived'
           }">
-            {{ getStatusLabel(tour.Status) }}
+            {{ getStatusLabel(tour.status) }}
           </span>
         </div>
 
@@ -50,21 +50,21 @@
         <a [routerLink]="['/tour/edit', tour.id]" class="btn-view">Edit</a>
 
         <button 
-          *ngIf="tour.Status === 'draft'" 
+          *ngIf="tour.status === 'draft'" 
           class="btn-publish" 
           (click)="changeStatus(tour, 'published')">
           Publish
         </button>
 
         <button 
-          *ngIf="tour.Status === 'published'" 
+          *ngIf="tour.status === 'published'" 
           class="btn-archive" 
           (click)="changeStatus(tour, 'archived')">
           Archive
         </button>
 
         <button 
-          *ngIf="tour.Status === 'archived'" 
+          *ngIf="tour.status === 'archived'" 
           class="btn-reactivate" 
           (click)="changeStatus(tour, 'published')">
           Reactivate

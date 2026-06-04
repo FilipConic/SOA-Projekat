@@ -6,7 +6,7 @@ export interface Tour {
   Price: number;
   Difficulty: TourDifficulty;
   Tags: string[];
-  Status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published' | 'archived';
   Duration: number;
   CreatedAt: string;
   distance_km?: number;

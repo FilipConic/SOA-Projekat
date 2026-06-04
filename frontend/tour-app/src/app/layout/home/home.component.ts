@@ -25,8 +25,7 @@ export class HomeComponent implements OnInit{
   ngOnInit() {
     this.tourService.getAllTours().subscribe(data => {
      // console.log("HOME DATA:", data);
-     console.log("STATUSI:", data.map(t => ({ id: t.id, status: t.Status })));
-      this.tours = data;
+      this.tours = data.filter(t => t.status === 'published');
     });
   }
 
@@ -40,7 +39,6 @@ export class HomeComponent implements OnInit{
       }, 2000);
       return;
     }
-    console.log("CLICKED ID:", id);
     this.router.navigate(['/tour', id]);
   }
 

@@ -54,7 +54,7 @@ export class MyToursComponent implements OnInit {
     };
     this.tourService.updateTour(tour.id, payload).subscribe({
       next: () => {
-        tour.Status = newStatus;
+        tour.status = newStatus;
       },
       error: (err) => console.error('Failed to update status:', err)
     });
