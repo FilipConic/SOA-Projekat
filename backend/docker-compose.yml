@@ -42,19 +42,23 @@ services:
 
   stakeholders:
     build: ./stakeholders
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./stakeholders:/app
       - ./stakeholders/media:/app/media
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgres://postgres:root@stakeholders-db:5432/stakeholders_db
-      - DEBUG=1
+      - DB_HOST=stakeholders-db
+      - DB_PORT=5432
+      - DB_NAME=stakeholders_db
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - PORT=8000
+      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
       - FOLLOWERS_SYNC_URL=http://followers:8081/api/followers/sync
     depends_on:
       stakeholders-db:
         condition: service_healthy
+
   blog:
     build: ./blog
     ports:
@@ -62,7 +66,7 @@ services:
       - "50051:50051"
     environment:
       - MONGO_URI=mongodb://blog-db:27017/blogdb
-      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm$5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
+      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
     depends_on:
       blog-db:
         condition: service_healthy
@@ -166,7 +170,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm$5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
+      - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
     depends_on:
       - blog
       - stakeholders
