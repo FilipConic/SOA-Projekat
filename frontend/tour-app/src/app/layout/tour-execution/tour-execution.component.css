@@ -1,0 +1,172 @@
+.execution-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* HEADER STYLE */
+.execution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #eaeaea;
+}
+
+.header-titles h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #333;
+}
+
+.status-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.status-badge.active { background-color: #e3f2fd; color: #1976d2; }
+.status-badge.completed { background-color: #e8f5e9; color: #388e3c; }
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.btn-primary { background-color: #2196F3; color: white; }
+.btn-primary:hover { background-color: #1976D2; }
+
+.btn-danger { background-color: #f44336; color: white; }
+.btn-danger:hover { background-color: #d32f2f; }
+
+/* LAYOUT */
+.execution-layout {
+  display: flex;
+  gap: 30px;
+}
+
+/* MAP SECTION */
+.map-container {
+  flex: 2; /* Mapa zauzima više prostora */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.map-hint {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #fff3e0;
+  color: #e65100;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.map-hint .icon {
+  font-style: normal;
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* KEYPOINTS SECTION */
+.keypoints-container {
+  flex: 1; /* Sidebar za tačke */
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  max-height: 650px;
+  overflow-y: auto;
+}
+
+.keypoints-container h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 20px;
+}
+
+.keypoints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.keypoint-card {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 2px solid #eaeaea;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.kp-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.kp-details h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.kp-details .description {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.time-stamp {
+  font-size: 12px;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+/* STATE STYLES */
+.keypoint-card.active-target {
+  border-color: #2196F3;
+  background-color: #e3f2fd;
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.2);
+}
+
+.keypoint-card.completed {
+  border-color: #4CAF50;
+  opacity: 0.8;
+}
+
+.loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #666;
+}
+
+.kp-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-top: 8px;
+}

@@ -15,7 +15,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long tourId;
+    private String tourId;
     private String tourName;
     private double price;
 

@@ -82,7 +82,7 @@ public class ShoppingCartService implements IShoppingCartService {
 
     @Override
     @Transactional
-    public ShoppingCartResponseDto removeItemFromCart(Long touristId, Long tourId) {
+    public ShoppingCartResponseDto removeItemFromCart(String touristId, String tourId) {
         ShoppingCart cart = cartRepository.findByTouristId(touristId)
                 .orElseThrow(() -> new IllegalArgumentException("Korpa nije pronađena."));
 
@@ -108,5 +108,16 @@ public class ShoppingCartService implements IShoppingCartService {
                 .totalPrice(savedCart.getTotalPrice())
                 .items(itemDtos)
                 .build();
+    }
+
+    public ShoppingCartResponseDto getCart(String touristId) {
+        ShoppingCart cart = cartRepository.findByTouristId(touristId)
+                .orElseGet(() -> cartRepository.save(ShoppingCart.builder().touristId(touristId).totalPrice(0.0).build()));
+
+        List<OrderItemResponseDto> itemDtos = cart.getItems().stream()
+                .map(item -> new OrderItemResponseDto(item.getId(), item.getTourId(), item.getTourName(), item.getPrice()))
+                .collect(Collectors.toList());
+
+        return new ShoppingCartResponseDto(cart.getTouristId(), cart.getTotalPrice(), itemDtos);
     }
 }

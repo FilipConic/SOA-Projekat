@@ -73,7 +73,7 @@ public class UserController {
 
     @PostMapping("/sync")
     public ResponseEntity<Void> syncUser(@RequestBody UserDTO userDto) {
-        userService.syncUser(userDto.getId(), userDto.getUsername());
+        userService.syncUser(userDto.getId(), userDto.getUsername(), userDto.getAvatar());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

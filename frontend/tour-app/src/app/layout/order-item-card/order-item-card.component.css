@@ -1,0 +1,67 @@
+.order-item-card {
+    background: var(--header-bg, #ffffff);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-light, #e0e0e0);
+    padding: 16px;
+    display: flex;
+    transition: all 0.2s ease;
+    width: auto;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-name {
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.item-name:hover {
+    color: var(--primary-color, #3f51b5);
+}
+
+.item-desc {
+    color: #757575;
+    font-size: 0.75rem;
+    margin-top: 4px;
+}
+
+.item-pricing {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.regular-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.regular-price mat-icon {
+    font-size: 1.2rem;
+    height: 1.2rem;
+    width: 1.2rem;
+    color: var(--primary-color, #3f51b5);
+}
+
+.item-remove {
+    color: #f44336;
+    font-size: 0.75rem;
+    text-decoration: none;
+    margin-top: 8px;
+}
+
+.item-remove:hover {
+    text-decoration: underline;
+}

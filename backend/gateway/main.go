@@ -7,16 +7,17 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 
 	genblog "gateway/gen/blog"
-	gentours "gateway/gen/tours"
-	genpurchase "gateway/gen/purchase"
-	"gateway/internal/auth"
 	genfollowers "gateway/gen/followers"
+	genpurchase "gateway/gen/purchase"
+	gentours "gateway/gen/tours"
+	"gateway/internal/auth"
 )
 
 const (
@@ -25,11 +26,10 @@ const (
 	stakeholdersRestService = "http://stakeholders:8000"
 	followerRestService     = "http://followers:8081"
 	folowersGrpcService     = "followers:50053"
-	toursGrpcService  		= "tours:50052"
+	toursGrpcService        = "tours:50052"
 	toursRestService        = "http://tours:8082"
 	purchaseGrpcService     = "purchase:50054"
-    purchaseRestService     = "http://purchase:8083"
-
+	purchaseRestService     = "http://purchase:8083"
 )
 
 var protectedRoutes = map[auth.Permission]bool{
@@ -47,9 +47,10 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/tours/tourists/", Role: auth.RoleTourist}:           true,
 	{Path: "/api/tours/update/", Role: auth.RoleGuide}:               true,
 	{Path: "/api/tours/find-my", Role: auth.RoleGuide}:               true,
+	{Path: "/api/tours/tour-executions/", Role: auth.RoleTourist}:    true,
 	{Path: "/api/tours/keypoints/delete", Role: auth.RoleGuide}:      true,
-	{Path: "/v1/followers/follow/", Role: auth.RoleTourist}:         true,
-	{Path: "/v1/followers/unfollow/", Role: auth.RoleTourist}:       true,
+	{Path: "/v1/followers/follow/", Role: auth.RoleTourist}:          true,
+	{Path: "/v1/followers/unfollow/", Role: auth.RoleTourist}:        true,
 	{Path: "/api/followers/followers/", Role: auth.RoleTourist}:      true,
 	{Path: "/api/followers/following/", Role: auth.RoleTourist}:      true,
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
@@ -58,9 +59,9 @@ var protectedRoutes = map[auth.Permission]bool{
 
 	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 
-	{Path: "/v1/purchase/cart/add", Role: auth.RoleTourist}: true,
-    {Path: "/v1/purchase/checkout", Role: auth.RoleTourist}: true,
-   	{Path: "/api/purchase/cart/remove", Role: auth.RoleTourist}: true,
+	{Path: "/v1/purchase/cart/add", Role: auth.RoleTourist}:     true,
+	{Path: "/v1/purchase/checkout", Role: auth.RoleTourist}:     true,
+	{Path: "/api/purchase/cart/remove", Role: auth.RoleTourist}: true,
 }
 
 func newReverseProxy(target string) *httputil.ReverseProxy {
@@ -118,7 +119,7 @@ func main() {
 	mainMux.Handle("/v1/tours/new", grpcMux)
 	mainMux.Handle("/v1/tours/all", grpcMux)
 	mainMux.Handle("/v1/purchase/cart/add", grpcMux)
-    mainMux.Handle("/v1/purchase/checkout", grpcMux)
+	mainMux.Handle("/v1/purchase/checkout", grpcMux)
 
 	mainMux.HandleFunc("/api/blog/", func(res http.ResponseWriter, req *http.Request) {
 		blogRestProxy.ServeHTTP(res, req)
@@ -138,9 +139,9 @@ func main() {
 	mainMux.HandleFunc("/api/tours/", func(res http.ResponseWriter, req *http.Request) {
 		toursRestProxy.ServeHTTP(res, req)
 	})
-    mainMux.HandleFunc("/api/purchase/", func(res http.ResponseWriter, req *http.Request) {
-    		purchaseRestProxy.ServeHTTP(res, req)
-    })
+	mainMux.HandleFunc("/api/purchase/", func(res http.ResponseWriter, req *http.Request) {
+		purchaseRestProxy.ServeHTTP(res, req)
+	})
 
 	authMiddleware := auth.Middleware(jwtSecret, protectedRoutes)
 

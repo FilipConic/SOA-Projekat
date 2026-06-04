@@ -19,6 +19,9 @@ import { BlogListComponent } from './blog-list/blog-list.component';
 import { BlogCardComponent } from './blog-card/blog-card.component';
 import { BlogCreateComponent } from './blog-create/blog-create.component';
 import { PositionSimulatorComponent } from './position-simulator/position-simulator.component';
+import { MatIconModule } from '@angular/material/icon';
+import { TourExecutionComponent } from './tour-execution/tour-execution.component';
+import { TourExecutionsListComponent } from './tour-executions-list/tour-executions-list.component';
 
 
 @NgModule({
@@ -39,12 +42,15 @@ import { PositionSimulatorComponent } from './position-simulator/position-simula
     BlogCardComponent,
     BlogCreateComponent,
     PositionSimulatorComponent,
+    TourExecutionComponent,
+    TourExecutionsListComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
     FormsModule,
+    MatIconModule,
   ],
   exports: [
     NavbarComponent,

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CheckoutResponseDto {
-    private Long touristId;
+    private String touristId;
     private LocalDateTime purchaseDate;
     private double totalAmountPaid;
     private int numberOfToursPurchased;
