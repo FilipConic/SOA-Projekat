@@ -7,7 +7,7 @@
   </div>
 
   <div class="tours-grid" *ngIf="purchasedTours.length > 0">
-    <mat-card class="tour-card" *ngFor="let tour of purchasedTours" [routerLink]="['/tour-execution', tour.id]" style="cursor: pointer;">
+    <mat-card class="tour-card" *ngFor="let tour of purchasedTours" (click)="startTour(tour.id)" style="cursor: pointer;">
       
       <img mat-card-image src="assets/placeholder-tour.png" alt="Tour Image">
       

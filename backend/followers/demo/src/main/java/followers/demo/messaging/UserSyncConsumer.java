@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import followers.demo.dto.UserDTO;
@@ -31,7 +32,7 @@ public class UserSyncConsumer {
         exchange = @Exchange(name = "user-exchange", type = ExchangeTypes.TOPIC),
         key      = "user.sync.routing"
     ))
-    public void handleUserSync(UserDTO event, @Header(name = "sagaId", required = false) String sagaId) {
+    public void handleUserSync(@Payload UserDTO event, @Header(name = "sagaId", required = false) String sagaId) {
         log.info("Primljen event za sinhronizaciju korisnika. ID: {}, Username: {}, Avatar: {}",
                 event.getId(), event.getUsername(), event.getAvatar());
 

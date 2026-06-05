@@ -168,7 +168,7 @@ func (r *PostgresRepo) GetPurchasedTours(touristID string) ([]Tour, error) {
 func (r *PostgresRepo) GetAvailablePublishedTours(touristID string) ([]Tour, error) {
 	var tours []Tour
 	err := r.db.Preload("KeyPoints").Preload("Reviews").
-		Where("tours.status = ?", "Published").
+		Where("tours.status = ?", "published").
 		Where("tours.id NOT IN (SELECT tour_id FROM tour_purchase_tokens WHERE tourist_id = ?)", touristID).
 		Find(&tours).Error
 	return tours, err

@@ -38,6 +38,7 @@ func main() {
 		&tours.TouristPosition{},
 		&tours.TourExecution{},
 		&tours.ExecutionKeyPoint{},
+		&tours.TourPurchaseToken{},
 	)
 	if err != nil {
 		log.Fatalf("Greška tokom migracije: %v", err)
