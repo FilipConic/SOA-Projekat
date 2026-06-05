@@ -29,6 +29,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
 import { OrderItemCardComponent } from './order-item-card/order-item-card.component';
 import { PublishedToursComponent } from './published-tours/published-tours.component';
+import { TouristsToursComponent } from './tourists-tours/tourists-tours.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { PublishedToursComponent } from './published-tours/published-tours.compo
     TourExecutionsListComponent,
     ShoppingCartComponent,
     OrderItemCardComponent,
-    PublishedToursComponent
+    PublishedToursComponent,
+    TouristsToursComponent
   ],
   imports: [
     CommonModule,

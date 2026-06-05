@@ -17,7 +17,7 @@ export class PublishedToursComponent implements OnInit {
   }
 
   loadTours(): void {
-    this.tourService.getAllTours().subscribe({
+    this.tourService.getAvailableTours().subscribe({
       next: (data) => {
         this.tours = data.filter(tour => tour.Status === 'published');
       },

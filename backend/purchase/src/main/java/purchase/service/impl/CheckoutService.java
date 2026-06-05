@@ -1,7 +1,7 @@
 package purchase.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import purchase.dto.CheckoutResponseDto;
 import purchase.model.OrderItem;
@@ -11,6 +11,8 @@ import purchase.repository.OrderItemRepository;
 import purchase.repository.ShoppingCartRepository;
 import purchase.repository.TourPurchaseTokenRepository;
 import purchase.service.ICheckoutService;
+import purchase.config.RabbitMQConfig;
+import purchase.dto.TourPurchasedEvent;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class CheckoutService implements ICheckoutService {
     private final ShoppingCartRepository cartRepository;
     private final TourPurchaseTokenRepository tokenRepository;
     private final OrderItemRepository orderItemRepository;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     @Transactional
@@ -48,6 +51,9 @@ public class CheckoutService implements ICheckoutService {
                     .tokenCode(UUID.randomUUID().toString())
                     .build();
             generatedTokens.add(token);
+
+            TourPurchasedEvent event = new TourPurchasedEvent(item.getTourId(), cart.getTouristId());
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY, event);
         }
 
         tokenRepository.saveAll(generatedTokens);

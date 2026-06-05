@@ -46,6 +46,11 @@ func main() {
 	repo := tours.NewPostgresRepo(db)
 
 	service := tours.NewService(repo)
+
+	rabbitConsumer := tours.NewRabbitConsumer(service)
+	rabbitConsumer.Start()
+	defer rabbitConsumer.Close()
+
 	handler := tours.NewHandler(service)
 
 	grpcHandler := tours.NewGrpcHandler(service)
