@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -31,7 +32,7 @@ func main() {
 		rabbitURL = "amqp://guest:guest@localhost:5672/"
 	}
 
-	rabbitConn, err := amqp.Dial(rabbitURL)
+	rabbitConn, err := dialWithRetry(rabbitURL)
 	if err != nil {
 		log.Printf("failed to connect to RabbitMQ: %v", err)
 		return
@@ -89,4 +90,20 @@ func main() {
 		log.Fatalf("forced shutdown: %v", err)
 	}
 	log.Println("server stopped cleanly")
+}
+
+func dialWithRetry(rabbitURL string) (*amqp.Connection, error) {
+	var conn *amqp.Connection
+	var err error
+
+	for i := 1; i <= 10; i++ {
+		conn, err = amqp.Dial(rabbitURL)
+		if err == nil {
+			log.Printf("Uspešno konektovan na RabbitMQ (pokušaj %d)", i)
+			return conn, nil
+		}
+		log.Printf("RabbitMQ nije dostupan, pokušaj %d/10. Čekam 3s... (%v)", i, err)
+		time.Sleep(3 * time.Second)
+	}
+	return nil, fmt.Errorf("nije moguće konektovati se na RabbitMQ nakon 10 pokušaja: %w", err)
 }

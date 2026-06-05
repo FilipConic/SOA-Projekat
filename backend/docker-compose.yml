@@ -112,14 +112,14 @@ services:
       - DB_NAME=tours_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - PURCHASE_SERVICE_URL=http://purchase:8083
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
     volumes:
       - ./uploads:/app/uploads
     depends_on:
       tours-db:
         condition: service_healthy
-      purchase: 
-        condition: service_started
+      rabbitmq:                       
+        condition: service_healthy
 
   followers:
     build:
@@ -166,8 +166,14 @@ services:
        - SPRING_DATASOURCE_USERNAME=postgres
        - SPRING_DATASOURCE_PASSWORD=root
        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+       - SPRING_RABBITMQ_HOST=rabbitmq          
+       - SPRING_RABBITMQ_PORT=5672              
+       - SPRING_RABBITMQ_USERNAME=guest        
+       - SPRING_RABBITMQ_PASSWORD=guest
      depends_on:
        purchase-db:
+         condition: service_healthy
+       rabbitmq:
          condition: service_healthy
 
   gateway:
@@ -180,7 +186,7 @@ services:
     depends_on:
       - blog
       - stakeholders
-      # - followers
+      - followers
       - tours
       - purchase
 
@@ -193,7 +199,7 @@ services:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
 volumes:
   postgres_data:

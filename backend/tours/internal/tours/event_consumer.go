@@ -2,8 +2,10 @@ package tours
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
+	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -19,13 +21,29 @@ type RabbitConsumer struct {
 	service *Service
 }
 
+func dialWithRetry(rabbitURL string) (*amqp.Connection, error) {
+	var conn *amqp.Connection
+	var err error
+
+	for i := 1; i <= 10; i++ {
+		conn, err = amqp.Dial(rabbitURL)
+		if err == nil {
+			log.Printf("Uspešno konektovan na RabbitMQ (pokušaj %d)", i)
+			return conn, nil
+		}
+		log.Printf("RabbitMQ nije dostupan, pokušaj %d/10. Čekam 3s... (%v)", i, err)
+		time.Sleep(3 * time.Second)
+	}
+	return nil, fmt.Errorf("nije moguće konektovati se na RabbitMQ nakon 10 pokušaja: %w", err)
+}
+
 func NewRabbitConsumer(service *Service) *RabbitConsumer {
 	rabbitURL := os.Getenv("RABBITMQ_URL")
 	if rabbitURL == "" {
 		rabbitURL = "amqp://guest:guest@localhost:5672/"
 	}
 
-	conn, err := amqp.Dial(rabbitURL)
+	conn, err := dialWithRetry(rabbitURL)
 	if err != nil {
 		log.Fatalf("Neuspešno povezivanje na RabbitMQ: %v", err)
 	}

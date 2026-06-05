@@ -29,6 +29,8 @@ type Repository interface {
 	GetTourExecutionByTouristID(touristID string) ([]TourExecution, error)
 	UpdateTourExecution(exec *TourExecution) error
 	SaveTourPurchaseToken(token *TourPurchaseToken) error
+	GetPurchasedTours(touristID string) ([]Tour, error)
+	GetAvailablePublishedTours(touristID string) ([]Tour, error)
 }
 
 type PostgresRepo struct {
@@ -152,4 +154,22 @@ func (r *PostgresRepo) UpdateTourExecution(exec *TourExecution) error {
 
 func (r *PostgresRepo) SaveTourPurchaseToken(token *TourPurchaseToken) error {
 	return r.db.Create(token).Error
+}
+
+func (r *PostgresRepo) GetPurchasedTours(touristID string) ([]Tour, error) {
+	var tours []Tour
+	err := r.db.Preload("KeyPoints").Preload("Reviews").
+		Joins("JOIN tour_purchase_tokens ON tour_purchase_tokens.tour_id = tours.id").
+		Where("tour_purchase_tokens.tourist_id = ?", touristID).
+		Find(&tours).Error
+	return tours, err
+}
+
+func (r *PostgresRepo) GetAvailablePublishedTours(touristID string) ([]Tour, error) {
+	var tours []Tour
+	err := r.db.Preload("KeyPoints").Preload("Reviews").
+		Where("tours.status = ?", "Published").
+		Where("tours.id NOT IN (SELECT tour_id FROM tour_purchase_tokens WHERE tourist_id = ?)", touristID).
+		Find(&tours).Error
+	return tours, err
 }

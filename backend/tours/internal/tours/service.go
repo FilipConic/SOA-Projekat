@@ -504,3 +504,11 @@ func (s *Service) AddPurchaseToken(dto CreatePurchaseTokenDTO) error {
 
 	return s.repo.SaveTourPurchaseToken(token)
 }
+
+func (s *Service) GetPurchasedTours(touristID string) ([]Tour, error) {
+	return s.repo.GetPurchasedTours(touristID)
+}
+
+func (s *Service) GetAvailablePublishedTours(touristID string) ([]Tour, error) {
+	return s.repo.GetAvailablePublishedTours(touristID)
+}

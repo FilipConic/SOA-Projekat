@@ -1,16 +1,22 @@
 package followers.demo.messaging;
 
+import java.time.LocalDateTime;
+
+import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.rabbit.annotation.Exchange;
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Service;
+
 import followers.demo.dto.UserDTO;
 import followers.demo.dto.UserSyncResponseEvent;
 import followers.demo.model.User;
 import followers.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +26,11 @@ public class UserSyncConsumer {
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
 
-    @RabbitListener(queues = "user-sync-queue")
+    @RabbitListener(bindings = @QueueBinding(
+        value    = @Queue(name = "user-sync-queue", durable = "true"),
+        exchange = @Exchange(name = "user-exchange", type = ExchangeTypes.TOPIC),
+        key      = "user.sync.routing"
+    ))
     public void handleUserSync(UserDTO event, @Header(name = "sagaId", required = false) String sagaId) {
         log.info("Primljen event za sinhronizaciju korisnika. ID: {}, Username: {}, Avatar: {}",
                 event.getId(), event.getUsername(), event.getAvatar());

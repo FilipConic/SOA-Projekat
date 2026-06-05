@@ -63,4 +63,12 @@ export class NavbarComponent implements OnInit {
   onMyExecutionsClick(): void {
     this.router.navigate(['/my-tour-executions']);
   }
+
+  onPurchasedToursClick(): void {
+    this.router.navigate(['/tourists-tours']);
+  }
+
+  onAvailableToursClick(): void {
+    this.router.navigate(['/available-tours']);
+  }
 }
