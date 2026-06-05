@@ -20,9 +20,9 @@ type UpdateTourDTO struct {
 	Status      TourStatus     `json:"status"` // Može da prebaci iz "draft" u "published"
 	Difficulty  TourDifficulty `json:"difficulty"`
 	Tags        []string       `json:"tags"`
-	DurationWalk int           `json:"duration_walk"`
-	DurationBike int           `json:"duration_bike"`
-	DurationCar  int           `json:"duration_car"`
+	DurationWalk int           `json:"DurationWalk"`
+    DurationBike int           `json:"DurationBike"`
+    DurationCar  int           `json:"DurationCar"`
 	DistanceKm  float64        `json:"distance_km"`
 }
 

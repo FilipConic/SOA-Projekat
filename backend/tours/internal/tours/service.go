@@ -448,14 +448,15 @@ func (s *Service) publish(guideID, tourID string) error {
 	if tour.CreatorID != guideID {
 		return ErrUnauthorized
 	}
-	if tour.Status != StatusPublished {
+	if tour.Status != StatusDraft {
 		return ErrWrongStatus
 	}
 	if err != nil {
 		return err
 	}
 	tour.Status = StatusPublished
-	tour.PublishTime = time.Now()
+	now := time.Now()
+	tour.PublishTime = &now
 	return s.repo.UpdateTour(tour)
 }
 func (s *Service) archive(guideID, tourID string) error {
@@ -470,7 +471,8 @@ func (s *Service) archive(guideID, tourID string) error {
 		return err
 	}
 	tour.Status = StatusArchived
-	tour.ArchiveTime = time.Now()
+	now := time.Now()
+	tour.ArchiveTime = &now
 	return s.repo.UpdateTour(tour)
 }
 func (s* Service) publishAgain(guideID, tourID string) error {
@@ -495,7 +497,8 @@ func (s* Service) publishAgain(guideID, tourID string) error {
 	}
 
 	tour.Status = StatusPublished
-	tour.PublishTime = time.Now()
+	now := time.Now()
+	tour.PublishTime = &now
 	return s.repo.UpdateTour(tour)
 }
 

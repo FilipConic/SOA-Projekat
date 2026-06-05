@@ -4,31 +4,39 @@
 
     <div class="tour-hero-content">
 
-      <h1 class="tour-title">{{ tour.Title }}</h1>
+      <div class="title-row">
+        <h1 class="tour-title">{{ tour.Title }}</h1>
+        <span class="published-date" *ngIf="tour.PublishedAt">
+          Published: {{ tour.PublishedAt | date:'mediumDate' }}
+        </span>
+      </div>
 
       <p class="tour-description">
         {{ tour.Description }}
       </p>
 
-      <!-- META STRIP -->
+      <div class="duration-row">
+        <div class="duration-item" *ngIf="tour.DurationWalk">
+          <span class="duration-label">Walk</span>
+          <span class="duration-value">{{ tour.DurationWalk }} min</span>
+        </div>
+        <div class="duration-item" *ngIf="tour.DurationBike">
+          <span class="duration-label">Bike</span>
+          <span class="duration-value">{{ tour.DurationBike }} min</span>
+        </div>
+        <div class="duration-item" *ngIf="tour.DurationCar">
+          <span class="duration-label">Car</span>
+          <span class="duration-value">{{ tour.DurationCar }} min</span>
+        </div>
+      </div>
+
       <div class="tour-badges">
-
-        <span class="badge">
-          {{ tour.DurationWalk }} min
-        </span>
-
-        <span class="badge price">
+        <span class="badge price" *ngIf="tour.Price">
           {{ tour.Price }} €
         </span>
-
         <span class="badge" *ngIf="distanceKm">
           {{ distanceKm | number:'1.1-2' }} km
         </span>
-
-        <span class="badge" *ngIf="keypoints?.length">
-          Start: {{ keypoints[0]?.Name }}
-        </span>
-
       </div>
 
     </div>

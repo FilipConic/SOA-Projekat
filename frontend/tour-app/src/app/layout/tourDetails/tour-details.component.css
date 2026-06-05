@@ -73,3 +73,49 @@
   font-weight: 500;
   border-radius: 6px;
 }
+
+.title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.published-date {
+  font-size: 13px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.duration-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.duration-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+
+.duration-label {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.duration-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.duration-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}

@@ -29,20 +29,19 @@
           <input type="number" formControlName="price" placeholder="Price (€)">
           <small class="hint">Price in Euros</small>
 
-          <input type="number" formControlName="duration" placeholder="Duration (min)">
-          <small class="hint">Approximate duration in minutes</small>
+          <input type="number" formControlName="duration_walk" placeholder="Walk Duration (min)">
+          <small class="hint">Approximate walk duration in minutes</small>
+
+          <input type="number" formControlName="duration_bike" placeholder="Bike Duration (min)">
+          <small class="hint">Approximate bike duration in minutes</small>
+
+          <input type="number" formControlName="duration_car" placeholder="Car Duration (min)">
+          <small class="hint">Approximate car duration in minutes</small>
         </div>
 
         <div class="form-actions">
           <button type="submit" class="btn-primary" [disabled]="tourForm.invalid">Save</button>
-          <button 
-            type="button"
-            class="btn-publish" 
-            (click)="publishTour()" 
-            [disabled]="!canPublish()"
-            [title]="!canPublish() ? 'Need: filled data, duration > 0, min 2 keypoints' : 'Publish tour'">
-            Publish
-          </button>
+          
         </div>
       </form>
     </div>

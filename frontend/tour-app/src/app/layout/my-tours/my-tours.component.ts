@@ -41,26 +41,41 @@ export class MyToursComponent implements OnInit {
     });
   }
 
-  changeStatus(tour: Tour, newStatus: 'published' | 'archived' | 'draft')
-  {
-    const payload: UpdateTourDTO = {
-      Title: tour.Title,
-      Description: tour.Description,
-      Difficulty: tour.Difficulty as unknown as string, // enum ---> string konverzija za API
-      Tags: tour.Tags,
-      Price: tour.Price,
-      DurationWalk: tour.DurationWalk,
-      DurationBike: tour.DurationBike,
-      DurationCar: tour.DurationCar,
-      Status: newStatus
-    };
-    this.tourService.updateTour(tour.id, payload).subscribe({
-      next: () => {
-        tour.status = newStatus;
-      },
-      error: (err) => console.error('Failed to update status:', err)
-    });
-
+  changeStatus(tour: Tour, newStatus: 'published' | 'archived' | 'draft') {
+      if (newStatus === 'archived') {
+          this.tourService.archiveTour(tour.id).subscribe({
+              next: () => {
+                  tour.status = 'archived';
+                  tour.ArchivedAt = new Date().toISOString();
+              },
+              error: (err) => {
+                  console.error('Status:', err.status);
+                  console.error('Message:', err.error);
+              }
+          });
+      } else if (newStatus === 'published' && tour.status === 'draft') {
+          this.tourService.publishTour(tour.id).subscribe({
+              next: () => {
+                  tour.status = 'published';
+                  tour.PublishedAt = new Date().toISOString();
+              },
+              error: (err) => {
+                  console.error('Status:', err.status);
+                  console.error('Message:', err.error);
+              }
+          });
+      } else if (newStatus === 'published' && tour.status === 'archived') {
+          this.tourService.publishFromArchiveTour(tour.id).subscribe({
+              next: () => {
+                  tour.status = 'published';
+                  tour.PublishedAt = new Date().toISOString();
+              },
+              error: (err) => {
+                  console.error('Status:', err.status);
+                  console.error('Message:', err.error);
+              }
+          });
+      }
   }
 
   getStatusLabel(status: string): string {
@@ -69,5 +84,15 @@ export class MyToursComponent implements OnInit {
       case 'archived': return 'Archived';
       default: return 'Draft';
     }
+  }
+
+  getStatusDate(tour: Tour): string {
+    if (tour.status === 'published' && tour.PublishedAt) {
+      return 'Published: ' + new Date(tour.PublishedAt).toLocaleDateString();
+    }
+    if (tour.status === 'archived' && tour.ArchivedAt) {
+      return 'Archived: ' + new Date(tour.ArchivedAt).toLocaleDateString();
+    }
+    return '';
   }
 }

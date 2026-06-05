@@ -40,8 +40,8 @@ type Tour struct {
 	CreatorID   string         `gorm:"index;not null"`
 	Title       string         `gorm:"type:varchar(100);not null;unique"`
 	Status      TourStatus     `gorm:"type:varchar(20);not null;default:'draft'"`
-	PublishTime time.Time      `gorm:"autoCreateTime"`
-	ArchiveTime time.Time      `gorm:"autoCreateTime"`
+	PublishTime *time.Time 	   `gorm:"column:publish_time" json:"PublishedAt,omitempty"`
+	ArchiveTime *time.Time 	   `gorm:"column:archive_time" json:"ArchivedAt,omitempty"`
 	Description string         `gorm:"type:text"`
 	Price       float64        `gorm:"type:numeric"`
 	Difficulty  TourDifficulty `gorm:"type:varchar(20);not null;default:'medium'"`

@@ -40,14 +40,16 @@ export class TourEditComponent implements OnInit {
   }
 
   initForm() {
-    this.tourForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      difficulty: ['Easy', Validators.required],
-      tags: [''],
-      price: [0, [Validators.required, Validators.min(0)]],
-      duration: [0, [Validators.required, Validators.min(0)]]
-    });
+      this.tourForm = this.fb.group({
+        title: ['', Validators.required],
+        description: ['', Validators.required],
+        difficulty: ['Easy', Validators.required],
+        tags: [''],
+        price: [0, [Validators.required, Validators.min(0)]],
+        duration_walk: [0, [Validators.required, Validators.min(0)]],
+        duration_bike: [0, [Validators.required, Validators.min(0)]],
+        duration_car: [0, [Validators.required, Validators.min(0)]]
+      });
   }
 
   loadTourData() {
@@ -87,7 +89,7 @@ export class TourEditComponent implements OnInit {
   saveMainDetails() {
     if (this.tourForm.valid) {
       const formValues = this.tourForm.value;
-
+      console.log('FORM VALUES:', formValues);
       const updatePayload: UpdateTourDTO = {
         Title: formValues.title,
         Description: formValues.description,

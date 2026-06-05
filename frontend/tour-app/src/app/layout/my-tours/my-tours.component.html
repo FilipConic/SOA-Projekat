@@ -26,16 +26,23 @@
           }">
             {{ getStatusLabel(tour.status) }}
           </span>
+
+          <span class="status-date" *ngIf="getStatusDate(tour)">
+            {{ getStatusDate(tour) }}
+          </span>
         </div>
 
         <p class="tour-description">{{ tour.Description }}</p>
 
         <div class="tour-badges">
-          <span class="badge">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
-            {{ tour.DurationWalk }} min
+          <span class="badge" *ngIf="tour.DurationWalk">
+            🚶 {{ tour.DurationWalk }} min
+          </span>
+          <span class="badge" *ngIf="tour.DurationBike">
+            🚲 {{ tour.DurationBike }} min
+          </span>
+          <span class="badge" *ngIf="tour.DurationCar">
+            🚗 {{ tour.DurationCar }} min
           </span>
           <span class="badge badge-price">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

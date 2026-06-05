@@ -89,16 +89,16 @@ export class TourService {
     return this.http.put<Tour>(`${this.baseUrl}/update/${tourId}`, updatedTour);
   }
 
-  publishTour(tourId: string) {
-    this.http.post(`${this.baseUrl}/publish/${tourId}`, {})
+  publishTour(tourId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/publish/${tourId}`, {});
   }
 
-  archiveTour(tourId: string) {
-    this.http.post(`${this.baseUrl}/archive/${tourId}`, {})
+  archiveTour(tourId: string): Observable<any> {
+      return this.http.post(`${this.baseUrl}/archive/${tourId}`, {});
   }
 
-  publishFromArchiveTour(tourId: string) {
-    this.http.post(`${this.baseUrl}/republish/${tourId}`, {})
+  publishFromArchiveTour(tourId: string): Observable<any> {
+      return this.http.post(`${this.baseUrl}/republish/${tourId}`, {});
   }
 
 
