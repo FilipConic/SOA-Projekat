@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package tours;
 
-option go_package = "gateway/gen/tours";
-
+import "common/user.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
-import "common/user.proto";
+
+option go_package = "gateway/gen/tours";
 
 service ToursService {
   rpc CreateTour(CreateTourRequest) returns (CreateTourResponse) {
@@ -17,47 +17,47 @@ service ToursService {
   }
 
   rpc GetTours(GetToursRequest) returns (GetToursResponse) {
-    option (google.api.http) = {
-      get: "/v1/tours/all"
-    };
+    option (google.api.http) = {get: "/v1/tours/all"};
   }
-
 }
 
 message KeyPoint {
-  string id          = 1;
-  string tour_id     = 2;
-  string name        = 3;
+  string id = 1;
+  string tour_id = 2;
+  string name = 3;
   string description = 4;
-  string image       = 5;
-  double latitude    = 6;
-  double longitude   = 7;
+  string image = 5;
+  double latitude = 6;
+  double longitude = 7;
 }
 
 message Review {
-  string id          = 1;
-  string tour_id     = 2;
-  string tourist_id  = 3;
-  int32  rating      = 4;
-  string comment     = 5;
-  google.protobuf.Timestamp visit_date   = 6;
+  string id = 1;
+  string tour_id = 2;
+  string tourist_id = 3;
+  int32 rating = 4;
+  string comment = 5;
+  google.protobuf.Timestamp visit_date = 6;
   google.protobuf.Timestamp comment_date = 7;
-  repeated string images                 = 8;
+  repeated string images = 8;
 }
 
 message Tour {
-  string id          = 1;
-  string creator_id  = 2;
-  string title       = 3;
-  string status  = 4;
+  string id = 1;
+  string creator_id = 2;
+  string title = 3;
+  string status = 4;
   string description = 5;
-  double price       = 6;
+  double price = 6;
   TourDifficulty difficulty = 7;
-  repeated string tags      = 8;
-  int32 duration            = 9;
-  google.protobuf.Timestamp created_at = 10;
-  repeated KeyPoint key_points = 11;
-  repeated Review reviews      = 12;
+  repeated string tags = 8;
+  int32 duration_walk = 9;
+  int32 duration_bike = 10;
+  int32 duration_car = 11;
+  google.protobuf.Timestamp created_at = 12;
+  repeated KeyPoint key_points = 13;
+  repeated Review reviews = 14;
+  double distance_km = 15;
 }
 
 enum TourDifficulty {
@@ -68,19 +68,19 @@ enum TourDifficulty {
 
 message CreateTourRequest {
   common.User user = 1;
-  string title        = 2;
-  string description  = 3;
+  string title = 2;
+  string description = 3;
   TourDifficulty difficulty = 4;
   repeated string tags = 5;
+  double distance_km = 6;
 }
 
 message CreateTourResponse {
   Tour tour = 1;
 }
 
-message GetToursRequest { }
+message GetToursRequest {}
 
 message GetToursResponse {
   repeated Tour tours = 1;
 }
-

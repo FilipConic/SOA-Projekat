@@ -3,6 +3,7 @@ package tours
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"os"
 )
@@ -41,6 +42,10 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("PUT /api/tours/tour-executions/check-position/{id}", h.checkPosition)
 	mux.HandleFunc("PUT /api/tours/tour-executions/complete/{id}", h.completeTour)
 	mux.HandleFunc("PUT /api/tours/tour-executions/abandon/{id}", h.abandonTour)
+
+	mux.HandleFunc("POST /api/tours/publish/{tour_id}", h.publish)
+	mux.HandleFunc("POST /api/tours/archive/{tour_id}", h.archive)
+	mux.HandleFunc("POST /api/tours/republish/{tour_id}", h.publishAgain)
 	mux.HandleFunc("GET /api/tours/purchased", h.getPurchasedTours)
 	mux.HandleFunc("GET /api/tours/available", h.getAvailableTours)
 }
@@ -325,6 +330,64 @@ func (h *Handler) abandonTour(w http.ResponseWriter, r *http.Request) {
 	err := h.service.AbandonTour(execID, touristID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h* Handler) publish(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	guideID := r.Header.Get("X-User-ID")
+
+	err := h.service.publish(guideID, tourID)
+	if errors.Is(err, ErrUnauthorized) {
+		http.Error(w, "unauthorized to publish this tour", http.StatusUnauthorized)
+		return
+	}
+	if errors.Is(err, ErrWrongStatus) {
+		http.Error(w, "can't publish because currently the tour is not in a valid state", http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+func (h* Handler) archive(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	guideID := r.Header.Get("X-User-ID")
+
+	err := h.service.archive(guideID, tourID)
+	if errors.Is(err, ErrUnauthorized) {
+		http.Error(w, "unauthorized to archive this tour", http.StatusUnauthorized)
+		return
+	}
+	if errors.Is(err, ErrWrongStatus) {
+		http.Error(w, "can't publish again because currently the tour is not in a valid state", http.StatusBadRequest)
+		return
+	}
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+func (h* Handler) publishAgain(w http.ResponseWriter, r *http.Request) {
+	tourID := r.PathValue("tour_id")
+	guideID := r.Header.Get("X-User-ID")
+
+	if err := h.service.publishAgain(guideID, tourID); errors.Is(err, ErrUnauthorized) {
+		http.Error(w, "unauthorized to unarchive this tour", http.StatusUnauthorized)
+		return
+	} else if errors.Is(err, ErrWrongStatus) {
+		http.Error(w, "can't publish again because currently the tour is not in a valid state", http.StatusBadRequest)
+		return
+	} else if errors.Is(err, ErrCantUnarchive) {
+		http.Error(w, "not a valid tour to be unarchived", http.StatusBadRequest)
+		return
+	} else if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

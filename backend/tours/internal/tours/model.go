@@ -40,14 +40,19 @@ type Tour struct {
 	CreatorID   string         `gorm:"index;not null"`
 	Title       string         `gorm:"type:varchar(100);not null;unique"`
 	Status      TourStatus     `gorm:"type:varchar(20);not null;default:'draft'"`
+	PublishTime *time.Time 	   `gorm:"column:publish_time" json:"PublishedAt,omitempty"`
+	ArchiveTime *time.Time 	   `gorm:"column:archive_time" json:"ArchivedAt,omitempty"`
 	Description string         `gorm:"type:text"`
 	Price       float64        `gorm:"type:numeric"`
 	Difficulty  TourDifficulty `gorm:"type:varchar(20);not null;default:'medium'"`
 	Tags        []string       `gorm:"type:jsonb;serializer:json"`
-	Duration    int
-	CreatedAt   time.Time
-	KeyPoints   []KeyPoint `gorm:"foreignKey:TourID"`
-	Reviews     []Review   `gorm:"foreignKey:TourID"`
+	DurationWalk *int          `gorm:"type:integer"`
+	DurationBike *int          `gorm:"type:integer"`
+	DurationCar  *int          `gorm:"type:integer"`
+	CreatedAt   time.Time      `gorm:"autoCreateTime"`
+	KeyPoints   []KeyPoint     `gorm:"foreignKey:TourID"`
+	Reviews     []Review       `gorm:"foreignKey:TourID"`
+	DistanceKm  float64        `gorm:"type:numeric"`
 }
 
 type KeyPoint struct {

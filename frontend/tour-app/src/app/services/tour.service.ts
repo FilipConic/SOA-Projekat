@@ -40,7 +40,7 @@ export class TourService {
           Price: t.Price ?? t.price,
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
-          Status: t.Status ?? t.status,
+          status: t.Status ?? t.status,
           Duration: t.Duration ?? t.duration,
           CreatedAt: t.CreatedAt
         }));
@@ -65,9 +65,14 @@ export class TourService {
           Price: t.Price ?? t.price,
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
+          status: t.Status ?? t.status,
           Status: t.Status ?? t.status,
-          Duration: t.Duration ?? t.duration,
+          DurationWalk: t.DurationWalk ?? t.duration_walk,
+          DurationBike: t.DurationBike ?? t.duration_bike,
+          DurationCar: t.DurationCar ?? t.duration_car,
           CreatedAt: t.CreatedAt ?? t.created_at,
+          PublishedAt: t.PublishedAt ?? t.published_at,
+          ArchivedAt: t.ArchivedAt ?? t.archived_at,
           CreatorID: t.CreatorID ?? t.creator_id
         }));
       })
@@ -84,6 +89,19 @@ export class TourService {
     return this.http.put<Tour>(`${this.baseUrl}/update/${tourId}`, updatedTour);
   }
 
+  publishTour(tourId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/publish/${tourId}`, {});
+  }
+
+  archiveTour(tourId: string): Observable<any> {
+      return this.http.post(`${this.baseUrl}/archive/${tourId}`, {});
+  }
+
+  publishFromArchiveTour(tourId: string): Observable<any> {
+      return this.http.post(`${this.baseUrl}/republish/${tourId}`, {});
+  }
+
+
   // PROMENJENO: Preimenovano iz getTourById u getTour da odgovara tour-edit komponenti
   // Ruta na bekendu: GET /api/tours/find/{tour_id}
   getTour(id: string): Observable<Tour> {
@@ -95,10 +113,17 @@ export class TourService {
           Price: t.Price,
           Difficulty: t.Difficulty,
           Tags: t.Tags,
+          status: t.status ?? t.Status,
           Status: t.Status,
-          Duration: t.Duration,
+          DurationWalk: t.DurationWalk,
+          DurationBike: t.DurationBike,
+          DurationCar: t.DurationCar,
           CreatedAt: t.CreatedAt,
-          CreatorID: t.CreatorID
+          PublishedAt: t.PublishedAt,
+          ArchivedAt: t.ArchivedAt,
+          CreatorID: t.CreatorID,
+          distance_km: t.DistanceKm ?? t.distance_km ?? 0,
+          Keypoints: t.Keypoints
         }))
       );
   }

@@ -20,22 +20,29 @@
         <div class="title-row">
           <h3 class="tour-title">{{ tour.Title }}</h3>
           <span class="status-badge" [ngClass]="{
-            'status-draft': tour.Status === 'draft',
-            'status-published': tour.Status === 'published',
-            'status-archived': tour.Status === 'archived'
+            'status-draft': tour.status === 'draft',
+            'status-published': tour.status === 'published',
+            'status-archived': tour.status === 'archived'
           }">
-            {{ getStatusLabel(tour.Status) }}
+            {{ getStatusLabel(tour.status) }}
+          </span>
+
+          <span class="status-date" *ngIf="getStatusDate(tour)">
+            {{ getStatusDate(tour) }}
           </span>
         </div>
 
         <p class="tour-description">{{ tour.Description }}</p>
 
         <div class="tour-badges">
-          <span class="badge">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
-            {{ tour.Duration }} min
+          <span class="badge" *ngIf="tour.DurationWalk">
+            🚶 {{ tour.DurationWalk }} min
+          </span>
+          <span class="badge" *ngIf="tour.DurationBike">
+            🚲 {{ tour.DurationBike }} min
+          </span>
+          <span class="badge" *ngIf="tour.DurationCar">
+            🚗 {{ tour.DurationCar }} min
           </span>
           <span class="badge badge-price">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -49,23 +56,23 @@
       <div class="card-actions">
         <a [routerLink]="['/tour/edit', tour.id]" class="btn-view">Edit</a>
 
-        <button 
-          *ngIf="tour.Status === 'draft'" 
-          class="btn-publish" 
+        <button
+          *ngIf="tour.status === 'draft'"
+          class="btn-publish"
           (click)="changeStatus(tour, 'published')">
           Publish
         </button>
 
-        <button 
-          *ngIf="tour.Status === 'published'" 
-          class="btn-archive" 
+        <button
+          *ngIf="tour.status === 'published'"
+          class="btn-archive"
           (click)="changeStatus(tour, 'archived')">
           Archive
         </button>
 
-        <button 
-          *ngIf="tour.Status === 'archived'" 
-          class="btn-reactivate" 
+        <button
+          *ngIf="tour.status === 'archived'"
+          class="btn-reactivate"
           (click)="changeStatus(tour, 'published')">
           Reactivate
         </button>

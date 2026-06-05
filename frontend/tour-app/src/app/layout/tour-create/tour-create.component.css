@@ -1,0 +1,116 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f7f8fa;
+  padding: 40px;
+}
+
+.card {
+  width: 480px;
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  margin: 0 0 6px 0;
+  font-size: 24px;
+  color: #1a1a2e;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input,
+.field textarea,
+.field select {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  color: #333;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: #7c5cff;
+  background: white;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
+button[type="submit"] {
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #1a1a2e;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 8px;
+}
+
+button[type="submit"]:hover {
+  background: #2d2d4e;
+  transform: translateY(-1px);
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}

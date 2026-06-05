@@ -1,23 +1,44 @@
-<div class="create-container">
-  <h2>Create a New Tour</h2>
-  <form [formGroup]="tourForm" (ngSubmit)="onSubmit()">
-    
-    <label>Title</label>
-    <input type="text" formControlName="title" placeholder="Tour Title">
+<div class="page">
+  <div class="card">
 
-    <label>Description</label>
-    <textarea formControlName="description" placeholder="Describe the tour..."></textarea>
+    <div class="header">
+      <h2>Create Tour</h2>
+      <p>Fill in the details to create a new tour</p>
+    </div>
 
-    <label>Difficulty</label>
-    <select formControlName="difficulty">
-      <option value="Easy">Easy</option>
-      <option value="Medium">Medium</option>
-      <option value="Hard">Hard</option>
-    </select>
+    <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="form">
 
-    <label>Tags (comma separated)</label>
-    <input type="text" formControlName="tags" placeholder="nature, hiking, view">
+      <div class="field">
+        <label>Title</label>
+        <input type="text" formControlName="title" placeholder="Enter tour title">
+      </div>
 
-    <button type="submit" [disabled]="tourForm.invalid">Save Tour</button>
-  </form>
+      <div class="field">
+        <label>Description</label>
+        <textarea formControlName="description" placeholder="Describe the tour..."></textarea>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label>Difficulty</label>
+          <select formControlName="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Tags</label>
+          <input type="text" formControlName="tags" placeholder="nature, hiking...">
+          <span class="hint">Separate with commas</span>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="tourForm.invalid">
+        Create Tour
+      </button>
+
+    </form>
+  </div>
 </div>

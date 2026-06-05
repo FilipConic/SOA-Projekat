@@ -36,18 +36,16 @@ export class AuthService {
     }
 
     register(registration: Registration): Observable<string> {
-        return this.http.post(environment.apiHost + 'users/', 
+        return this.http.post(environment.apiHost + 'users/',
                 registration,
                 { responseType: 'text' }
             );
     }
 
     logout(): void {
-        this.router.navigate(['/home']).then(_ => {
-                this.tokenStorage.clear();
-                this.user$.next({email: "", id: '', role: ''});
-            }
-        );
+      this.tokenStorage.clear();
+      this.user$.next({email: "", id: '', role: ''});
+      this.router.navigate(['/home']);
     }
 
     private setUser(): void {

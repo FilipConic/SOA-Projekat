@@ -13,10 +13,10 @@ import { Tour, KeyPoint, UpdateTourDTO } from '../../models/tour.model';
 export class TourEditComponent implements OnInit {
   tourId!: string;
   tourForm!: FormGroup;
-  originalTour!: Tour; // Čuvamo originalnu turu kako bismo zadržali Price, Duration i ostalo
-  
+  originalTour!: Tour; // cuvamo originalnu turu kako bismo zadržali Price, Duration i ostalo
+
   keypoints: KeyPoint[] = [];
-  
+
   // Map Variables for xp-map
   mapWaypoints: L.LatLng[] = [];
   mapWaypointNames: string[] = [];
@@ -24,6 +24,8 @@ export class TourEditComponent implements OnInit {
   // Modal State
   showModal = false;
   selectedKeypoint: KeyPoint | null = null;
+
+  distanceKm: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,27 +40,31 @@ export class TourEditComponent implements OnInit {
   }
 
   initForm() {
-    this.tourForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      difficulty: ['Easy', Validators.required],
-      tags: [''],
-      price: [0, [Validators.required, Validators.min(0)]],
-      duration: [0, [Validators.required, Validators.min(1)]]
-    });
+      this.tourForm = this.fb.group({
+        title: ['', Validators.required],
+        description: ['', Validators.required],
+        difficulty: ['Easy', Validators.required],
+        tags: [''],
+        price: [0, [Validators.required, Validators.min(0)]],
+        duration_walk: [0, [Validators.required, Validators.min(0)]],
+        duration_bike: [0, [Validators.required, Validators.min(0)]],
+        duration_car: [0, [Validators.required, Validators.min(0)]]
+      });
   }
 
   loadTourData() {
     this.tourService.getTour(this.tourId).subscribe(tour => {
       this.originalTour = tour;
-      
+
       this.tourForm.patchValue({
         title: tour.Title,
         description: tour.Description,
         difficulty: tour.Difficulty,
         tags: tour.Tags && tour.Tags.length > 0 ? tour.Tags.join(', ') : '',
         price: tour.Price,
-        duration: tour.Duration
+        duration_walk: tour.DurationWalk,
+        duration_bike: tour.DurationBike,
+        duration_car: tour.DurationCar,
       });
     });
 
@@ -70,6 +76,8 @@ export class TourEditComponent implements OnInit {
       this.keypoints = kp;
       console.log("Učitane ključne tačke:", this.keypoints);
       this.updateMapData();
+
+      this.distanceKm = this.calculateDistance();
     });
   }
 
@@ -81,17 +89,20 @@ export class TourEditComponent implements OnInit {
   saveMainDetails() {
     if (this.tourForm.valid) {
       const formValues = this.tourForm.value;
-      
+      console.log('FORM VALUES:', formValues);
       const updatePayload: UpdateTourDTO = {
         Title: formValues.title,
         Description: formValues.description,
         Difficulty: formValues.difficulty,
-        Tags: formValues.tags 
+        Tags: formValues.tags
           ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
           : [],
         Price: formValues.price,
-        Duration: formValues.duration,
-        Status: (this.originalTour?.Status as any) || 'draft'
+        Status: (this.originalTour?.status as any) || 'draft',
+        DurationWalk: formValues.duration_walk,
+        DurationBike: formValues.duration_bike,
+        DurationCar: formValues.duration_car,
+        distance_km: this.distanceKm
       };
       console.log("Payload za ažuriranje ture:", updatePayload);
 
@@ -107,6 +118,7 @@ export class TourEditComponent implements OnInit {
       !!f.description &&
       !!f.difficulty &&
       f.duration > 0 &&
+      f.price > 0 &&
       this.keypoints.length >= 2
     );
   }
@@ -122,12 +134,14 @@ export class TourEditComponent implements OnInit {
         ? formValues.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '')
         : [],
       Price: formValues.price,
-      Duration: formValues.duration,
+      DurationWalk: formValues.duration_walk,
+      DurationBike: formValues.duration_bike,
+      DurationCar: formValues.duration_car,
       Status: 'published'
     };
     this.tourService.updateTour(this.tourId, updatePayload)
       .subscribe(() => {
-        this.originalTour.Status = 'published';
+        this.originalTour.status = 'published';
         alert('Tura uspešno objavljena!');
       });
   }
@@ -155,11 +169,42 @@ export class TourEditComponent implements OnInit {
 
   deleteKeypoint(id: string) {
     if (!id) return;
-    
+
     if (confirm("Are you sure you want to delete this keypoint?")) {
       this.tourService.deleteKeypoint(id).subscribe(() => {
         this.fetchKeypoints();
       });
     }
+  }
+
+  calculateDistance(): number {
+    let total = 0;
+
+    for (let i = 1; i < this.mapWaypoints.length; i++) {
+      const a = this.mapWaypoints[i - 1];
+      const b = this.mapWaypoints[i];
+
+      total += this.getDistanceMeters(
+      a.lat, a.lng,
+      b.lat, b.lng
+    );
+    }
+    return total/1000; // Convert to km
+  }
+
+  private getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Earth radius in meters
+    const φ1 = lat1 * Math.PI/180;
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    // Haversine formula
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
   }
 }

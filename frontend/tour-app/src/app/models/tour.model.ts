@@ -6,9 +6,15 @@ export interface Tour {
   Price: number;
   Difficulty: TourDifficulty;
   Tags: string[];
-  Status: 'draft' | 'published' | 'archived';
-  Duration: number;
+  status: 'draft' | 'published' | 'archived';
+  DurationWalk: number;
+  DurationBike: number;
+  DurationCar: number;
   CreatedAt: string;
+  PublishedAt: string;
+  ArchivedAt: string;
+  distance_km?: number;
+  Keypoints?: KeyPoint[];
 }
 
 export enum TourDifficulty {
@@ -30,8 +36,11 @@ export interface UpdateTourDTO {
   Difficulty: string;
   Tags: string[];
   Price: number;
-  Duration: number;
+  DurationWalk: number;
+  DurationBike: number;
+  DurationCar: number;
   Status: 'draft' | 'published' | 'archived';
+  distance_km?: number;
 }
 
 export interface CreateKeyPointDTO {

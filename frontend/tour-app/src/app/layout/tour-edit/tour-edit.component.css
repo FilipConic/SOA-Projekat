@@ -1,51 +1,157 @@
-/* Layout split */
 .edit-layout {
   display: flex;
-  height: calc(100vh - 60px); /* Adjust based on your header */
-  gap: 20px;
-  padding: 20px;
+  height: calc(100vh - 60px);
+  gap: 0;
 }
 
 .left-column {
-  flex: 1; /* Takes up 50% width */
-  min-height: 500px;
+  flex: 1;
+  min-height: 100%;
 }
 
 .right-column {
-  flex: 1; /* Takes up 50% width */
+  width: 420px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
   overflow-y: auto;
+  background: #f7f8fa;
+  border-left: 1px solid #e0e0e0;
 }
 
-/* Tour Form Styling */
-.details-section, .keypoints-section {
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+.details-section {
+  padding: 24px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.details-section h2 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #1a1a2e;
+  font-weight: 700;
 }
 
 .details-section form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+}
+
+.details-section input,
+.details-section textarea,
+.details-section select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  background: #fafafa;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.details-section input:focus,
+.details-section textarea:focus,
+.details-section select:focus {
+  border-color: #7c5cff;
+  background: white;
+}
+
+.details-section textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
 .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-actions {
   display: flex;
   gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 10px;
+  background: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-primary:hover { background: #2d2d4e; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-publish {
+  flex: 1;
+  padding: 10px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-publish:hover { background: #218838; }
+.btn-publish:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.keypoints-section {
+  padding: 24px;
+  flex: 1;
+}
+
+.keypoints-section h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
-/* Cards Styling */
+.btn-success {
+  padding: 8px 14px;
+  background: white;
+  color: #1a1a2e;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-success:hover { background: #f0f0f0; }
+
+.warning-msg {
+  font-size: 13px;
+  color: #856404;
+  background: #fff3cd;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
 .keypoint-cards {
   display: flex;
   flex-direction: column;
@@ -56,18 +162,56 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 14px 16px;
   background: white;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.card-info strong {
+  font-size: 14px;
+  color: #333;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .card-actions button {
-  margin-left: 10px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #e0e0e0;
+  background: white;
+  color: #333;
+  transition: 0.2s;
 }
 
-/* Modal Overlay base classes */
+.card-actions button:hover { background: #f0f0f0; }
+
+.btn-danger {
+  color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+.btn-danger:hover {
+  background: #dc3545 !important;
+  color: white !important;
+}
+
+.tour-metrics {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #e8f5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2e7d32;
+  font-weight: 500;
+}
+
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -75,15 +219,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it floats above the leaflet map */
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
   padding: 25px;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 400px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+  display: block;
 }

@@ -36,6 +36,7 @@ func (h *GrpcHandler) CreateTour(ctx context.Context, req *pb.CreateTourRequest)
 		Description: req.Description,
 		Difficulty:  difficultyMap[req.Difficulty],
 		Tags:        req.Tags,
+		DistanceKm:  req.DistanceKm,
 	}
 
 	tour, err := h.service.CreateTour(dto, userID)
@@ -45,7 +46,6 @@ func (h *GrpcHandler) CreateTour(ctx context.Context, req *pb.CreateTourRequest)
 
 	return &pb.CreateTourResponse{Tour: toProtoTour(tour)}, nil
 }
-
 func (h *GrpcHandler) GetTours(ctx context.Context, req *pb.GetToursRequest) (*pb.GetToursResponse, error) {
 	tours, err := h.service.GetAllTours()
 	if err != nil {
@@ -60,22 +60,33 @@ func (h *GrpcHandler) GetTours(ctx context.Context, req *pb.GetToursRequest) (*p
 	return &pb.GetToursResponse{Tours: protoTours}, nil
 }
 
+func ifPtrZero(ptr *int) int32 {
+	if ptr != nil { return int32(*ptr) }
+	return 0
+}
 func toProtoTour(t *Tour) *pb.Tour {
 	ret := &pb.Tour{
 		Id:          t.ID,
 		CreatorId:   t.CreatorID,
 		Title:       t.Title,
+		Status:      string(t.Status),
 		Description: t.Description,
 		Price:       t.Price,
-		Duration:    int32(t.Duration),
+		DurationWalk:    ifPtrZero(t.DurationWalk),
+		DurationBike:    ifPtrZero(t.DurationBike),
+		DurationCar:     ifPtrZero(t.DurationCar),
 		Tags:        t.Tags,
+		DistanceKm: t.DistanceKm,
 	}
-	if t.Difficulty == DifficultyEasy {
+
+	switch (t.Difficulty) {
+	case DifficultyEasy:
 		ret.Difficulty = pb.TourDifficulty_TOUR_DIFFICULTY_EASY
-	} else if t.Difficulty == DifficultyMedium {
+	case DifficultyMedium:
 		ret.Difficulty = pb.TourDifficulty_TOUR_DIFFICULTY_MEDIUM
-	} else if t.Difficulty == DifficultyHard {
+	case DifficultyHard:
 		ret.Difficulty = pb.TourDifficulty_TOUR_DIFFICULTY_HARD
 	}
+
 	return ret
 }
