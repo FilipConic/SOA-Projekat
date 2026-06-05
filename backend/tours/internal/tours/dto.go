@@ -122,3 +122,8 @@ type TourExecutionDTO struct {
 	LastActivity    time.Time              `json:"lastActivity"`
 	Keypoints       []ExecutionKeyPointDTO `json:"keypoints"`
 }
+
+type CreatePurchaseTokenDTO struct {
+	TourID    string `json:"tourId"`
+	TouristID string `json:"touristId"`
+}

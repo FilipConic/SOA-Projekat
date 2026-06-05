@@ -38,6 +38,7 @@ func main() {
 		&tours.TouristPosition{},
 		&tours.TourExecution{},
 		&tours.ExecutionKeyPoint{},
+		&tours.TourPurchaseToken{},
 	)
 	if err != nil {
 		log.Fatalf("Greška tokom migracije: %v", err)
@@ -46,6 +47,11 @@ func main() {
 	repo := tours.NewPostgresRepo(db)
 
 	service := tours.NewService(repo)
+
+	rabbitConsumer := tours.NewRabbitConsumer(service)
+	rabbitConsumer.Start()
+	defer rabbitConsumer.Close()
+
 	handler := tours.NewHandler(service)
 
 	grpcHandler := tours.NewGrpcHandler(service)

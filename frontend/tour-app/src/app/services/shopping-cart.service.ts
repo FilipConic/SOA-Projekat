@@ -6,31 +6,22 @@ import { environment } from 'src/env/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ShoppingCartService {
-  cartState = new BehaviorSubject<boolean>(false);
-
   constructor(private http: HttpClient) {}
 
-  toggleCart() : void {
-    this.cartState.next(!this.cartState.value);
-  }
-
   getCart(touristId: string): Observable<ShoppingCart> {
-    return this.http.get<ShoppingCart>(`${environment.apiHost}purchase/cart/${touristId}`);
+    return this.http.get<ShoppingCart>(`${environment.apiHost}purchase/cart/get`);
   }
 
-  addToCart(touristId: string, tourId: string): Observable<ShoppingCart> {
-    const payload = { touristId: Number(touristId), tourId };
-    return this.http.post<ShoppingCart>(`/v1/purchase/cart/add`, payload).pipe(
-      tap(() => this.cartState.next(true))
-    );
+  addToCart(tourId: string, tourName: string, price: number): Observable<ShoppingCart> {
+    const payload = { tourId, tourName, price };
+    return this.http.post<ShoppingCart>(`http://localhost:8080/v1/purchase/cart/add`, payload);
   }
 
-  removeFromCart(touristId: string, tourId: string): Observable<ShoppingCart> {
-    return this.http.delete<ShoppingCart>(`${environment.apiHost}purchase/cart/remove?touristId=${touristId}&tourId=${tourId}`);
+  removeFromCart(tourId: string): Observable<ShoppingCart> {
+    return this.http.delete<ShoppingCart>(`${environment.apiHost}purchase/cart/remove?tourId=${tourId}`);
   }
 
-  checkout(touristId: string): Observable<CheckoutResponse> {
-    const payload = { touristId: Number(touristId) };
-    return this.http.post<CheckoutResponse>(`/v1/purchase/checkout`, payload);
+  checkout(): Observable<CheckoutResponse> {
+    return this.http.post<CheckoutResponse>(`http://localhost:8080/v1/purchase/checkout`, {});
   }
 }

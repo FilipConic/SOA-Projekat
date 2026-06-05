@@ -26,14 +26,6 @@ export class TourDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.user$.subscribe({
-      next: (user) => {
-        if (user && user.role === 'tourist') {
-          this.touristId = String(user.id);
-        }
-      }
-    });
-
     const id = this.route.snapshot.paramMap.get('id')!;
     this.tourService.getTour(id).subscribe({
       next: (data) => {
@@ -52,12 +44,10 @@ export class TourDetailsComponent implements OnInit {
   }
 
   addToCart(): void {
-    if (!this.touristId) {
-      return;
-    }
-
-    this.cartService.addToCart(this.touristId, this.tour.id).subscribe({
-      next: () => {},
+    this.cartService.addToCart(this.tour.id, this.tour.Title, this.tour.Price).subscribe({
+      next: () => {
+        alert('Tour added to cart!');
+      },
       error: (err) => {
         console.error(err);
       }

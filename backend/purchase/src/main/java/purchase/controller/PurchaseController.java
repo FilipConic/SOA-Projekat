@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import purchase.dto.AddToCartRequestDto;
-import purchase.dto.CheckoutRequestDto;
 import purchase.dto.CheckoutResponseDto;
 import purchase.dto.ShoppingCartResponseDto;
 import purchase.service.ICheckoutService;
@@ -19,22 +18,22 @@ public class PurchaseController {
     private final ICheckoutService checkoutService;
 
     @PostMapping("/cart/add")
-    public ResponseEntity<ShoppingCartResponseDto> addToCart(@RequestBody AddToCartRequestDto dto) {
-        return ResponseEntity.ok(shoppingCartService.addItemToCart(dto));
+    public ResponseEntity<ShoppingCartResponseDto> addToCart(@RequestHeader("X-User-ID") String touristId, @RequestBody AddToCartRequestDto dto) {
+        return ResponseEntity.ok(shoppingCartService.addItemToCart(touristId, dto));
     }
 
     @DeleteMapping("/cart/remove")
-    public ResponseEntity<ShoppingCartResponseDto> removeFromCart(@RequestParam String touristId, @RequestParam String tourId) {
+    public ResponseEntity<ShoppingCartResponseDto> removeFromCart(@RequestHeader("X-User-ID") String touristId, @RequestParam String tourId) {
         return ResponseEntity.ok(shoppingCartService.removeItemFromCart(touristId, tourId));
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<CheckoutResponseDto> checkout(@RequestBody CheckoutRequestDto dto) {
-        return ResponseEntity.ok(checkoutService.processCheckout(dto));
+    public ResponseEntity<CheckoutResponseDto> checkout(@RequestHeader("X-User-ID") String touristId) {
+        return ResponseEntity.ok(checkoutService.processCheckout(touristId));
     }
 
-    @GetMapping("/cart/{touristId}")
-    public ResponseEntity<ShoppingCartResponseDto> getCart(@PathVariable String touristId) {
+    @GetMapping("/cart/get")
+    public ResponseEntity<ShoppingCartResponseDto> getCart(@RequestHeader("X-User-ID") String touristId) {
         return ResponseEntity.ok(shoppingCartService.getCart(touristId));
     }
 }

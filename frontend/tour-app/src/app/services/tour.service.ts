@@ -184,4 +184,45 @@ export class TourService {
       { headers: { 'X-User-ID': touristID } }
     );
   }
+
+  getAvailableTours(): Observable<Tour[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/available`).pipe(
+      map(tours => {
+        if (!tours) return [];
+        console.log('RAW AVAILABLE TOURS:', JSON.stringify(tours[0]));
+        return tours.map((t: any) => ({
+          id: t.ID ?? t.id,
+          Title: t.Title ?? t.title,
+          Description: t.Description ?? t.description,
+          Price: t.Price ?? t.price,
+          Difficulty: t.Difficulty ?? t.difficulty,
+          Tags: t.Tags ?? t.tags,
+          Status: t.Status ?? t.status,
+          Duration: t.Duration ?? t.duration,
+          CreatedAt: t.CreatedAt ?? t.created_at,
+          CreatorID: t.CreatorID ?? t.creator_id
+        }));
+      })
+    );
+  }
+
+  getPurchasedTours(): Observable<Tour[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/purchased`).pipe(
+      map(tours => {
+        if (!tours) return [];
+        return tours.map((t: any) => ({
+          id: t.ID ?? t.id,
+          Title: t.Title ?? t.title,
+          Description: t.Description ?? t.description,
+          Price: t.Price ?? t.price,
+          Difficulty: t.Difficulty ?? t.difficulty,
+          Tags: t.Tags ?? t.tags,
+          Status: t.Status ?? t.status,
+          Duration: t.Duration ?? t.duration,
+          CreatedAt: t.CreatedAt ?? t.created_at,
+          CreatorID: t.CreatorID ?? t.creator_id
+        }));
+      })
+    );
+  }
 }

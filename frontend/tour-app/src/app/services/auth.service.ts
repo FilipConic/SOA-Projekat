@@ -43,10 +43,9 @@ export class AuthService {
     }
 
     logout(): void {
-        localStorage.removeItem('access-token');
-        localStorage.removeItem('refresh-token');
-        this.user$.next({id: '', email: '', role: ''});
-        this.router.navigate(['/home']);
+      this.tokenStorage.clear();
+      this.user$.next({email: "", id: '', role: ''});
+      this.router.navigate(['/home']);
     }
 
     private setUser(): void {

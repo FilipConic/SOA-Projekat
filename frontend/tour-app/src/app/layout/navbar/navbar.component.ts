@@ -56,7 +56,19 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
+  onViewCartClick(): void {
+    this.router.navigate(['/cart']);
+  }
+
   onMyExecutionsClick(): void {
     this.router.navigate(['/my-tour-executions']);
+  }
+
+  onPurchasedToursClick(): void {
+    this.router.navigate(['/tourist-tours']);
+  }
+
+  onAvailableToursClick(): void {
+    this.router.navigate(['/available-tours']);
   }
 }

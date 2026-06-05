@@ -58,3 +58,37 @@
 .login-btn:hover {
   background-color: #2563eb;
 }
+
+.cart-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #27ae60; /* Using your green theme */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.cart-button:hover {
+  background-color: #219653;
+}
+
+.cart-button:active {
+  transform: scale(0.98);
+}
+
+/* Optional tweak to make sure the icon aligns perfectly with the text */
+.cart-button mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* Adjust size if needed */
+  width: 20px;
+  height: 20px;
+}

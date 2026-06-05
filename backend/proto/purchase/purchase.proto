@@ -2,12 +2,13 @@ syntax = "proto3";
 
 option go_package = "gateway/gen/purchase";
 option java_multiple_files = true;
-option java_package = "purchase.grpc";
+option java_package = "purchase";
 option java_outer_classname = "PurchaseProto";
 
 package purchase;
 
 import "google/api/annotations.proto";
+import "common/user.proto";
 
 service PurchaseService {
   rpc AddToCart(AddToCartGrpcRequest) returns (AddToCartGrpcResponse) {
@@ -26,8 +27,10 @@ service PurchaseService {
 }
 
 message AddToCartGrpcRequest {
-  string tourist_id = 1;
+  common.User user = 1;
   string tour_id = 2;
+  string tour_name = 3;
+  double price = 4;
 }
 
 message AddToCartGrpcResponse {
@@ -36,7 +39,7 @@ message AddToCartGrpcResponse {
 }
 
 message CheckoutGrpcRequest {
-  string tourist_id = 1;
+  common.User user = 1;
 }
 
 message CheckoutGrpcResponse {

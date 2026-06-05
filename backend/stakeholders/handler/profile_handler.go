@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -14,29 +15,31 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 const (
 	maxAvatarSize = 5 * 1024 * 1024
-	avatarDir = "media/avatars"
+	avatarDir     = "media/avatars"
 )
 
 type ProfileHandler struct {
-	profiles *repository.ProfileRepository
+	profiles      *repository.ProfileRepository
+	rabbitChannel *amqp.Channel
 }
 
-func NewProfileHandler(profiles *repository.ProfileRepository) *ProfileHandler {
-	return &ProfileHandler{profiles: profiles}
+func NewProfileHandler(profiles *repository.ProfileRepository, rabbitChannel *amqp.Channel) *ProfileHandler {
+	return &ProfileHandler{profiles: profiles, rabbitChannel: rabbitChannel}
 }
 
 type updateProfileRequest struct {
 	FirstName *string `json:"first_name"`
-	LastName *string `json:"last_name"`
-	Bio *string `json:"bio"`
-	Quote *string `json:"quote"`
+	LastName  *string `json:"last_name"`
+	Bio       *string `json:"bio"`
+	Quote     *string `json:"quote"`
 }
 
-func (h* ProfileHandler) Me(w http.ResponseWriter, r* http.Request) {
+func (h *ProfileHandler) Me(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
 		writeError(w, http.StatusUnauthorized, "unauthorized")
@@ -55,7 +58,7 @@ func (h* ProfileHandler) Me(w http.ResponseWriter, r* http.Request) {
 
 	writeJSON(w, http.StatusOK, profile)
 }
-func (h* ProfileHandler) UpdateProfile(w http.ResponseWriter, r* http.Request) {
+func (h *ProfileHandler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
 		writeError(w, http.StatusUnauthorized, "unauthorized")
@@ -80,9 +83,9 @@ func (h* ProfileHandler) UpdateProfile(w http.ResponseWriter, r* http.Request) {
 
 	updated := models.Profile{
 		FirstName: current.FirstName,
-		LastName: current.LastName,
-		Bio: current.Bio,
-		Quote: current.Quote,
+		LastName:  current.LastName,
+		Bio:       current.Bio,
+		Quote:     current.Quote,
 	}
 	if req.FirstName != nil {
 		updated.FirstName = *req.FirstName
@@ -110,7 +113,7 @@ func (h* ProfileHandler) UpdateProfile(w http.ResponseWriter, r* http.Request) {
 
 	writeJSON(w, http.StatusOK, refreshed)
 }
-func (h* ProfileHandler) UploadAvatar(w http.ResponseWriter, r* http.Request) {
+func (h *ProfileHandler) UploadAvatar(w http.ResponseWriter, r *http.Request) {
 	userID, ok := middleware.UserIDFromContext(r.Context())
 	if !ok {
 		writeError(w, http.StatusUnauthorized, "unauthorized")
@@ -162,22 +165,41 @@ func (h* ProfileHandler) UploadAvatar(w http.ResponseWriter, r* http.Request) {
 	}
 
 	oldAvatar, err := h.profiles.UpdateAvatar(r.Context(), userID, relPath)
+	sagaID := uuid.NewString()
+
+	avatarEvent := map[string]interface{}{
+		"id":     userID.String(),
+		"avatar": "/" + relPath, // Putanja do novog avatara
+	}
+
+	body, _ := json.Marshal(avatarEvent)
+
+	err = h.rabbitChannel.PublishWithContext(r.Context(),
+		"user-exchange",
+		"user.sync.routing",
+		false, false,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        body,
+			Headers: amqp.Table{
+				"sagaId": sagaID,
+			},
+		},
+	)
 	if err != nil {
-		_ = os.Remove(relPath)
-		writeError(w, http.StatusInternalServerError, "could not update avatar")
-		return
+		log.Printf("Failed to publish avatar update sync: %v", err)
 	}
 
 	if oldAvatar != "" {
-		_ = os.Remove(relPath)
+		_ = os.Remove(oldAvatar)
 	}
 
-	writeJSON(w, http.StatusOK, map[string]string {
+	writeJSON(w, http.StatusOK, map[string]string{
 		"message": "Avatar uploaded successfully",
-		"url": "/" + relPath,
+		"url":     "/" + relPath,
 	})
 }
-func (h* ProfileHandler) GetProfile(w http.ResponseWriter, r* http.Request) {
+func (h *ProfileHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "invalid user id")
@@ -188,7 +210,7 @@ func (h* ProfileHandler) GetProfile(w http.ResponseWriter, r* http.Request) {
 	if errors.Is(err, repository.ErrProfileNotFound) {
 		writeError(w, http.StatusNotFound, "profile not found")
 		return
-	} 
+	}
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "internal error")
 		return
@@ -196,7 +218,7 @@ func (h* ProfileHandler) GetProfile(w http.ResponseWriter, r* http.Request) {
 
 	writeJSON(w, http.StatusOK, profile)
 }
-func (h* ProfileHandler) GetUserInfo(w http.ResponseWriter, r* http.Request) {
+func (h *ProfileHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(r.PathValue("id"))
 	if err != nil {
 		writeError(w, http.StatusBadRequest, "invalid user id")

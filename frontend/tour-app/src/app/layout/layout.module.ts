@@ -22,6 +22,14 @@ import { PositionSimulatorComponent } from './position-simulator/position-simula
 import { MatIconModule } from '@angular/material/icon';
 import { TourExecutionComponent } from './tour-execution/tour-execution.component';
 import { TourExecutionsListComponent } from './tour-executions-list/tour-executions-list.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { ShoppingCartComponent } from './shopping-cart/shopping-cart.component';
+import { OrderItemCardComponent } from './order-item-card/order-item-card.component';
+import { PublishedToursComponent } from './published-tours/published-tours.component';
+import { TouristsToursComponent } from './tourists-tours/tourists-tours.component';
 
 
 @NgModule({
@@ -44,6 +52,10 @@ import { TourExecutionsListComponent } from './tour-executions-list/tour-executi
     PositionSimulatorComponent,
     TourExecutionComponent,
     TourExecutionsListComponent,
+    ShoppingCartComponent,
+    OrderItemCardComponent,
+    PublishedToursComponent,
+    TouristsToursComponent
   ],
   imports: [
     CommonModule,
@@ -51,6 +63,10 @@ import { TourExecutionsListComponent } from './tour-executions-list/tour-executi
     RouterModule,
     FormsModule,
     MatIconModule,
+    MatToolbarModule,
+    MatListModule,
+    MatButtonModule,
+    MatCardModule
   ],
   exports: [
     NavbarComponent,

@@ -54,9 +54,11 @@ services:
       - DB_PASSWORD=root
       - PORT=8000
       - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
-      - FOLLOWERS_SYNC_URL=http://followers:8081/api/followers/sync
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
     depends_on:
       stakeholders-db:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   blog:
@@ -110,14 +112,14 @@ services:
       - DB_NAME=tours_db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - PURCHASE_SERVICE_URL=http://purchase:8083
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
     volumes:
       - ./uploads:/app/uploads
     depends_on:
       tours-db:
         condition: service_healthy
-      purchase: 
-        condition: service_started
+      rabbitmq:                       
+        condition: service_healthy
 
   followers:
     build:
@@ -129,6 +131,10 @@ services:
       - SPRING_NEO4J_URI=bolt://followers-db:7687
       - SPRING_NEO4J_AUTHENTICATION_USERNAME=neo4j
       - SPRING_NEO4J_AUTHENTICATION_PASSWORD=password123
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672  
+      - SPRING_RABBITMQ_USERNAME=guest 
+      - SPRING_RABBITMQ_PASSWORD=guest
     depends_on:
       followers-db:
         condition: service_healthy
@@ -161,8 +167,14 @@ services:
        - SPRING_DATASOURCE_USERNAME=postgres
        - SPRING_DATASOURCE_PASSWORD=root
        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+       - SPRING_RABBITMQ_HOST=rabbitmq          
+       - SPRING_RABBITMQ_PORT=5672              
+       - SPRING_RABBITMQ_USERNAME=guest        
+       - SPRING_RABBITMQ_PASSWORD=guest
      depends_on:
        purchase-db:
+         condition: service_healthy
+       rabbitmq:
          condition: service_healthy
 
   gateway:
@@ -187,8 +199,8 @@ services:
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
       interval: 5s
-      timeout: 5s
-      retries: 5
+      timeout: 15s
+      retries: 10
 
 volumes:
   postgres_data:

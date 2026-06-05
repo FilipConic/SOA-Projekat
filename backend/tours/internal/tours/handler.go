@@ -46,6 +46,8 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /api/tours/publish/{tour_id}", h.publish)
 	mux.HandleFunc("POST /api/tours/archive/{tour_id}", h.archive)
 	mux.HandleFunc("POST /api/tours/republish/{tour_id}", h.publishAgain)
+	mux.HandleFunc("GET /api/tours/purchased", h.getPurchasedTours)
+	mux.HandleFunc("GET /api/tours/available", h.getAvailableTours)
 }
 
 // func (h *Handler) createTour(w http.ResponseWriter, r *http.Request) {
@@ -414,4 +416,40 @@ func syncTourWithPurchase(id string, title string, price float64, status string)
 		return
 	}
 	defer resp.Body.Close()
+}
+
+func (h *Handler) getPurchasedTours(w http.ResponseWriter, r *http.Request) {
+	touristID := r.Header.Get("X-User-ID")
+	if touristID == "" {
+		http.Error(w, "Nedostaje X-User-ID", http.StatusUnauthorized)
+		return
+	}
+
+	tours, err := h.service.GetPurchasedTours(touristID)
+	if err != nil {
+		http.Error(w, "Greška prilikom dohvatanja kupljenih tura", http.StatusInternalServerError)
+		return
+	}
+
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(tours)
+}
+
+func (h *Handler) getAvailableTours(w http.ResponseWriter, r *http.Request) {
+	touristID := r.Header.Get("X-User-ID")
+	if touristID == "" {
+		http.Error(w, "Nedostaje X-User-ID", http.StatusUnauthorized)
+		return
+	}
+
+	tours, err := h.service.GetAvailablePublishedTours(touristID)
+	if err != nil {
+		http.Error(w, "Greška prilikom dohvatanja dostupnih tura", http.StatusInternalServerError)
+		return
+	}
+
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	enc.Encode(tours)
 }

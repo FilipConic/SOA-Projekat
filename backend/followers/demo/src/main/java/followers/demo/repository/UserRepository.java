@@ -8,7 +8,9 @@ import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 
 import followers.demo.model.User;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserRepository extends Neo4jRepository<User, String> {
     Optional<User> findByUsername(String username);
 
