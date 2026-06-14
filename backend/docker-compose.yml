@@ -1,3 +1,9 @@
+x-logging: &fluent-bit-logging
+  driver: fluentd
+  options:
+    fluentd-address: "${FLUENT_BIT_ADDRESS:-localhost}:24224"
+    tag: "microservice.{{.Name}}"
+
 services:
   stakeholders-db:
     image: postgres:15
@@ -55,6 +61,7 @@ services:
       - PORT=8000
       - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    logging: *fluent-bit-logging
     depends_on:
       stakeholders-db:
         condition: service_healthy
@@ -69,6 +76,7 @@ services:
     environment:
       - MONGO_URI=mongodb://blog-db:27017/blogdb
       - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
+    logging: *fluent-bit-logging
     depends_on:
       blog-db:
         condition: service_healthy
@@ -113,6 +121,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    logging: *fluent-bit-logging
     volumes:
       - ./uploads:/app/uploads
     depends_on:
@@ -135,6 +144,7 @@ services:
       - SPRING_RABBITMQ_PORT=5672  
       - SPRING_RABBITMQ_USERNAME=guest 
       - SPRING_RABBITMQ_PASSWORD=guest
+    logging: *fluent-bit-logging
     depends_on:
       followers-db:
         condition: service_healthy
@@ -171,6 +181,7 @@ services:
        - SPRING_RABBITMQ_PORT=5672              
        - SPRING_RABBITMQ_USERNAME=guest        
        - SPRING_RABBITMQ_PASSWORD=guest
+     logging: *fluent-bit-logging
      depends_on:
        purchase-db:
          condition: service_healthy
@@ -201,6 +212,35 @@ services:
       interval: 5s
       timeout: 15s
       retries: 10
+
+  loki:
+    image: grafana/loki:3.0.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - default
+
+  fluent-bit:
+    image: cr.fluentbit.io/fluent/fluent-bit:3.0
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+    depends_on:
+      - loki
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000" 
+    depends_on:
+      - loki
+    networks:
+      - default
 
 volumes:
   postgres_data:
