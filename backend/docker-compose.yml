@@ -236,13 +236,58 @@ services:
   grafana:
     image: grafana/grafana:latest
     ports:
-      - "3001:3000" 
+      - "3001:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - loki
+      - prometheus
     networks:
       - default
 
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+    depends_on:
+      - docker-stats-exporter
+      - node-exporter
+    restart: unless-stopped
+
+  docker-stats-exporter:
+    image: gregmika/docker_stats_exporter:latest
+    container_name: docker-stats-exporter
+    ports:
+      - "9273:9273"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    restart: unless-stopped
+
 volumes:
+  prometheus_data:
   postgres_data:
   blog_mongo_data:
   pgadmin_data:
