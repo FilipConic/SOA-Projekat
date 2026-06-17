@@ -9,6 +9,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -16,7 +18,6 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
@@ -66,9 +67,9 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/my-following", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/recommendations", Role: auth.RoleTourist}: true,
-	{Path: "/api/tours/publish/", Role: auth.RoleGuide}: true,
-	{Path: "/api/tours/archive/", Role: auth.RoleGuide}: true,
-	{Path: "/api/tours/republish/", Role: auth.RoleGuide}: true,
+	{Path: "/api/tours/publish/", Role: auth.RoleGuide}:              true,
+	{Path: "/api/tours/archive/", Role: auth.RoleGuide}:              true,
+	{Path: "/api/tours/republish/", Role: auth.RoleGuide}:            true,
 
 	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 
@@ -125,6 +126,7 @@ func initTracer(ctx context.Context) (*sdktrace.TracerProvider, error) {
 func main() {
 	jwtSecret := getEnv("JWT_SECRET", "secret")
 	ctx := context.Background()
+
 	tp, err := initTracer(ctx)
 	if err != nil {
 		log.Printf("Failed to initialize tracer: %v", err)
@@ -146,7 +148,10 @@ func main() {
 			return nil
 		}),
 	)
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+	}
 
 	if err := genblog.RegisterBlogServiceHandlerFromEndpoint(ctx, grpcMux, blogGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register blog service: %v", err)
