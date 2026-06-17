@@ -115,6 +115,7 @@ services:
     ports:
       - "8082:8082"
     environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
       - DB_HOST=tours-db
       - DB_PORT=5432
       - DB_NAME=tours_db
@@ -194,6 +195,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
       - JWT_SECRET=django-insecure-c7(b_d%7a&rz%tnm5de3u8vb(4eoohvp0)_#^ii3wcm2m!t9p
     depends_on:
       - blog
@@ -286,7 +288,38 @@ services:
       - '--path.rootfs=/rootfs'
     restart: unless-stopped
 
+  tempo:
+    image: grafana/tempo:2.5.0
+    container_name: tempo
+    command:
+      - '-config.file=/etc/tempo/tempo.yml'
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./monitoring/tempo.yml:/etc/tempo/tempo.yml
+      - tempo_data:/var/tempo
+    restart: unless-stopped
+    networks:
+      - default
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.104.0
+    container_name: otel-collector
+    command:
+      - '--config=/etc/otel/otel-collector.yml'
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./monitoring/otel-collector.yml:/etc/otel/otel-collector.yml
+    depends_on:
+      - tempo
+    restart: unless-stopped
+    networks:
+      - default
+
 volumes:
+  tempo_data:
   prometheus_data:
   postgres_data:
   blog_mongo_data:

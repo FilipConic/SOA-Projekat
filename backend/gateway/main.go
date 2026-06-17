@@ -7,8 +7,17 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
@@ -58,9 +67,9 @@ var protectedRoutes = map[auth.Permission]bool{
 	{Path: "/api/followers/my-followers", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/my-following", Role: auth.RoleTourist}:    true,
 	{Path: "/api/followers/recommendations", Role: auth.RoleTourist}: true,
-	{Path: "/api/tours/publish/", Role: auth.RoleGuide}: true,
-	{Path: "/api/tours/archive/", Role: auth.RoleGuide}: true,
-	{Path: "/api/tours/republish/", Role: auth.RoleGuide}: true,
+	{Path: "/api/tours/publish/", Role: auth.RoleGuide}:              true,
+	{Path: "/api/tours/archive/", Role: auth.RoleGuide}:              true,
+	{Path: "/api/tours/republish/", Role: auth.RoleGuide}:            true,
 
 	{Path: "/api/tours/reviews/delete/", Role: auth.RoleTourist}: true,
 
@@ -82,9 +91,54 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+func initTracer(ctx context.Context) (*sdktrace.TracerProvider, error) {
+	endpoint := getEnv("OTEL_EXPORTER_OTLP_ENDPOINT", "otel-collector:4317")
+
+	exporter, err := otlptracegrpc.New(ctx,
+		otlptracegrpc.WithEndpoint(endpoint),
+		otlptracegrpc.WithInsecure(),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := resource.New(ctx,
+		resource.WithAttributes(semconv.ServiceName("gateway")),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	tp := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(exporter),
+		sdktrace.WithResource(res),
+	)
+
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+		propagation.TraceContext{},
+		propagation.Baggage{},
+	))
+
+	return tp, nil
+}
+
 func main() {
 	jwtSecret := getEnv("JWT_SECRET", "secret")
 	ctx := context.Background()
+
+	tp, err := initTracer(ctx)
+	if err != nil {
+		log.Printf("Failed to initialize tracer: %v", err)
+	} else {
+		defer func() {
+			shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			if err := tp.Shutdown(shutdownCtx); err != nil {
+				log.Printf("Error shutting down tracer provider: %v", err)
+			}
+		}()
+	}
 
 	grpcMux := runtime.NewServeMux(
 		runtime.WithMetadata(func(ctx context.Context, req *http.Request) metadata.MD {
@@ -94,7 +148,10 @@ func main() {
 			return nil
 		}),
 	)
-	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+	}
 
 	if err := genblog.RegisterBlogServiceHandlerFromEndpoint(ctx, grpcMux, blogGrpcService, opts); err != nil {
 		log.Fatalf("Failed to register blog service: %v", err)
@@ -151,8 +208,10 @@ func main() {
 
 	authMiddleware := auth.Middleware(jwtSecret, protectedRoutes)
 
+	tracedMux := otelhttp.NewHandler(authMiddleware(mainMux), "gateway-http")
+
 	log.Println("Gateway listening on :8080")
-	if err := http.ListenAndServe(":8080", authMiddleware(mainMux)); err != nil {
+	if err := http.ListenAndServe(":8080", tracedMux); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
 }
