@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 )
@@ -269,6 +270,7 @@ func (h *Handler) startTour(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	log.Printf("execution: %v", execution);
 	json.NewEncoder(w).Encode(execution)
 }
 

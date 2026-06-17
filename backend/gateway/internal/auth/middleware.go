@@ -89,6 +89,7 @@ func Middleware(secret string, protectedRoutes map[Permission]bool) func(http.Ha
 				return
 			}
 			if claims.TokenType != "access" {
+				log.Printf("claims: %v\n", claims)
 				http.Error(res, "Accepts only access!", http.StatusUnauthorized)
 				return
 			}

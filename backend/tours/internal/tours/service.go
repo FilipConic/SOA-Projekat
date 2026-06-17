@@ -338,7 +338,10 @@ func (s *Service) StartTour(tourID string, touristID string, initialPosition Che
 	}
 
 	// Ponovno dohvatamo da bismo imali pre-loadovan Tour objekat zbog naziva
-	fullExec, _ := s.repo.GetTourExecutionByID(execID)
+	fullExec, err := s.repo.GetTourExecutionByID(execID)
+	if err != nil {
+		return nil, err
+	}
 	return mapExecutionToDTO(s, fullExec), nil
 }
 
