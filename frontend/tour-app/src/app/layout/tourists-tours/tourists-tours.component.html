@@ -1,6 +1,6 @@
 <div class="tours-container">
   <h2>My Purchased Tours</h2>
-  
+
   <div *ngIf="purchasedTours.length === 0" class="empty-state">
     <mat-icon class="empty-icon">explore_off</mat-icon>
     <p>You currently have no purchased tours. Explore available tours and start a new adventure!</p>
@@ -8,17 +8,17 @@
 
   <div class="tours-grid" *ngIf="purchasedTours.length > 0">
     <mat-card class="tour-card" *ngFor="let tour of purchasedTours" (click)="startTour(tour.id)" style="cursor: pointer;">
-      
+
       <img mat-card-image src="assets/placeholder-tour.png" alt="Tour Image">
-      
+
       <mat-card-content>
         <mat-card-title>{{ tour.Title }}</mat-card-title>
-        <mat-card-subtitle>Duration: {{ tour.Duration }} mins</mat-card-subtitle>
-        
+        <mat-card-subtitle>Duration: {{ tour.DurationWalk }} mins</mat-card-subtitle>
+
         <p class="description">
           {{ tour.Description }}
         </p>
-        
+
         <div class="tour-stats">
           <span><mat-icon>trending_up</mat-icon> {{ tour.Difficulty }}</span>
           <span class="purchased-badge">
@@ -32,7 +32,7 @@
           <mat-icon>play_arrow</mat-icon> Start Tour
         </button>
       </mat-card-actions>
-      
+
     </mat-card>
   </div>
 </div>

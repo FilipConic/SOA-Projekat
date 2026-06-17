@@ -197,9 +197,13 @@ export class TourService {
           Price: t.Price ?? t.price,
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
-          Status: t.Status ?? t.status,
-          Duration: t.Duration ?? t.duration,
+          status: t.Status ?? t.status,
+          DurationWalk: t.Duration ?? t.duration,
+          DurationBike: t.Duration ?? t.duration,
+          DurationCar: t.Duration ?? t.duration,
           CreatedAt: t.CreatedAt ?? t.created_at,
+          PublishedAt: t.PublishedAt ?? t.published_at,
+          ArchivedAt: t.ArchivedAt ?? t.archived_at,
           CreatorID: t.CreatorID ?? t.creator_id
         }));
       })
@@ -207,7 +211,7 @@ export class TourService {
   }
 
   getPurchasedTours(): Observable<Tour[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/purchased`).pipe(
+    return this.http.get<Tour[]>(`${this.baseUrl}/purchased`).pipe(
       map(tours => {
         if (!tours) return [];
         return tours.map((t: any) => ({
@@ -217,9 +221,13 @@ export class TourService {
           Price: t.Price ?? t.price,
           Difficulty: t.Difficulty ?? t.difficulty,
           Tags: t.Tags ?? t.tags,
-          Status: t.Status ?? t.status,
-          Duration: t.Duration ?? t.duration,
+          status: t.Status ?? t.status,
+          DurationWalk: t.Duration ?? t.duration,
+          DurationBike: t.Duration ?? t.duration,
+          DurationCar: t.Duration ?? t.duration,
           CreatedAt: t.CreatedAt ?? t.created_at,
+          PublishedAt: t.PublishedAt ?? t.published_at,
+          ArchivedAt: t.ArchivedAt ?? t.archived_at,
           CreatorID: t.CreatorID ?? t.creator_id
         }));
       })

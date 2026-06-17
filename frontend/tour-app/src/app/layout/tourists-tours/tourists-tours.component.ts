@@ -15,7 +15,7 @@ export class TouristsToursComponent implements OnInit {
   constructor(private tourService: TourService,
               private tourExecutionService: TourExecutionService,
               private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadPurchasedTours();
@@ -25,6 +25,7 @@ export class TouristsToursComponent implements OnInit {
     this.tourService.getPurchasedTours().subscribe({
       next: (data) => {
         this.purchasedTours = data;
+        console.log(this.purchasedTours);
       },
       error: (err) => {
         console.error('Greška prilikom učitavanja kupljenih tura:', err);
